@@ -1,0 +1,108 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>project-setup-local-infrastructure</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/home/analiticos/proyectos/masirep/docs/stories/1-1-project-setup-local-infrastructure.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>establish a complete local development and deployment environment</iWant>
+    <soThat>the system can operate entirely independently without any corporate IT dependencies</soThat>
+    <tasks>Tasks:
+1. Inicializar Next.js 14 (AC: 1)
+2. Instalar dependencias core (AC: 2)
+3. Configurar base de datos local (AC: 2, 3)
+4. Configurar autenticación local (AC: 2, 3)
+5. Configurar estructura frontend (AC: 3)
+6. Configurar desarrollo local (AC: 4)
+7. Validación y documentación (AC: 4)</tasks>
+  </story>
+
+  <acceptanceCriteria>1. Given la necesidad de autonomía departamental, when ejecuto la inicialización del proyecto, then obtengo una aplicación Next.js 14 completa con TypeScript, Tailwind CSS y estructura configurada para operación local sin dependencias externas
+2. Given el proyecto inicializado, when instalo dependencias core, then tengo Next.js 14, Prisma, NextAuth.js y shadcn/ui configurados para operación local autónoma
+3. Given las dependencias instaladas, when configuro estructura de directorios, then tengo layout base, middleware, y estructura de carpetas según architecture.md con src-dir y import-alias "@/*"
+4. Given la estructura configurada, when ejecuto npm run dev, then el servidor inicia sin errores en <10 segundos con hot-reload funcional</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation for Autonomous System</title>
+        <section>Overview and Objectives</section>
+        <snippet>Esta épica establece la infraestructura técnica fundamental que asegura la autonomía completa del departamento de mantenimiento, eliminando cualquier dependencia de TI corporativa. Implementa Next.js 14 + TypeScript + Prisma + SQLite para operación local autónoma.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Masirep - Architecture Decision Document</title>
+        <section>Project Initialization and Dependencies</section>
+        <snippet>Comando de inicialización: npx create-next-app@latest masirep --typescript --tailwind --eslint --app --src-dir --import-alias "@/*". Post-initialización incluye Prisma, NextAuth.js, shadcn/ui, y utilidades de desarrollo.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Masirep - Architecture Decision Document</title>
+        <section>Architecture Decision Summary</section>
+        <snippet>Next.js 14 App Router con TypeScript, Tailwind CSS + shadcn/ui, SQLite con Prisma ORM, NextAuth.js para autenticación local, y Zod para validación type-safe.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code found - this is project setup story -->
+    </code>
+    <dependencies>
+    <ecosystem name="node">
+      <package name="next" version="14.2.4+" type="framework" />
+      <package name="react" version="18+" type="library" />
+      <package name="typescript" version="5.4+" type="language" />
+      <package name="tailwindcss" version="3.4+" type="styling" />
+      <package name="prisma" version="5.14.0+" type="orm" />
+      <package name="@prisma/client" version="5.14.0+" type="database-client" />
+      <package name="next-auth" version="4.24.0+" type="authentication" />
+      <package name="@auth/prisma-adapter" version="latest" type="auth-adapter" />
+      <package name="@radix-ui/react-dialog" version="1.0+" type="ui-components" />
+      <package name="@radix-ui/react-tabs" version="1.0+" type="ui-components" />
+      <package name="class-variance-authority" version="latest" type="styling" />
+      <package name="clsx" version="latest" type="utilities" />
+      <package name="tailwind-merge" version="latest" type="styling" />
+      <package name="react-hook-form" version="7.48+" type="forms" />
+      <package name="@hookform/resolvers" version="latest" type="validation" />
+      <package name="zod" version="3.22+" type="validation" />
+      <package name="lucide-react" version="latest" type="icons" />
+      <package name="date-fns" version="latest" type="date-utilities" />
+      <package name="@types/node" version="latest" type="typescript-types" />
+    </ecosystem>
+  </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">Usar Next.js 14 App Router con Server/Client Components - Server Components para datos y Client Components para interacción</constraint>
+    <constraint type="project-structure">Estructura requerida: src/app/ (App Router), prisma/, components/, lib/, public/</constraint>
+    <constraint type="database">Base de datos SQLite local con Prisma ORM para type-safe database access</constraint>
+    <constraint type="authentication">NextAuth.js con credentials provider local, sin Active Directory ni dependencias externas</constraint>
+    <constraint type="ui">Tailwind CSS con tema Ternium Classic (#FF6B00) + shadcn/ui components</constraint>
+    <constraint type="performance">Startup time <10 segundos, hot-reload funcional</constraint>
+    <constraint type="security">Variables de entorno en .env.local, cookies HTTP-only, input validation con Zod</constraint>
+  </constraints>
+  <interfaces>
+    <!-- No existing interfaces - this is project setup story -->
+  </interfaces>
+  <tests>
+    <standards>Configurar Jest + React Testing Library para unit tests de componentes y utilidades. Playwright para E2E tests de flujos de autenticación. Database testing con SQLite in-memory. Performance testing para validar startup time <10 segundos.</standards>
+    <locations>
+      <location type="unit">__tests__/ directory para Jest unit tests</location>
+      <location type="integration">tests/ directory para Playwright E2E tests</location>
+      <location type="database">prisma/tests/ para database-specific tests</location>
+    </locations>
+    <ideas>
+      <test idea-id="AC1" description="Validar que Next.js 14 se inicializa correctamente con estructura src-dir y TypeScript configurado" />
+      <test idea-id="AC2" description="Probar instalación de dependencias core sin conflictos de versiones" />
+      <test idea-id="AC3" description="Verificar estructura de directorios según architecture.md: src/app/, prisma/, components/, lib/" />
+      <test idea-id="AC4" description="Medir startup time del servidor y confirmar <10 segundos con hot-reload funcional" />
+      <test idea-id="auth-flow" description="E2E test completo: login → dashboard → logout usando Playwright" />
+      <test idea-id="db-connection" description="Probar conexión a base de datos SQLite local con Prisma" />
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masirep - Diseño Personalizado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        'primary-dark': '#E55A00',
+                        secondary: '#6B7280',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-active {
+            background: #FF6B00;
+            color: white;
+            border-bottom: 2px solid #FF6B00;
+        }
+        .tab-inactive {
+            background: #F3F4F6;
+            color: #374151;
+            border-bottom: 2px solid #E5E7EB;
+        }
+        .location-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .location-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #FF6B00;
+        }
+        .btn-primary {
+            background: #FF6B00;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+            border: none;
+        }
+        .btn-primary:hover {
+            background: #E55A00;
+        }
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+        .filter-chip {
+            transition: all 0.2s;
+        }
+        .filter-chip:hover {
+            background: #FED7AA;
+            border-color: #FF6B00;
+        }
+        .filter-chip.active {
+            background: #FF6B00;
+            color: white;
+            border-color: #FF6B00;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">🎨 Masirep - Diseño Personalizado</h1>
+                    <p class="text-sm text-gray-600">Híbrido Profesional + Navegación por Ubicaciones + Búsqueda Dual</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="space-y-8">
+            <!-- Main Search Screen -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gray-800 px-4 py-2 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span class="text-white text-sm">Pantalla Principal - Búsqueda y Navegación</span>
+                </div>
+
+                <div class="p-6">
+                    <!-- Top Navigation -->
+                    <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4 mb-6">
+                        <div class="flex space-x-4">
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">Búsqueda</button>
+                            <button class="px-4 py-2 text-gray-600 hover:text-gray-900 text-sm font-medium">Ubicaciones</button>
+                            <button class="px-4 py-2 text-gray-600 hover:text-gray-900 text-sm font-medium">Reportes</button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500">Bienvenido, Carlos</span>
+                            <button class="p-2 bg-gray-200 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dual Tab Search Interface -->
+                    <div class="mb-6">
+                        <!-- Search Tabs -->
+                        <div class="flex space-x-1 mb-4 border-b border-gray-200">
+                            <button id="repuestosTab" onclick="switchTab('repuestos')" class="px-6 py-3 font-medium rounded-t-lg tab-active">
+                                🔩 Repuestos Específicos
+                            </button>
+                            <button id="componentesTab" onclick="switchTab('componentes')" class="px-6 py-3 font-medium rounded-t-lg tab-inactive">
+                                ⚡ Componentes Genéricos
+                            </button>
+                        </div>
+
+                        <!-- Search Content -->
+                        <div id="searchContent">
+                            <!-- Repuestos Tab Content -->
+                            <div id="repuestosContent" class="space-y-4">
+                                <div class="flex space-x-4">
+                                    <div class="flex-1 relative">
+                                        <input type="text"
+                                            placeholder="Buscar por código, número de parte, descripción o equipo asociado..."
+                                            class="w-full px-4 py-3 pr-12 border rounded-lg focus:border-primary focus:outline-none">
+                                        <button class="absolute right-3 top-3 text-primary">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <button class="btn-primary px-6">Buscar</button>
+                                </div>
+
+                                <!-- Repuestos Filters -->
+                                <div class="space-y-3">
+                                    <div class="text-sm font-medium text-gray-700">Filtros específicos para repuestos:</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Equipo: ESP20</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Equipo: PREPMASTER</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Stock bajo</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Sin stock</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Últimos 30 días</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Componentes Tab Content -->
+                            <div id="componentesContent" class="space-y-4 hidden">
+                                <div class="flex space-x-4">
+                                    <div class="flex-1 relative">
+                                        <input type="text"
+                                            placeholder="Buscar componentes por descripción, valor o categoría..."
+                                            class="w-full px-4 py-3 pr-12 border rounded-lg focus:border-primary focus:outline-none">
+                                        <button class="absolute right-3 top-3 text-primary">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <button class="btn-primary px-6">Buscar</button>
+                                </div>
+
+                                <!-- Componentes Filters -->
+                                <div class="space-y-3">
+                                    <div class="text-sm font-medium text-gray-700">Filtros específicos para componentes:</div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Resistencias</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Capacitores</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Integrados</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Diodos</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">LEDs</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm active">R > 30Ω</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">C > 100µF</button>
+                                        <button class="filter-chip px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm">Potencia > 1W</button>
+                                    </div>
+
+                                    <!-- Advanced Filters for Components -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <div class="grid grid-cols-3 gap-4 text-sm">
+                                            <div>
+                                                <label class="block font-medium text-gray-700 mb-1">Resistencia (Ω)</label>
+                                                <div class="flex space-x-2">
+                                                    <input type="number" placeholder="Mín" class="w-full px-2 py-1 border rounded">
+                                                    <input type="number" placeholder="Máx" class="w-full px-2 py-1 border rounded">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block font-medium text-gray-700 mb-1">Capacitancia (µF)</label>
+                                                <div class="flex space-x-2">
+                                                    <input type="number" placeholder="Mín" class="w-full px-2 py-1 border rounded">
+                                                    <input type="number" placeholder="Máx" class="w-full px-2 py-1 border rounded">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block font-medium text-gray-700 mb-1">Potencia (W)</label>
+                                                <div class="flex space-x-2">
+                                                    <input type="number" placeholder="Mín" class="w-full px-2 py-1 border rounded">
+                                                    <input type="number" placeholder="Máx" class="w-full px-2 py-1 border rounded">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="border rounded-lg overflow-hidden">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Código</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
+                                    <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Stock</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Ubicación</th>
+                                    <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-medium">RES-10K-001</td>
+                                    <td class="px-4 py-3 text-sm">Resistencia 10K Ω 1/4W</td>
+                                    <td class="px-4 py-3 text-sm text-center">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">25</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm">A-3-1</td>
+                                    <td class="px-4 py-3 text-sm text-center">
+                                        <button class="text-primary hover:text-primary-dark">Retirar</button>
+                                        <span class="mx-2">|</span>
+                                        <button class="text-primary hover:text-primary-dark">Ver</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-medium">RES-47K-002</td>
+                                    <td class="px-4 py-3 text-sm">Resistencia 47K Ω 1/4W</td>
+                                    <td class="px-4 py-3 text-sm text-center">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">12</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm">A-3-2</td>
+                                    <td class="px-4 py-3 text-sm text-center">
+                                        <button class="text-primary hover:text-primary-dark">Retirar</button>
+                                        <span class="mx-2">|</span>
+                                        <button class="text-primary hover:text-primary-dark">Ver</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 text-sm font-medium">CAP-100U-025</td>
+                                    <td class="px-4 py-3 text-sm">Capacitor 100µF 25V</td>
+                                    <td class="px-4 py-3 text-sm text-center">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded">3</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm">B-1-2</td>
+                                    <td class="px-4 py-3 text-sm text-center">
+                                        <button class="text-primary hover:text-primary-dark">Retirar</button>
+                                        <span class="mx-2">|</span>
+                                        <button class="text-primary hover:text-primary-dark">Ver</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation by Locations Screen -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gray-800 px-4 py-2 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span class="text-white text-sm">Navegación por Ubicaciones</span>
+                </div>
+
+                <div class="p-6">
+                    <!-- Breadcrumb Navigation -->
+                    <div class="flex items-center space-x-2 text-sm mb-6">
+                        <a href="#" class="text-primary hover:underline">🏭 Taller Principal</a>
+                        <span class="text-gray-400">›</span>
+                        <span class="text-gray-900">Seleccionar ubicación</span>
+                    </div>
+
+                    <!-- Location Cards Grid -->
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="location-card border-2 border-gray-200 rounded-xl p-6 bg-white">
+                            <div class="text-center">
+                                <div class="text-4xl mb-3">🏭</div>
+                                <h3 class="font-bold text-lg mb-2">Armario A</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Estanterías:</span>
+                                        <span class="font-medium">4</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Cajones:</span>
+                                        <span class="font-medium">24</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Items:</span>
+                                        <span class="font-medium text-primary">342</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 btn-primary py-2 text-sm">
+                                    Explorar →
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="location-card border-2 border-gray-200 rounded-xl p-6 bg-white">
+                            <div class="text-center">
+                                <div class="text-4xl mb-3">🗄️</div>
+                                <h3 class="font-bold text-lg mb-2">Armario B</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Estanterías:</span>
+                                        <span class="font-medium">3</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Cajones:</span>
+                                        <span class="font-medium">18</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Items:</span>
+                                        <span class="font-medium text-primary">256</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 btn-primary py-2 text-sm">
+                                    Explorar →
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="location-card border-2 border-gray-200 rounded-xl p-6 bg-white">
+                            <div class="text-center">
+                                <div class="text-4xl mb-3">📦</div>
+                                <h3 class="font-bold text-lg mb-2">Estantería C</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Estantes:</span>
+                                        <span class="font-medium">6</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Organizadores:</span>
+                                        <span class="font-medium">12</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Items:</span>
+                                        <span class="font-medium text-primary">189</span>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 btn-primary py-2 text-sm">
+                                    Explorar →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold mb-3">Resumen de ubicaciones</h4>
+                        <div class="grid grid-cols-4 gap-4 text-sm">
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-primary">787</div>
+                                <div class="text-gray-600">Total items</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-green-600">7</div>
+                                <div class="text-gray-600">Ubicaciones</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-yellow-600">23</div>
+                                <div class="text-gray-600">Stock bajo</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-red-600">5</div>
+                                <div class="text-gray-600">Sin stock</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Update Screen -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gray-800 px-4 py-2 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span class="text-white text-sm">Actualización de Stock</span>
+                </div>
+
+                <div class="p-6">
+                    <!-- Item Details Header -->
+                    <div class="bg-white border rounded-lg p-6 mb-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">RES-10K-001</h3>
+                                <p class="text-gray-600">Resistencia 10K Ω 1/4W 5%</p>
+                                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                                    <span>Categoría: Resistencias</span>
+                                    <span>•</span>
+                                    <span>Stock mínimo: 10</span>
+                                    <span>•</span>
+                                    <span>Último movimiento: Hoy 14:30</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold text-primary">25</div>
+                                <div class="text-sm text-gray-600">unidades totales</div>
+                                <div class="flex items-center justify-end mt-1">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                    <span class="text-sm text-green-600">Stock normal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Update Area -->
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <!-- Stock Update Panel -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h4 class="font-semibold text-lg mb-4">Actualizar Stock</h4>
+
+                            <div class="space-y-4">
+                                <!-- Movement Type -->
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="p-3 bg-red-500 text-white rounded-lg text-center">
+                                        <div class="font-medium">Retiro</div>
+                                        <div class="text-xs opacity-80">Uso/Consumo</div>
+                                    </button>
+                                    <button class="p-3 bg-green-500 text-white rounded-lg text-center">
+                                        <div class="font-medium">Agregado</div>
+                                        <div class="text-xs opacity-80">Recepción</div>
+                                    </button>
+                                    <button class="p-3 bg-gray-200 text-gray-700 rounded-lg text-center">
+                                        <div class="font-medium">Ajuste</div>
+                                        <div class="text-xs opacity-80">Inventario</div>
+                                    </button>
+                                </div>
+
+                                <!-- Quantity Input -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad</label>
+                                    <div class="flex space-x-2">
+                                        <input type="number" value="1" min="1" class="flex-1 px-4 py-2 border rounded-lg">
+                                        <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                                            Confirmar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Location Selection -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ubicación</label>
+                                    <select class="w-full px-4 py-2 border rounded-lg">
+                                        <option>Armario A - Cajón 3 - División 1 (20 uds)</option>
+                                        <option>Armario B - Cajón 1 - División 2 (5 uds)</option>
+                                        <option>Seleccionar otra ubicación...</option>
+                                    </select>
+                                </div>
+
+                                <!-- Notes -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Notas del movimiento</label>
+                                    <textarea class="w-full px-4 py-2 border rounded-lg" rows="2"
+                                        placeholder="Ej: Usado en reparación equipo ESP20 - Falla en fuente de poder"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Locations & History Panel -->
+                        <div class="space-y-6">
+                            <!-- Location Breakdown -->
+                            <div>
+                                <h4 class="font-semibold text-lg mb-4">Distribución por Ubicación</h4>
+                                <div class="space-y-3">
+                                    <div class="bg-white border rounded-lg p-4">
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <div class="font-medium">Armario A - Cajón 3 - División 1</div>
+                                                <div class="text-sm text-gray-600">Ubicación principal</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-lg font-bold text-primary">20</div>
+                                                <div class="text-sm text-gray-600">unidades</div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 bg-gray-100 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white border rounded-lg p-4">
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <div class="font-medium">Armario B - Cajón 1 - División 2</div>
+                                                <div class="text-sm text-gray-600">Ubicación secundaria</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-lg font-bold text-primary">5</div>
+                                                <div class="text-sm text-gray-600">unidades</div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 bg-gray-100 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 20%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Activity -->
+                            <div>
+                                <h4 class="font-semibold text-lg mb-4">Actividad Reciente</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between items-center p-3 bg-red-50 border border-red-200 rounded-lg">
+                                        <div>
+                                            <span class="font-medium text-red-700">Retiro:</span> 2 unidades
+                                            <div class="text-xs text-gray-600">Reparación equipo ESP20</div>
+                                        </div>
+                                        <div class="text-xs text-gray-500">Hoy 14:30</div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center p-3 bg-green-50 border border-green-200 rounded-lg">
+                                        <div>
+                                            <span class="font-medium text-green-700">Agregado:</span> 10 unidades
+                                            <div class="text-xs text-gray-600">Recepción proveedor Electrotel</div>
+                                        </div>
+                                        <div class="text-xs text-gray-500">Ayer 09:15</div>
+                                    </div>
+
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                        <div>
+                                            <span class="font-medium text-gray-700">Ajuste:</span> +5 unidades
+                                            <div class="text-xs text-gray-600">Conteo físico mensual</div>
+                                        </div>
+                                        <div class="text-xs text-gray-500">Hace 3 días</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Summary -->
+        <div class="bg-blue-50 rounded-xl p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-4">✅ Resumen de Decisiones de Diseño</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-blue-800 mb-2">Estructura de Navegación</h4>
+                    <ul class="space-y-1 text-sm text-blue-700">
+                        <li>• Híbrido Profesional + Navegación por Ubicaciones</li>
+                        <li>• Top navigation con acciones rápidas</li>
+                        <li>• Búsqueda dual con pestañas (Repuestos/Componentes)</li>
+                        <li>• Navegación geográfica intuitiva del almacén</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-blue-800 mb-2">Características Clave</h4>
+                    <ul class="space-y-1 text-sm text-blue-700">
+                        <li>• Filtros específicos por tipo de item</li>
+                        <li>• Búsqueda avanzada para componentes (R > 30Ω, etc.)</li>
+                        <li>• Vista de distribucón por ubicaciones</li>
+                        <li>• Actualización de stock contextual</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Update tab styles
+            const repuestosTab = document.getElementById('repuestosTab');
+            const componentesTab = document.getElementById('componentesTab');
+            const repuestosContent = document.getElementById('repuestosContent');
+            const componentesContent = document.getElementById('componentesContent');
+
+            if (tab === 'repuestos') {
+                repuestosTab.className = 'px-6 py-3 font-medium rounded-t-lg tab-active';
+                componentesTab.className = 'px-6 py-3 font-medium rounded-t-lg tab-inactive';
+                repuestosContent.classList.remove('hidden');
+                componentesContent.classList.add('hidden');
+            } else {
+                componentesTab.className = 'px-6 py-3 font-medium rounded-t-lg tab-active';
+                repuestosTab.className = 'px-6 py-3 font-medium rounded-t-lg tab-inactive';
+                componentesContent.classList.remove('hidden');
+                repuestosContent.classList.add('hidden');
+            }
+        }
+
+        // Filter chips interaction
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        // Location cards interaction
+        document.querySelectorAll('.location-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.closest('button')) {
+                    // Simulate navigation to location details
+                    alert('Navegando a detalles de ubicación...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

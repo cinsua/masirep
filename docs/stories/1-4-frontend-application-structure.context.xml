@@ -1,0 +1,108 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Frontend Application Structure</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-4-frontend-application-structure.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>create the basic frontend application structure with routing and authentication UI</iWant>
+    <soThat>users can navigate the application and authenticate locally</soThat>
+    <tasks>
+- [ ] **1. Crear estructura de layout principal** (AC: 1, 2)
+  - [ ] 1.1 Extender layout principal con header y navegación
+  - [ ] 1.2 Implementar componente de navegación responsive
+  - [ ] 1.3 Crear estructura de contenido protegido
+  - [ ] 1.4 Configurar tema Ternium Classic con shadcn/ui
+
+- [ ] **2. Mejorar componentes de autenticación existentes** (AC: 1, 3)
+  - [ ] 2.1 Optimizar login form con mejor UX
+  - [ ] 2.2 Implementar loading states y error handling
+  - [ ] 2.3 Agregar logout button en header
+  - [ ] 2.4 Crear protected route wrapper mejorado
+
+- [ ] **3. Configurar routing y navegación** (AC: 2, 4)
+  - [ ] 3.1 Implementar sistema de routing principal
+  - [ ] 3.2 Crear breadcrumb navigation
+  - [ ] 3.3 Configurar redirecciones inteligentes
+  - [ ] 3.4 Agregar navigation guards
+
+- [ ] **4. Optimizar para desktop y conexión API** (AC: 3, 4)
+  - [ ] 4.1 Implementar layout responsive para desktop
+  - [ ] 4.2 Configurar API client para backend communication
+  - [ ] 4.3 Agregar error boundaries y handling
+  - [ ] 4.4 Optimizar performance de rendering
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** the API structure created, **when** I build the frontend application foundation, **then** I have a working web application with login interface and main navigation [Fuente: epics.md#Story-1.4]
+
+2. **Given** the authentication system working, **when** users log in, **then** they see a professional interface with header, main navigation, and protected content accessible only to authenticated users [Fuente: epics.md#Story-1.4]
+
+3. **Given** the application structure, **when** users access protected routes, **then** they see responsive layout optimized for desktop use with connection to backend API [Fuente: epics.md#Story-1.4]
+
+4. **Given** the frontend foundation, **when** running npm run dev, **then** the application loads correctly with routing and authentication UI functional [Fuente: tech-spec-epic-1.md#AC-4]
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <item path="epics.md" title="Epic Breakdown" section="Story 1.4: Frontend Application Structure" snippet="As a developer, I want to create the basic frontend application structure with routing and authentication UI, so that users can navigate the application and authenticate locally." />
+      <item path="architecture.md" title="Architecture Decision Document" section="Complete Project Structure" snippet="Next.js 14 App Router con Server/Client Components, Prisma ORM, y shadcn/ui con tema Ternium Classic para una experiencia de usuario optimizada para técnicos de mantenimiento." />
+      <item path="tech-spec-epic-1.md" title="Epic Technical Specification" section="Acceptance Criteria" snippet="Given the authentication system working, when users log in, then they see a professional interface with header, main navigation, and protected content accessible only to authenticated users" />
+      <item path="1-3-basic-api-structure-authentication.md" title="Previous Story Implementation" section="Dev Agent Record - Completion Notes" snippet="NextAuth.js 4.24.13 con Credentials Provider configurado, 7 usuarios técnicos pre-configurados, session management con HTTP-only cookies, middleware de protección de rutas" />
+    </docs>
+    <code>
+      <item path="src/lib/auth.ts" kind="authentication" symbol="NextAuthConfig" lines="10-84" reason="Configuración completa de NextAuth.js para reutilizar en nueva UI" />
+      <item path="src/app/api/auth/[...nextauth]/route.ts" kind="api-route" symbol="authHandler" lines="1-6" reason="API handler de autenticación existente que la UI necesita consumir" />
+      <item path="middleware.ts" kind="middleware" symbol="authMiddleware" lines="5-91" reason="Protección de rutas que debe extenderse para nuevas rutas protegidas" />
+      <item path="src/components/providers/session-provider.tsx" kind="provider" symbol="SessionProvider" lines="1-25" reason="Provider necesario para componentes UI que acceden a sesión" />
+      <item path="src/components/layout/header.tsx" kind="component" symbol="Header" lines="1-50" reason="Header existente con logout button para extender con navegación" />
+      <item path="src/components/layout/protected-route.tsx" kind="component" symbol="ProtectedRoute" lines="1-40" reason="Wrapper existente para proteger rutas, necesario para nuevas rutas" />
+      <item path="src/app/layout.tsx" kind="layout" symbol="RootLayout" lines="1-80" reason="Layout principal donde se integrará nueva navegación" />
+    </code>
+    <dependencies>
+      <framework name="next" version="16.1.6" />
+      <framework name="next-auth" version="4.24.13" />
+      <framework name="@prisma/client" version="5.22.0" />
+      <framework name="tailwindcss" version="3.4.15" />
+      <framework name="react-hook-form" version="7.53.2" />
+      <framework name="zod" version="3.23.8" />
+      <framework name="@radix-ui/react-dialog" version="1.1.2" />
+      <framework name="lucide-react" version="0.468.0" />
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+  <rule name="Next.js 16 App Router Pattern" requirement="Must use Server Components for data fetching, Client Components for interactivity" enforcement="TypeScript compiler errors if incorrect usage" />
+  <rule name="shadcn/ui Components" requirement="Must use existing shadcn/ui components with Ternium Classic theme consistency" enforcement="Visual consistency checks during development" />
+  <rule name="Authentication Integration" requirement="Must reuse existing NextAuth.js session management, no custom auth logic" enforcement="middleware.ts will block unauthorized access" />
+  <rule name="Route Protection" requirement="All new protected routes must be added to middleware.ts public paths array" enforcement="Automatic redirect to login for unauthorized access" />
+  <rule name="Type Safety" requirement="Strict TypeScript mode enabled, no 'any' types allowed" enforcement="TypeScript compilation will fail" />
+  <rule name="Mobile First Design" requirement="Layout must be responsive, optimized for desktop primary use" enforcement="Tailwind responsive breakpoints validation" />
+  <rule name="Performance" requirement="Page load times <2 seconds for navigation between routes" enforcement="Next.js built-in performance metrics" />
+</constraints>
+  <interfaces>
+  <item name="NextAuth Session Interface" kind="authentication" signature="session: { user: { id: string, email: string, role: string }, expires: string }" path="src/lib/auth.ts" />
+  <item name="API Response Format" kind="api" signature="ApiResponse&lt;T&gt; = { data?: T, error?: { message: string, code: string }, success: boolean }" path="Architecture documentation" />
+  <item name="Prisma User Model" kind="database" signature="User { id: string, email: string, passwordHash: string, role: 'admin'|'tecnico', isActive: boolean }" path="prisma/schema.prisma" />
+  <item name="Session Provider Props" kind="component" signature="SessionProviderProps&lt;Session&gt; with children and session options" path="src/components/providers/session-provider.tsx" />
+  <item name="Middleware Config" kind="configuration" signature="withAuth config: { pages: { signIn: string }, callbacks: { authorized: Function } }" path="middleware.ts" />
+</interfaces>
+  <tests>
+    <standards>
+Unit Tests: Component rendering, navigation logic, route protection with Jest + React Testing Library. Integration Tests: Complete login flow, navigation between protected routes, logout functionality. Performance Tests: Page load times &lt;2 seconds, navigation transitions &lt;500ms. Accessibility Tests: WCAG 2.1 AA compliance for navigation components, keyboard navigation support. Security Tests: Route protection verification, session management validation, input sanitization.
+    </standards>
+    <locations>
+Component Tests: src/components/__tests__/ layout/ - Header, Navigation, ProtectedRoute components. Integration Tests: src/__tests__/ integration/ - Complete user flows and route protection. E2E Tests: tests/e2e/ - Critical user journeys (login → navigate → logout). API Tests: src/app/api/__tests__/ - Any new API routes for navigation state.
+    </locations>
+    <ideas>
+Test AC1: Verify main navigation renders correctly after login with all menu items visible. Test AC2: Validate professional interface with header, navigation, and protected content sections. Test AC3: Test responsive layout on desktop viewport (1920x1080) and tablet (768x1024). Test AC4: Performance test - measure npm run dev startup time &lt;10 seconds and navigation transitions &lt;2 seconds. Security Test: Attempt to access protected routes without authentication - should redirect to login. Accessibility Test: Keyboard navigation through all menu items, screen reader compatibility for navigation labels.
+    </ideas>
+  </tests>
+</story-context>

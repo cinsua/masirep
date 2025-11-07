@@ -1,0 +1,126 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>1</storyId>
+    <title>Locations and Storage Units Management</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-1-locations-storage-units-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>técnico de mantenimiento</asA>
+    <iWant>crear y gestionar la estructura jerárquica completa de almacenamiento con ubicaciones, estanterías y armarios</iWant>
+    <soThat>puedo organizar el inventario de forma jerárquica que coincide con el layout físico del taller</soThat>
+    <tasks>- [ ] Task 1: Database Models Implementation (AC: 1, 2, 3)
+  - [ ] Subtask 1.1: Create Ubicacion model with unique name constraint
+  - [ ] Subtask 1.2: Create Estanteria model with parent relationship to Ubicacion
+  - [ ] Subtask 1.3: Create Armario model with parent relationship to Ubicacion
+  - [ ] Subtask 1.4: Create Prisma migration for storage hierarchy models
+  - [ ] Subtask 1.5: Add database indexes for performance optimization
+
+- [ ] Task 2: Backend API Development (AC: 1, 2, 3)
+  - [ ] Subtask 2.1: Implement /api/ubicaciones CRUD endpoints with validation
+  - [ ] Subtask 2.2: Implement /api/ubicaciones/[id]/estanterias endpoints
+  - [ ] Subtask 2.3: Implement /api/ubicaciones/[id]/armarios endpoints
+  - [ ] Subtask 2.4: Add input validation using Zod schemas
+  - [ ] Subtask 2.5: Implement error handling and consistent response format
+
+- [ ] Task 3: Frontend Components Development (AC: 4, 5, 6, 7)
+  - [ ] Subtask 3.1: Create LocationCard component with hover states and content indicators
+  - [ ] Subtask 3.2: Create StorageTree component for hierarchical navigation
+  - [ ] Subtask 3.3: Create BreadcrumbNavigation component for path tracking
+  - [ ] Subtask 3.4: Implement expand/collapse functionality for tree visualization
+  - [ ] Subtask 3.5: Add visual indicators for storage types (estantería vs armario)
+
+- [ ] Task 4: Location Management Interface (AC: 1, 2, 3)
+  - [ ] Subtask 4.1: Create main locations page with cards view
+  - [ ] Subtask 4.2: Create forms for adding/editing ubicaciones, estanterías, armarios
+  - [ ] Subtask 4.3: Implement unique name validation by hierarchy level
+  - [ ] Subtask 4.4: Add confirmation dialogs for destructive operations
+  - [ ] Subtask 4.5: Create responsive layout for desktop/tablet use
+
+- [ ] Task 5: Navigation and Visual Features (AC: 4, 5, 6, 7)
+  - [ ] Subtask 5.1: Implement click navigation between hierarchy levels
+  - [ ] Subtask 5.2: Add content count indicators (repuestos/components per location)
+  - [ ] Subtask 5.3: Create breadcrumb path generation and display
+  - [ ] Subtask 5.4: Implement smooth expand/collapse animations
+  - [ ] Subtask 5.5: Add search functionality within locations
+
+- [ ] Task 6: Testing and Validation (AC: 1, 2, 3, 4, 5, 6, 7)
+  - [ ] Subtask 6.1: Write unit tests for API endpoints
+  - [ ] Subtask 6.2: Write integration tests for CRUD operations
+  - [ ] Subtask 6.3: Test frontend component rendering and interactions
+  - [ ] Subtask 6.4: Validate navigation flow and breadcrumb accuracy
+  - [ ] Subtask 6.5: Performance testing for hierarchy loading (&lt; 1 second)</tasks>
+  </story>
+
+  <acceptanceCriteria>1. Crear ubicaciones principales (Aceria, Masi, Reducción, etc.) con nombres únicos
+2. Crear estanterías dentro de ubicaciones con nombres alfanuméricos
+3. Crear armarios dentro de ubicaciones con nombres alfanuméricos
+4. Implementar navegación visual con cards clickeables para cada nivel jerárquico
+5. Mostrar indicadores visuales de contenido en cada unidad de almacenamiento
+6. Proporcionar breadcrumb navigation para navegación jerárquica
+7. Soportar funcionalidad expand/collapse para visualización de estructura</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/tech-spec-epic-3.md" title="Epic 3 Technical Specification" section="Detailed Design" snippet="Implementar jerarquía completa de almacenamiento: Ubicación → Estantería/Armario → Cajón → División → Organizador → Cajoncito con relaciones polimórficas para asociación de inventario" />
+      <doc path="docs/architecture.md" title="Architecture Decision Document" section="Data Architecture" snippet="Core Entity Models con relaciones jerárquicas y muchos-a-muchos para inventory-storage associations" />
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 3: Hierarchical Storage System" snippet="Build the complete physical storage hierarchy that allows technicians to navigate and organize inventory exactly as it exists in the real world" />
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Sistema de Almacenamiento Jerárquico" snippet="FR-4: Gestión de Ubicaciones, FR-5: Gestión de Estanterías, FR-6: Gestión de Armarios con nombres únicos y relaciones jerárquicas" />
+    </docs>
+    <code>
+      <artifact path="prisma/schema.prisma" kind="database-schema" symbol="Ubicacion, Estanteria, Armario" lines="65-110" reason="Core hierarchical storage models with parent-child relationships and unique constraints" />
+      <artifact path="src/app/api/ubicaciones/route.ts" kind="api-route" symbol="GET /api/ubicaciones" lines="1-111" reason="Existing API endpoint for location search and filtering with type-based queries" />
+      <artifact path="src/components/forms/location-selector.tsx" kind="component" symbol="LocationSelector" lines="1-245" reason="Reusable component for location selection with search, type filtering, and quantity management" />
+      <artifact path="src/lib/validations/repuesto.ts" kind="validation" symbol="LocationAssignmentSchema" lines="35-39" reason="Existing Zod validation patterns for location assignments with tipo enum and quantity constraints" />
+    </code>
+    <dependencies>
+      <framework name="Next.js" version="16.0.1" purpose="Fullstack framework with App Router" />
+      <framework name="Prisma" version="6.19.0" purpose="Type-safe ORM with SQLite database" />
+      <framework name="NextAuth.js" version="4.24.13" purpose="Authentication with credentials provider" />
+      <framework name="React Hook Form" version="7.66.0" purpose="Form handling with validation" />
+      <framework name="Zod" version="4.1.12" purpose="Schema validation and TypeScript inference" />
+      <framework name="shadcn/ui" version="latest" purpose="Component library with Radix UI primitives" />
+      <framework name="Tailwind CSS" version="4.0" purpose="Utility-first CSS framework" />
+      <framework name="Lucide React" version="0.552.0" purpose="Icon library for UI components" />
+      <database name="SQLite" version="3.45+" purpose="Local file-based database for autonomous operation" />
+      <testing name="Jest" version="30.2.0" purpose="Unit and integration testing framework" />
+      <testing name="React Testing Library" version="16.3.0" purpose="Component testing utilities" />
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">Next.js 14 App Router with Server/Client Components separation - use Server Components for data fetching, Client Components for interactivity</constraint>
+    <constraint type="database">Prisma ORM with SQLite - all database operations must use Prisma client, no raw SQL queries</constraint>
+    <constraint type="validation">Zod schemas required for all API inputs and form validations - follow existing patterns in src/lib/validations/</constraint>
+    <constraint type="naming">Spanish naming convention for database models (Ubicacion, Estanteria, Armario) and API routes</constraint>
+    <constraint type="authentication">All API routes must require authentication via NextAuth.js session validation</constraint>
+    <constraint type="error-handling">Consistent API response format using ApiResponse interface with success/error structure</constraint>
+    <constraint type="ui">shadcn/ui components with Tailwind CSS - follow existing component patterns and Ternium Classic theme</constraint>
+    <constraint type="testing">Jest + React Testing Library for unit tests, minimum 90% coverage requirement</constraint>
+    <constraint type="performance">Hierarchy loading must be under 1 second, navigation under 500ms</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="API Response Format" kind="REST" signature="ApiResponse&lt;T&gt; = { success: boolean; data?: T; error?: { message: string; code: string; } }" path="src/types/api.ts" />
+    <interface name="Location Assignment" kind="TypeScript" signature="{ tipo: 'armario' | 'estanteria' | 'estante' | 'cajon' | 'division' | 'cajoncito'; id: string; cantidad: number; }" path="src/lib/validations/repuesto.ts" />
+    <interface name="Ubicaciones API" kind="REST" signature="GET /api/ubicaciones?search={query}&type={locationType}" path="src/app/api/ubicaciones/route.ts" />
+    <interface name="Prisma Models" kind="Database" signature="Ubicacion { id, codigo, nombre, descripcion, isActive, armarios[], estanterias[] }" path="prisma/schema.prisma" />
+    <interface name="Component Props" kind="React" signature="LocationSelectorProps { selected: LocationAssignment[]; onChange: (selected: LocationAssignment[]) => void }" path="src/components/forms/location-selector.tsx" />
+  </interfaces>
+
+  <tests>
+    <standards>Unit Testing con Jest + React Testing Library para componentes y lógica de negocio. Integration Testing para API endpoints con base de datos de prueba. Testing de validaciones Zod con casos límite y edge cases. Performance testing para carga de jerarquía (&lt;1 segundo) y navegación (&lt;500ms). Cobertura mínima del 90% requerida.</standards>
+    <locations>src/components/__tests__/ para pruebas de componentes. src/app/api/**/__tests__/ para pruebas de endpoints. src/lib/validations/__tests__/ para pruebas de schemas de validación. Tests de integración en la raíz del proyecto para flujos completos.</locations>
+    <ideas>
+      <test idea="CRUD API Tests" acceptanceCriteria="1,2,3">Test POST/PUT/DELETE operations for ubicaciones, estanterías, and armarios with validation errors and success cases</test>
+      <test idea="LocationCard Component Tests" acceptanceCriteria="4">Test LocationCard rendering, hover states, click interactions, and content indicators display</test>
+      <test idea="StorageTree Navigation Tests" acceptanceCriteria="6,7">Test hierarchical navigation, breadcrumb generation, and expand/collapse functionality</test>
+      <test idea="Validation Schema Tests" acceptanceCriteria="1,2,3">Test Zod validation schemas for unique names, required fields, and hierarchical constraints</test>
+      <test idea="Performance Tests" acceptanceCriteria="4,5,6,7">Test hierarchy loading performance with 100+ locations and navigation timing benchmarks</test>
+    </ideas>
+  </tests>
+</story-context>

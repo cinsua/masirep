@@ -1,0 +1,170 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2</storyId>
+    <title>Componentes Management Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-2-componentes-management-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>maintenance technician</asA>
+    <iWant>manage componentes with their categories and technical specifications</iWant>
+    <soThat>I can organize general electronic components with their specific values and measurements</soThat>
+    <tasks>
+### Task 1: Componente Data Model and API (AC: 1, 3)
+- [ ] Implement Componente model in Prisma schema (extend existing schema)
+- [ ] Create API endpoints: GET, POST, PUT, DELETE /api/componentes
+- [ ] Add value/unit pair handling in API with proper serialization
+- [ ] Implement location association endpoints for components
+- [ ] Add stock calculation logic from ComponenteUbicacion relationships
+
+### Task 2: Componente Management Interface (AC: 1, 2, 4)
+- [ ] Create ComponenteList component with search, filtering, and category filtering
+- [ ] Create ComponenteForm component for create/edit operations
+- [ ] Create ComponenteCategorySelector with predefined categories
+- [ ] Create ValueUnitPairManager for dynamic value/unit pair management
+- [ ] Create ComponenteDetail component with technical specifications display
+- [ ] Implement category-based validation for value/unit pairs
+
+### Task 3: Storage Location Integration (AC: 3, 5)
+- [ ] Integrate LocationSelector component for component location assignment
+- [ ] Implement stock calculation across multiple locations
+- [ ] Add location quantity tracking for components
+- [ ] Create TechnicalSpecsDisplay component for value/unit visualization
+
+### Task 4: Validation and Error Handling (AC: 2, 5)
+- [ ] Implement form validation with Zod schemas for componentes
+- [ ] Add category-specific validation for value/unit pairs
+- [ ] Create error handling for API failures (reuse patterns)
+- [ ] Add loading states and optimistic updates
+- [ ] Integrate existing notification system
+
+### Task 5: System Integration and Testing (AC: 5)
+- [ ] Integrate with authentication system (reuse from Story 2.1)
+- [ ] Apply Ternium Classic theme and shadcn/ui components
+- [ ] Ensure responsive design for desktop/tablet use
+- [ ] Add navigation integration with existing sidebar
+- [ ] Test search functionality by technical specifications
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+### AC1: Componente Data Model and Categories
+**Given** I am in the componentes management section
+**When** I create or edit componentes
+**Then** I can specify all required attributes for electronic components
+
+**And** each componente includes:
+- Categoría (resistencia, capacitor, integrado, ventilador, otros)
+- Descripción (required)
+- Pares valor/unidad (e.g., 22 ohms, 2w - multiple measurement pairs)
+- Ubicaciones de almacenamiento (multiple locations)
+
+### AC2: Multiple Value/Unit Pairs Management
+**And** I can add multiple value/unit pairs for components with different measurements
+**And** the interface provides category selection and value specification
+**And** the system validates units based on component type
+
+### AC3: Storage Location Association
+**And** components can be associated with multiple storage locations
+**And** the system calculates total stock across all locations
+**And** I can add/remove location associations with quantity tracking
+
+### AC4: Category-Based Interface
+**And** the interface provides category selection with predefined options
+**And** value/unit validation adapts based on selected category
+**And** search functionality works by technical specifications
+
+### AC5: Integration with Existing System
+**And** the interface follows the same patterns as repuestos management
+**And** components integrate with existing storage hierarchy
+**And** the system maintains consistent authentication and theming
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact path="docs/epics.md" title="Masirep - Epic Breakdown" section="Epic 2: Core Inventory Management" snippet="Epic 2 Goal: Implement the heart of Masirep - the dual inventory system for repuestos (equipment-specific) and componentes (general components). Story 2.2 provides componentes management with categories and technical specifications." />
+      <artifact path="docs/architecture.md" title="Masirep - Architecture Decision Document" section="Technology Stack and Project Structure" snippet="Next.js 14 App Router + TypeScript + Prisma + SQLite architecture designed for local autonomous operation. Componentes CRUD follows same patterns as repuestos." />
+      <artifact path="docs/stories/2-1-repuestos-management-interface.md" title="Story 2.1: Repuestos Management Interface" section="Previous Story Patterns" snippet="Complete CRUD patterns, authentication integration, shadcn/ui components, Ternium Classic theme, validation system with Zod schemas - all reusable for componentes management." />
+    </docs>
+    <code>
+      <artifact path="prisma/schema.prisma" kind="schema" symbol="Componente" lines="223-240" reason="Existing Componente model needs extension for value/unit pairs and proper category enum">
+      <artifact path="prisma/schema.prisma" kind="schema" symbol="ComponenteUbicacion" lines="277-289" reason="Existing relationship for component storage locations, uses Cajoncito for small components">
+      <artifact path="prisma/schema.prisma" kind="schema" symbol="RepuestoForm" lines="15-50" reason="Form pattern to adapt for componentes with value/unit pair management">
+      <artifact path="src/lib/validations/repuesto.ts" kind="validation" symbol="RepuestoSchema" lines="3-18" reason="Zod validation pattern to extend for component-specific fields and value/unit pairs">
+      <artifact path="src/app/api/repuestos/route.ts" kind="api" symbol="GET/POST/PUT/DELETE" lines="1-50" reason="CRUD API pattern to follow for componentes endpoints with authentication and error handling">
+      <artifact path="src/components/repuestos/repuesto-form.tsx" kind="component" symbol="RepuestoForm" lines="1-50" reason="Form component pattern to adapt for component category selection and value/unit pair management">
+      <artifact path="src/components/repuestos/repuesto-list.tsx" kind="component" symbol="RepuestoList" reason="Table component pattern to adapt for component listing with category filtering">
+      <artifact path="src/components/forms/location-selector.tsx" kind="component" symbol="LocationSelector" reason="Reusable component for component location assignment (only Cajoncito for components)">
+    </code>
+    <dependencies>
+      <dependency ecosystem="nextjs" package="next" version="16.0.1" />
+      <dependency ecosystem="nextjs" package="react" version="19.2.0" />
+      <dependency ecosystem="database" package="@prisma/client" version="6.19.0" />
+      <dependency ecosystem="database" package="prisma" version="6.19.0" />
+      <dependency ecosystem="auth" package="next-auth" version="4.24.13" />
+      <dependency ecosystem="validation" package="zod" version="4.1.12" />
+      <dependency ecosystem="validation" package="react-hook-form" version="7.66.0" />
+      <dependency ecosystem="validation" package="@hookform/resolvers" version="5.2.2" />
+      <dependency ecosystem="ui" package="@radix-ui/react-dialog" version="1.1.15" />
+      <dependency ecosystem="ui" package="@radix-ui/react-slot" version="1.2.4" />
+      <dependency ecosystem="ui" package="@radix-ui/react-tabs" version="1.1.13" />
+      <dependency ecosystem="ui" package="tailwindcss" version="4" />
+      <dependency ecosystem="ui" package="class-variance-authority" version="0.7.1" />
+      <dependency ecosystem="ui" package="lucide-react" version="0.552.0" />
+      <dependency ecosystem="testing" package="jest" version="30.2.0" />
+      <dependency ecosystem="testing" package="@testing-library/react" version="16.3.0" />
+      <dependency ecosystem="testing" package="@testing-library/jest-dom" version="6.9.1" />
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Follow Next.js 16 App Router patterns with Server/Client Components separation
+    - Use Prisma ORM for all database operations with proper error handling
+    - Implement authentication using NextAuth.js credentials provider (reuse existing)
+    - Apply Ternium Classic theme (#FF6B00) consistently across all components
+    - Use shadcn/ui components for UI consistency and accessibility
+    - Implement form validation with Zod schemas and React Hook Form
+    - Follow REST API patterns consistent with existing repuestos endpoints
+    - Store components only in Cajoncito locations (small component organization)
+    - Component categories must use predefined enum: RESISTENCIA, CAPACITOR, INTEGRADO, VENTILADOR, OTROS
+    - Value/unit pairs stored as flexible JSON with validation based on component type
+    - Maintain Spanish language throughout application for Mexican technicians
+    - Use TypeScript strict mode with proper type definitions
+    - Implement real-time stock calculation from ComponenteUbicacion relationships
+  </constraints>
+  <interfaces>
+    <interface name="Componente CRUD API" kind="REST endpoints" signature="GET/POST/PUT/DELETE /api/componentes" path="src/app/api/componentes/route.ts" />
+    <interface name="Componente Individual Operations" kind="REST endpoints" signature="GET/PUT/DELETE /api/componentes/[id]" path="src/app/api/componentes/[id]/route.ts" />
+    <interface name="Componente Storage Associations" kind="REST endpoints" signature="POST/DELETE /api/componentes/[id]/ubicaciones" path="src/app/api/componentes/[id]/ubicaciones/route.ts" />
+    <interface name="Componente Validation" kind="validation schema" signature="ComponenteSchema extends ZodSchema" path="src/lib/validations/componente.ts" />
+    <interface name="Componente-Category Selector" kind="React component" signature="ComponenteCategorySelector(props: {value: string, onChange: (value: string) => void})" path="src/components/forms/componente-category-selector.tsx" />
+    <interface name="Value/Unit Pair Manager" kind="React component" signature="ValueUnitPairManager(props: {values: Array&lt;{valor: string, unidad: string}&gt;, onChange: (values) => void})" path="src/components/forms/value-unit-pair-manager.tsx" />
+  </interfaces>
+  <tests>
+    <standards>
+      Use Jest with React Testing Library for component testing. Test CRUD operations through API endpoints. Validate form submission with Zod schemas. Test value/unit pair management and category-based validation. Verify stock calculation across multiple Cajoncito locations. Test search functionality by technical specifications. Validate authentication protection on all endpoints.
+    </standards>
+    <locations>
+      - src/components/componentes/__tests__/componente-list.test.tsx
+      - src/components/componentes/__tests__/componente-form.test.tsx
+      - src/components/componentes/__tests__/componente-detail.test.tsx
+      - src/components/forms/__tests__/componente-category-selector.test.tsx
+      - src/components/forms/__tests__/value-unit-pair-manager.test.tsx
+      - src/lib/validations/__tests__/componente.test.ts
+      - src/app/api/componentes/__tests__/route.test.ts
+    </locations>
+    <ideas>
+      - Test AC1: Create component with category RESISTENCIA and multiple value/unit pairs (22 ohms, 2w; 100 ohms, 0.5w)
+      - Test AC2: Validate category-specific unit restrictions (resistencia accepts ohms/w, capacitor accepts uF/F/V)
+      - Test AC3: Associate component with multiple Cajoncito locations, verify stock calculation
+      - Test AC4: Search components by technical specifications, filter by category
+      - Test AC5: Verify integration with existing authentication and theme system
+      - Test error handling: Duplicate component codes, invalid value/unit pairs, invalid locations
+      - Test form validation: Required fields, category validation, value/unit format
+    </ideas>
+  </tests>
+</story-context>

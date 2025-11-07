@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temas de Color - Masirep</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .themes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .theme-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .theme-personality {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .color-swatch {
+            height: 80px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            padding: 8px;
+            font-size: 12px;
+            color: white;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-swatch.light {
+            color: #1e293b;
+            text-shadow: none;
+        }
+
+        .color-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .components-preview {
+            margin-top: 24px;
+        }
+
+        .components-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #374151;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Theme 1: Ternium Classic */
+        .theme-ternium {
+            --primary: #FF6B00;
+            --primary-dark: #E55A00;
+            --secondary: #6B7280;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --info: #3B82F6;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+
+        /* Theme 2: Modern Orange */
+        .theme-modern {
+            --primary: #FF7A3D;
+            --primary-dark: #E56A2D;
+            --secondary: #64748B;
+            --success: #22C55E;
+            --warning: #FBBF24;
+            --error: #F87171;
+            --info: #60A5FA;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-400: #94A3B8;
+            --gray-500: #64748B;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --gray-900: #0F172A;
+        }
+
+        /* Theme 3: Industrial Light */
+        .theme-industrial {
+            --primary: #FF8C42;
+            --primary-dark: #E67A36;
+            --secondary: #718096;
+            --success: #38A169;
+            --warning: #D69E2E;
+            --error: #E53E3E;
+            --info: #4299E1;
+            --gray-50: #FAFAFA;
+            --gray-100: #F7FAFC;
+            --gray-200: #EDF2F7;
+            --gray-300: #E2E8F0;
+            --gray-400: #A0AEC0;
+            --gray-500: #718096;
+            --gray-600: #4A5568;
+            --gray-700: #2D3748;
+            --gray-800: #1A202C;
+            --gray-900: #171923;
+        }
+
+        /* Theme 4: Professional Energy */
+        .theme-professional {
+            --primary: #FF5722;
+            --primary-dark: #E64A19;
+            --secondary: #607D8B;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #F44336;
+            --info: #2196F3;
+            --gray-50: #FAFAFA;
+            --gray-100: #F5F5F5;
+            --gray-200: #EEEEEE;
+            --gray-300: #E0E0E0;
+            --gray-400: #BDBDBD;
+            --gray-500: #9E9E9E;
+            --gray-600: #757575;
+            --gray-700: #616161;
+            --gray-800: #424242;
+            --gray-900: #212121;
+        }
+
+        /* Apply theme colors */
+        .theme-ternium .btn-primary { background: var(--primary); color: white; }
+        .theme-ternium .btn-primary:hover { background: var(--primary-dark); }
+        .theme-ternium .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+        .theme-ternium .form-input:focus { border-color: var(--primary); outline: none; }
+        .theme-ternium .card { border-color: var(--gray-200); }
+
+        .theme-modern .btn-primary { background: var(--primary); color: white; }
+        .theme-modern .btn-primary:hover { background: var(--primary-dark); }
+        .theme-modern .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+        .theme-modern .form-input:focus { border-color: var(--primary); outline: none; }
+        .theme-modern .card { border-color: var(--gray-200); }
+
+        .theme-industrial .btn-primary { background: var(--primary); color: white; }
+        .theme-industrial .btn-primary:hover { background: var(--primary-dark); }
+        .theme-industrial .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+        .theme-industrial .form-input:focus { border-color: var(--primary); outline: none; }
+        .theme-industrial .card { border-color: var(--gray-200); }
+
+        .theme-professional .btn-primary { background: var(--primary); color: white; }
+        .theme-professional .btn-primary:hover { background: var(--primary-dark); }
+        .theme-professional .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+        .theme-professional .form-input:focus { border-color: var(--primary); outline: none; }
+        .theme-professional .card { border-color: var(--gray-200); }
+
+        .theme-ternium .theme-title { color: var(--gray-800); }
+        .theme-modern .theme-title { color: var(--gray-800); }
+        .theme-industrial .theme-title { color: var(--gray-800); }
+        .theme-professional .theme-title { color: var(--gray-800); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Temas de Color para Masirep</h1>
+        <p>Explora diferentes variaciones de temas light con acentos naranja y grises inspirados en Ternium</p>
+    </div>
+
+    <div class="themes-container">
+        <!-- Theme 1: Ternium Classic -->
+        <div class="theme-card theme-ternium">
+            <div class="theme-title">Ternium Classic</div>
+            <div class="theme-personality">Profesional y energético - Inspirado directamente en Ternium</div>
+
+            <div class="color-palette">
+                <div class="color-swatch" style="background: #FF6B00;">
+                    <span class="color-label">#FF6B00</span>
+                </div>
+                <div class="color-swatch" style="background: #6B7280;">
+                    <span class="color-label">#6B7280</span>
+                </div>
+                <div class="color-swatch" style="background: #10B981;">
+                    <span class="color-label">#10B981</span>
+                </div>
+                <div class="color-swatch" style="background: #F3F4F6;" class="light">
+                    <span class="color-label">#F3F4F6</span>
+                </div>
+                <div class="color-swatch" style="background: #E5E7EB;" class="light">
+                    <span class="color-label">#E5E7EB</span>
+                </div>
+                <div class="color-swatch" style="background: #D1D5DB;" class="light">
+                    <span class="color-label">#D1D5DB</span>
+                </div>
+                <div class="color-swatch" style="background: #374151;">
+                    <span class="color-label">#374151</span>
+                </div>
+                <div class="color-swatch" style="background: #111827;">
+                    <span class="color-label">#111827</span>
+                </div>
+            </div>
+
+            <div class="components-preview">
+                <div class="components-title">Componentes de Ejemplo</div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary">Buscar Repuesto</button>
+                    <button class="btn btn-secondary">Actualizar Stock</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Código de Repuesto</label>
+                    <input type="text" class="form-input" placeholder="Ej: RES-001">
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Resistencia 10K Ω</div>
+                    <div class="card-text">Stock: 25 unidades | Ubicación: Armario A - Cajón 3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 2: Modern Orange -->
+        <div class="theme-card theme-modern">
+            <div class="theme-title">Modern Orange</div>
+            <div class="theme-personality">Moderno y accesible - Colores suaves y amigables</div>
+
+            <div class="color-palette">
+                <div class="color-swatch" style="background: #FF7A3D;">
+                    <span class="color-label">#FF7A3D</span>
+                </div>
+                <div class="color-swatch" style="background: #64748B;">
+                    <span class="color-label">#64748B</span>
+                </div>
+                <div class="color-swatch" style="background: #22C55E;">
+                    <span class="color-label">#22C55E</span>
+                </div>
+                <div class="color-swatch" style="background: #F8FAFC;" class="light">
+                    <span class="color-label">#F8FAFC</span>
+                </div>
+                <div class="color-swatch" style="background: #E2E8F0;" class="light">
+                    <span class="color-label">#E2E8F0</span>
+                </div>
+                <div class="color-swatch" style="background: #CBD5E1;" class="light">
+                    <span class="color-label">#CBD5E1</span>
+                </div>
+                <div class="color-swatch" style="background: #334155;">
+                    <span class="color-label">#334155</span>
+                </div>
+                <div class="color-swatch" style="background: #0F172A;">
+                    <span class="color-label">#0F172A</span>
+                </div>
+            </div>
+
+            <div class="components-preview">
+                <div class="components-title">Componentes de Ejemplo</div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary">Buscar Repuesto</button>
+                    <button class="btn btn-secondary">Actualizar Stock</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Código de Repuesto</label>
+                    <input type="text" class="form-input" placeholder="Ej: RES-001">
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Resistencia 10K Ω</div>
+                    <div class="card-text">Stock: 25 unidades | Ubicación: Armario A - Cajón 3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 3: Industrial Light -->
+        <div class="theme-card theme-industrial">
+            <div class="theme-title">Industrial Light</div>
+            <div class="theme-personality">Industrial y funcional - Tonos que recuerdan al entorno técnico</div>
+
+            <div class="color-palette">
+                <div class="color-swatch" style="background: #FF8C42;">
+                    <span class="color-label">#FF8C42</span>
+                </div>
+                <div class="color-swatch" style="background: #718096;">
+                    <span class="color-label">#718096</span>
+                </div>
+                <div class="color-swatch" style="background: #38A169;">
+                    <span class="color-label">#38A169</span>
+                </div>
+                <div class="color-swatch" style="background: #FAFAFA;" class="light">
+                    <span class="color-label">#FAFAFA</span>
+                </div>
+                <div class="color-swatch" style="background: #EDF2F7;" class="light">
+                    <span class="color-label">#EDF2F7</span>
+                </div>
+                <div class="color-swatch" style="background: #E2E8F0;" class="light">
+                    <span class="color-label">#E2E8F0</span>
+                </div>
+                <div class="color-swatch" style="background: #2D3748;">
+                    <span class="color-label">#2D3748</span>
+                </div>
+                <div class="color-swatch" style="background: #171923;">
+                    <span class="color-label">#171923</span>
+                </div>
+            </div>
+
+            <div class="components-preview">
+                <div class="components-title">Componentes de Ejemplo</div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary">Buscar Repuesto</button>
+                    <button class="btn btn-secondary">Actualizar Stock</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Código de Repuesto</label>
+                    <input type="text" class="form-input" placeholder="Ej: RES-001">
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Resistencia 10K Ω</div>
+                    <div class="card-text">Stock: 25 unidades | Ubicación: Armario A - Cajón 3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 4: Professional Energy -->
+        <div class="theme-card theme-professional">
+            <div class="theme-title">Professional Energy</div>
+            <div class="theme-personality">Corporativo y vigoroso - Equilibrio profesional con energía</div>
+
+            <div class="color-palette">
+                <div class="color-swatch" style="background: #FF5722;">
+                    <span class="color-label">#FF5722</span>
+                </div>
+                <div class="color-swatch" style="background: #607D8B;">
+                    <span class="color-label">#607D8B</span>
+                </div>
+                <div class="color-swatch" style="background: #4CAF50;">
+                    <span class="color-label">#4CAF50</span>
+                </div>
+                <div class="color-swatch" style="background: #F5F5F5;" class="light">
+                    <span class="color-label">#F5F5F5</span>
+                </div>
+                <div class="color-swatch" style="background: #EEEEEE;" class="light">
+                    <span class="color-label">#EEEEEE</span>
+                </div>
+                <div class="color-swatch" style="background: #E0E0E0;" class="light">
+                    <span class="color-label">#E0E0E0</span>
+                </div>
+                <div class="color-swatch" style="background: #616161;">
+                    <span class="color-label">#616161</span>
+                </div>
+                <div class="color-swatch" style="background: #212121;">
+                    <span class="color-label">#212121</span>
+                </div>
+            </div>
+
+            <div class="components-preview">
+                <div class="components-title">Componentes de Ejemplo</div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary">Buscar Repuesto</button>
+                    <button class="btn btn-secondary">Actualizar Stock</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Código de Repuesto</label>
+                    <input type="text" class="form-input" placeholder="Ej: RES-001">
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Resistencia 10K Ω</div>
+                    <div class="card-text">Stock: 25 unidades | Ubicación: Armario A - Cajón 3</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

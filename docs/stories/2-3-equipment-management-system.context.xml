@@ -1,0 +1,166 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>equipment-management-system</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/home/analiticos/proyectos/masirep/docs/stories/2-3-equipment-management-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>maintenance technician</asA>
+    <iWant>manage the equipos (equipment) that require specific repuestos</iWant>
+    <soThat>I can associate spare parts with the specific equipment they service</soThat>
+    <tasks>Task 1: Equipment Data Model and API (AC: 1)
+- Extend Prisma schema with Equipo model and EquipoRepuesto relationship
+- Create API endpoints: GET, POST, PUT, DELETE /api/equipos
+- Add equipment validation with SAP uniqueness checking
+- Implement association endpoints for equipo-repuesto relationships
+- Add search and filtering logic for equipment endpoints
+
+Task 2: Equipment Management Interface (AC: 1, 3)
+- Create EquipoList component with search, filtering, and pagination
+- Create EquipoForm component for create/edit operations
+- Create EquipoDetail component with associated repuestos display
+- Implement search functionality by SAP, nombre, marca, modelo
+- Add bulk operations for equipment management
+
+Task 3: Equipment-Repuestos Association Management (AC: 2, 4)
+- Create EquipoRepuestoManager for association management
+- Integrate RepuestoSelector for equipment association
+- Implement bi-directional association display
+- Add association validation and error handling
+- Create association count indicators and statistics
+
+Task 4: Search and Discovery Features (AC: 3)
+- Implement advanced search with multiple field combinations
+- Add filtering by marca, modelo, and repuestos count
+- Create search result highlighting and ranking
+- Add export functionality for equipment lists
+- Implement equipment detail views with tabbed information
+
+Task 5: System Integration and Validation (AC: 4)
+- Integrate with authentication system (reuse from Stories 2.1, 2.2)
+- Apply Ternium Classic theme and shadcn/ui components
+- Ensure responsive design for desktop/tablet use
+- Add navigation integration with existing sidebar
+- Implement comprehensive form validation with Zod schemas
+- Add loading states, error handling, and optimistic updates
+- Create unit and integration tests for all components and endpoints</tasks>
+  </story>
+
+  <acceptanceCriteria>AC1: Equipment Data Model and Management
+Given I need to manage equipment information
+When I access the equipos management interface
+Then I can create and maintain equipment records with complete information
+
+And each equipo includes:
+- SAP (identificación interna alfanumérica)
+- Nombre interno (ESP20, PREPMASTER, etc.)
+- Marca
+- Modelo
+- Associated repuestos list
+
+AC2: Equipment-Repuestos Association Management
+And I can view which repuestos are associated with each equipo
+And I can add/remove repuestos associations
+And the interface shows count of associated repuestos
+And associations are bi-directional (equipos show repuestos, repuestos show equipos)
+
+AC3: Search and Discovery Interface
+And I can search equipos by SAP, nombre interno, marca, or modelo
+And the interface provides filtering capabilities
+And I can view equipment details with all associated repuestos
+And bulk operations are available for equipment management
+
+AC4: Integration with Existing System
+And the interface follows the same patterns as repuestos and componentes management
+And equipos integrate with existing authentication and theming
+And the system maintains consistent validation and error handling
+And equipment associations respect existing storage hierarchy constraints</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 2: Core Inventory Management - Story 2.3" snippet="Epic 2 implements the dual inventory system for repuestos and componentes. Story 2.3 focuses on equipment management system with equipos that require specific repuestos, including SAP identification, marca/modelo, and bi-directional associations." />
+      <doc path="docs/architecture.md" title="Architecture Decision Document" section="Technology Stack and Patterns" snippet="Next.js 14 App Router + TypeScript + Prisma + SQLite architecture with shadcn/ui components and Ternium Classic theme. Defines server/client component patterns, API structure, and UI component organization." />
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="FR-3: Gestión de Equipos" snippet="System must register equipment with SAP identification, internal name, brand, model. Must associate specific repuestos to equipment. Supports autonomous local operation for 7 maintenance technicians." />
+    </docs>
+    <code>
+      <artifact path="prisma/schema.prisma" kind="database" symbol="Equipo" lines="186-201" reason="Existing Equipment model with SAP, nombre, marca, modelo fields ready for equipment management implementation" />
+      <artifact path="prisma/schema.prisma" kind="database" symbol="RepuestoEquipo" lines="237-249" reason="Many-to-many relationship pattern for equipment-repuesto associations with quantity tracking" />
+      <artifact path="src/app/api/repuestos/route.ts" kind="api" symbol="GET/POST endpoints" lines="7-126" reason="CRUD endpoint pattern with authentication, pagination, search, and error handling to adapt for equipos" />
+      <artifact path="src/app/api/repuestos/[id]/route.ts" kind="api" symbol="Individual operations" lines="7-95" reason="Single item operations pattern to follow for equipo management endpoints" />
+      <artifact path="src/components/repuestos/repuesto-form.tsx" kind="component" symbol="ItemForm" lines="1-342" reason="Form component structure with validation, associations, and loading states to adapt for equipos" />
+      <artifact path="src/components/repuestos/repuesto-list.tsx" kind="component" symbol="ItemList" lines="1-211" reason="List component with search, pagination, filtering, and bulk operations pattern" />
+      <artifact path="src/lib/auth.ts" kind="auth" symbol="authOptions" lines="1-105" reason="Authentication system with NextAuth.js credentials provider and role-based access control" />
+      <artifact path="src/lib/validations/repuesto.ts" kind="validation" symbol="ItemSchema" lines="1-108" reason="Zod validation patterns to extend for equipo-specific fields including SAP uniqueness" />
+      <artifact path="src/types/api.ts" kind="types" symbol="ItemWithRelations" lines="28-111" reason="TypeScript interface patterns for API responses with associations to adapt for equipos" />
+      <artifact path="src/components/forms/location-selector.tsx" kind="component" symbol="LocationSelector" lines="1-245" reason="Hierarchical location selection system for equipment location associations" />
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js" packageManager="npm">
+        <framework name="Next.js" version="16.0.1" usage="Fullstack framework with App Router for server/client components and API routes" />
+        <framework name="React" version="19.2.0" usage="UI library for component-based interface development" />
+        <framework name="TypeScript" version="5.x" usage="Type safety and interface definitions for development consistency" />
+        <framework name="Tailwind CSS" version="4" usage="Styling framework with utility-first CSS approach" />
+        <package name="Prisma" version="6.19.0" usage="ORM for type-safe database operations and migrations" />
+        <package name="NextAuth.js" version="4.24.13" usage="Authentication system with credentials provider and session management" />
+        <package name="React Hook Form" version="7.66.0" usage="Form handling with validation and state management" />
+        <package name="Zod" version="4.1.12" usage="Schema validation for forms and API input validation" />
+        <package name="@radix-ui/react-dialog" version="1.1.15" usage="Accessible dialog components for modal interfaces" />
+        <package name="@radix-ui/react-slot" version="1.2.4" usage="Component composition for shadcn/ui components" />
+        <package name="@radix-ui/react-tabs" version="1.1.13" usage="Tab navigation for detail views and settings" />
+        <package name="Lucide React" version="0.552.0" usage="Icon library for consistent UI icons" />
+        <package name="class-variance-authority" version="0.7.1" usage="Component variant management for shadcn/ui" />
+        <package name="clsx" version="2.1.1" usage="Conditional CSS class utility" />
+        <package name="tailwind-merge" version="3.3.1" usage="CSS class merging for component overrides" />
+        <package name="date-fns" version="4.1.0" usage="Date formatting and manipulation utilities" />
+      </ecosystem>
+      <ecosystem name="Testing" framework="Jest">
+        <package name="Jest" version="30.2.0" usage="Unit and integration testing framework" />
+        <package name="@testing-library/react" version="16.3.0" usage="React component testing utilities" />
+        <package name="@testing-library/jest-dom" version="6.9.1" usage="DOM testing matchers and assertions" />
+        <package name="@testing-library/user-event" version="14.6.1" usage="User interaction simulation for component testing" />
+        <package name="jest-environment-jsdom" version="30.2.0" usage="DOM environment for browser simulation in tests" />
+      </ecosystem>
+      <ecosystem name="Database" engine="SQLite">
+        <package name="@prisma/client" version="6.19.0" usage="Type-safe database client for queries and transactions" />
+        <package name="Prisma" version="6.19.0" usage="Database toolkit for schema management and migrations" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint type="architecture">Follow Next.js 14 App Router patterns: Server components for data fetching, Client components for interactivity. Use established API route structure: /api/equipos/ and /api/equipos/[id]/ with consistent error handling and authentication.</constraint>
+      <constraint type="ui-consistency">Reuse shadcn/ui components and Ternium Classic theme (#FF6B00) from Stories 2.1 and 2.2. Maintain consistent responsive design patterns for desktop/tablet use by maintenance technicians.</constraint>
+      <constraint type="form-validation">Implement SAP uniqueness validation using Zod schemas with real-time validation feedback. Follow validation patterns from repuesto.ts with equipo-specific field requirements.</constraint>
+      <constraint type="data-model">Use existing Equipo model in Prisma schema with SAP (unique), nombre, marca, modelo fields. Implement bi-directional many-to-many relationships via RepuestoEquipo junction table.</constraint>
+      <constraint type="authentication">All equipo management endpoints must require authentication via getServerSession(authOptions). Apply role-based access control consistent with previous stories (tecnico, supervisor, admin roles).</constraint>
+      <constraint type="component-structure">Follow established component organization: src/components/equipos/ for main components, src/lib/validations/equipo.ts for validation, adapt existing Table, Form, Badge, Alert components from repuestos/componentes.</constraint>
+      <constraint type="search-functionality">Implement multi-field search by SAP, nombre, marca, modelo using Prisma query patterns from existing repuestos search. Add filtering capabilities and result pagination.</constraint>
+      <constraint type="association-management">Implement bi-directional equipment-repuesto associations using existing association patterns from componente-ubicacion relationships. Show association counts and provide bulk operations.</constraint>
+      <constraint type="testing">Create comprehensive unit tests for components and integration tests for API endpoints following Jest patterns established in previous stories. Test validation, authentication, and association management.</constraint>
+    </constraints>
+  <interfaces>
+      <interface name="Equipo CRUD API" kind="REST endpoints" signature="GET/POST /api/equipos with pagination, search, and filtering. GET/PUT/DELETE /api/equipos/[id] for individual operations. Association endpoints: /api/equipos/[id]/repuestos for bi-directional association management." path="src/app/api/equipos/" />
+      <interface name="Equipo Form Validation" kind="Zod schema" signature="EquipoSchema: {sap: string?.optional().unique(), nombre: string.required(), marca: string.optional(), modelo: string.optional(), repuestos: Array<string>.optional()} with real-time validation and SAP uniqueness checking." path="src/lib/validations/equipo.ts" />
+      <interface name="Equipment-Repuesto Association" kind="Many-to-many relationship" signature="RepuestoEquipo model with equipoId, repuestoId, cantidad fields. Bi-directional queries with Prisma include: {repuestos: true} and {equipos: true}." path="prisma/schema.prisma" />
+      <interface name="Authentication Middleware" kind="NextAuth.js session" signature="Protected routes require getServerSession(authOptions) with role-based access control (tecnico, supervisor, admin) for equipment management operations." path="src/lib/auth.ts" />
+      <interface name="UI Component Props" kind="TypeScript interfaces" signature="EquipoFormProps: {item?: EquipoWithRelations, onSubmit: Function, onCancel: Function, isLoading?: boolean}. EquipoListProps: {onCreateNew: Function, onEdit: Function, onView: Function, onDelete: Function}." path="src/types/api.ts" />
+    </interfaces>
+  <tests>
+    <standards>Jest 30.2.0 with Testing Library for unit and integration testing. Test files in __tests__ directories following component/api structure. Mock Next.js router, NextAuth sessions, and Prisma operations. Use beforeEach to clear mocks. Test components with userEvent interactions, API endpoints with mocked auth and database. Ensure accessibility testing with jest-dom matchers. Follow component testing patterns: render with RTL, test form interactions, validate validation logic, check error states, and test association management.</standards>
+    <locations>Component tests in src/components/equipos/__tests__/ following existing patterns from componente-form.test.tsx and componente-list.test.tsx. API tests in src/app/api/equipos/__tests__/ and src/app/api/equipos/[id]/__tests__/ following route.test.ts patterns. Validation tests in src/lib/validations/__tests__/equipo.test.ts. Integration tests for association management and search functionality.</locations>
+    <ideas>
+      <idea ac="AC1">Test equipo form validation with SAP uniqueness checking, nombre/marca/modelo field validation, and form submission handling with mock API calls</idea>
+      <idea ac="AC1">Test equipo list component with search functionality by SAP/nombre/marca/modelo, pagination controls, and equipment detail display</idea>
+      <idea ac="AC2">Test bi-directional equipo-repuesto association management including add/remove associations, association count display, and association validation</idea>
+      <idea ac="AC3">Test advanced search with multiple field combinations, filtering by marca/modelo, search result highlighting, and export functionality</idea>
+      <idea ac="AC4">Test integration with authentication system, Ternium Classic theme application, responsive design, and navigation integration</idea>
+      <idea ac="API">Test CRUD API endpoints with authentication mocking, pagination testing, search query validation, and error handling scenarios</idea>
+      <idea ac="Database">Test Prisma operations for equipo creation, association management, SAP uniqueness constraints, and transaction handling</idea>
+    </ideas>
+  </tests>
+</story-context>

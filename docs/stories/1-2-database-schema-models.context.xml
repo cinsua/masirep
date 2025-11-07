@@ -1,0 +1,119 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Database Schema and Models</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/home/analiticos/proyectos/masirep/docs/stories/1-2-database-schema-models.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>create the complete database schema for repuestos, componentes, and storage hierarchy</iWant>
+    <soThat>all inventory data can be properly structured and related</soThat>
+    <tasks>- [ ] **1. Extender schema Prisma con modelos de inventario** (AC: 1, 2, 3, 4)
+  - [ ] 1.1 Agregar modelos base: Repuesto, Componente, Equipo, Ubicacion
+  - [ ] 1.2 Implementar jerarquía de almacenamiento: Estanteria, Armario, Estante, Cajon, Division, Organizador, Cajoncito
+  - [ ] 1.3 Crear tablas de asociación many-to-many: RepuestoUbicacion, ComponenteUbicacion
+  - [ ] 1.4 Definir modelo Transaccion para tracking de stock
+  - [ ] 1.5 Extender modelo Usuario existente con relación a transacciones
+
+- [ ] **2. Configurar relaciones y constraints** (AC: 3, 4)
+  - [ ] 2.1 Implementar relaciones polimórficas para almacenamiento (RepuestoUbicacion → multiple FKs)
+  - [ ] 2.2 Definir foreign key constraints con onDelete behavior apropiado
+  - [ ] 2.3 Configurar unique constraints en campos críticos (codigo, sap)
+  - [ ] 2.4 Agregar índices de performance en campos de búsqueda
+  - [ ] 2.5 Definir constraints de validación (valores mínimos, defaults)
+
+- [ ] **3. Generar y aplicar migraciones** (AC: 1)
+  - [ ] 3.1 Crear migración inicial con todos los nuevos modelos
+  - [ ] 3.2 Aplicar migración a base de datos SQLite local
+  - [ ] 3.3 Verificar estructura generada con Prisma Studio
+  - [ ] 3.4 Probar rollback de migración
+  - [ ] 3.5 Generar tipos TypeScript actualizados
+
+- [ ] **4. Extender seed data con datos realistas** (AC: 1)
+  - [ ] 4.1 Crear ubicaciones de ejemplo (Aceria, Masi, Reduccion)
+  - [ ] 4.2 Generar estructura de almacenamiento completa (estanterías, armarios, cajones)
+  - [ ] 4.3 Crear equipos de ejemplo con SAP y datos reales
+  - [ ] 4.4 Generar repuestos y componentes de ejemplo
+  - [ ] 4.5 Establecer asociaciones realistas entre items y ubicaciones
+  - [ ] 4.6 Ejecutar seed y verificar datos en base de datos
+
+- [ ] **5. Validar modelo completo** (AC: 1, 2, 3, 4)
+  - [ ] 5.1 Verificar todas las relaciones funcionan correctamente
+  - [ ] 5.2 Test de queries complejas con joins
+  - [ ] 5.3 Validar cálculo de stock a partir de ubicaciones
+  - [ ] 5.4 Verificar integridad referencial en cascadas
+  - [ ] 5.5 Performance testing de queries &lt;500ms</tasks>
+  </story>
+
+  <acceptanceCriteria>1. **Given** la estructura del proyecto establecida, **when** ejecuto las migraciones de Prisma, **then** tengo una base de datos SQLite local con el modelo Usuario creado y seeds de datos funcionando con 7 usuarios técnicos pre-configurados [Fuente: tech-spec-epic-1.md#AC-2]
+
+2. **Given** tengo la estructura del proyecto, **when** creo los modelos y migraciones de base de datos, **then** tengo tablas para todas las entidades: Repuestos, Componentes, Equipos, Ubicaciones, Estanterias, Armarios, Cajones, Divisiones, Organizadores [Fuente: epics.md#Story-1.2]
+
+3. **Given** las tablas creadas, **when** defino las relaciones, **then** todas las relaciones están properly definidas: Repuestos pueden pertenecer a múltiples equipos, Repuestos y Componentes pueden estar en múltiples ubicaciones de almacenamiento, Relaciones jerárquicas entre Ubicaciones → Estanterias/Armarios → Cajones → Divisiones [Fuente: epics.md#Story-1.2]
+
+4. **Given** el esquema con relaciones, **when** ejecuto las migraciones, **then** el schema soporta todos los campos especificados en el PRD con tipos de datos y constraints apropiados [Fuente: epics.md#Story-1.2]</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/tech-spec-epic-1.md" title="Epic Technical Specification: Foundation for Autonomous System" section="Data Models and Contracts" snippet="Base de datos SQLite con Prisma ORM - esquema inicial para autenticación y usuarios con modelo Usuario y contratos TypeScript para consistencia" />
+      <doc path="docs/architecture.md" title="Masirep Architecture Decision Document" section="Data Architecture" snippet="Complete database schema for Masirep con modelos Repuesto, Componente, Equipo, Ubicacion, Estanteria, Armario, Cajon, etc. con relaciones jerárquicas y many-to-many" />
+      <doc path="docs/architecture.md" title="Masirep Architecture Decision Document" section="Complete Project Structure" snippet="Estructura de directorios con prisma/schema.prisma, prisma/migrations/, prisma/seed.ts y src/types/inventory.ts para tipos TypeScript generados por Prisma" />
+      <doc path="docs/epics.md" title="Epic Documentation" section="Story 1.2" snippet="Requisitos específicos para crear tablas de entidades: Repuestos, Componentes, Equipos, Ubicaciones, Estanterias, Armarios, Cajones, Divisiones, Organizadores" />
+      <doc path="docs/stories/1-1-project-setup-local-infrastructure.md" title="Story 1.1: Project Setup and Local Infrastructure" section="Completion Notes" snippet="Prisma base class disponible en src/lib/prisma.ts con cliente configurado para SQLite local, modelo Usuario existente con 7 técnicos pre-configurados" />
+    </docs>
+    <code>
+      <artifact path="prisma/schema.prisma" kind="database-schema" symbol="User, Account, Session, VerificationToken" lines="17-77" reason="Modelo de autenticación existente que debe extenderse con nuevos modelos de inventario" />
+      <artifact path="src/lib/prisma.ts" kind="database-client" symbol="prisma" lines="1-11" reason="Cliente Prisma configurado con patrón singleton para desarrollo local" />
+      <artifact path="prisma/seed.ts" kind="database-seed" symbol="main" lines="6-82" reason="Patrón de seed data existente con 7 técnicos pre-configurados que debe extenderse para nuevos modelos" />
+      <artifact path="package.json" kind="dependency-manifest" symbol="dependencies, devDependencies" lines="22-56" reason="Dependencias core ya instaladas: Prisma 6.19.0, Next.js 16.0.1, NextAuth 4.24.13, TypeScript 5" />
+    </code>
+    <dependencies>
+      <ecosystem name="node">
+        <package name="@prisma/client" version="6.19.0" />
+        <package name="prisma" version="6.19.0" />
+        <package name="next" version="16.0.1" />
+        <package name="next-auth" version="4.24.13" />
+        <package name="typescript" version="5" />
+        <package name="@auth/prisma-adapter" version="2.11.1" />
+        <package name="tsx" version="4.20.6" />
+      </ecosystem>
+      <ecosystem name="database">
+        <provider name="sqlite" version="3.45" />
+        <orm name="prisma" version="6.19.0" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>SQLite local sin dependencias externas (requerimiento de autonomía)</constraint>
+    <constraint>Migraciones deben ser forward/backward compatible</constraint>
+    <constraint>Seed data debe crear datos realistas para testing de Epic 2-5</constraint>
+    <constraint>Database indexes en campos de búsqueda (codigo, descripcion) para performance &lt;2s</constraint>
+    <constraint>Unique constraints en campos críticos (codigo, sap) para mantener integridad</constraint>
+    <constraint>Proper foreign key constraints con onDelete behavior apropiado</constraint>
+    <constraint>Input validation para todos los campos de texto usando Zod schemas</constraint>
+    <constraint>Check constraints para valores numéricos (stock, cantidades)</constraint>
+  </constraints>
+  <interfaces>
+    <interface name="Prisma Database Client" kind="ORM Client" signature="prisma = new PrismaClient()" path="src/lib/prisma.ts" />
+    <interface name="Database Migration Commands" kind="CLI" signature="npx prisma migrate dev, npx prisma generate, npx prisma db seed" path="package.json scripts" />
+    <interface name="Seed Data Pattern" kind="Function" signature="async function main() { await prisma.user.upsert() }" path="prisma/seed.ts" />
+    <interface name="Environment Configuration" kind="Config" signature="DATABASE_URL=file:./dev.db" path=".env" />
+  </interfaces>
+  <tests>
+    <standards>Database Testing: Prisma test environment con SQLite in-memory para modelos y relaciones. Migration Testing: Verificar migraciones forward/backward funcionan correctamente. Seed Data Testing: Validar que seed data crea relaciones correctamente. Performance Testing: Queries complejas con joins funcionan &lt;500ms.</standards>
+    <locations>prisma/ - Para tests de schema y migraciones. src/__tests__/ - Para tests de integración con base de datos. src/lib/__tests__/ - Para tests de repositorios y servicios de datos.</locations>
+    <ideas>
+      <test acId="1">Test migración con Usuario model existente + nuevos modelos de inventario</test>
+      <test acId="2">Test creación de todas las tablas: Repuestos, Componentes, Equipos, Ubicaciones, Estanterias, Armarios, Cajones, Divisiones, Organizadores</test>
+      <test acId="3">Test relaciones many-to-many: Repuestos ↔ Equipos, Repuestos ↔ Ubicaciones, Componentes ↔ Ubicaciones</test>
+      <test acId="4">Test jerarquía de almacenamiento: Ubicaciones → Estanterias/Armarios → Cajones → Divisiones</test>
+      <test acId="4">Test performance queries complejas con joins &lt;500ms</test>
+    </ideas>
+  </tests>
+</story-context>

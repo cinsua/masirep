@@ -1,0 +1,225 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>3</storyId>
+    <title>Basic API Structure and Authentication</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-05</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/home/analiticos/proyectos/masirep/docs/stories/1-3-basic-api-structure-authentication.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>create the REST API endpoints structure and local authentication system</iWant>
+    <soThat>the 7 technicians can securely access the system using local credentials</soThat>
+    <tasks>- [ ] **1. Configurar NextAuth.js con Credentials Provider local** (AC: 1, 2)
+  - [ ] 1.1 Instalar dependencias: next-auth, @auth/prisma-adapter, bcrypt
+  - [ ] 1.2 Crear auth configuration en src/lib/auth.ts
+  - [ ] 1.3 Configurar Credentials Provider para validación local
+  - [ ] 1.4 Implementar bcrypt hash verification para contraseñas
+  - [ ] 1.5 Configurar session management con HTTP-only cookies
+
+- [ ] **2. Crear API routes de autenticación** (AC: 3, 4)
+  - [ ] 2.1 Implementar /api/auth/[...nextauth].ts route handler
+  - [ ] 2.2 Crear endpoint /api/auth/session para current user info
+  - [ ] 2.3 Implementar logout con session cleanup
+  - [ ] 2.4 Agregar error handling y rate limiting básico
+  - [ ] 2.5 Configurar CORS y headers de seguridad
+
+- [ ] **3. Implementar middleware de protección de rutas** (AC: 3, 5)
+  - [ ] 3.1 Crear middleware.ts en raíz del proyecto
+  - [ ] 3.2 Configurar rutas públicas (/login, /api/auth)
+  - [ ] 3.3 Implementar validación de sesión en middleware
+  - [ ] 3.4 Proteger rutas de dashboard y API endpoints
+  - [ ] 3.5 Agregar redirect logic para usuarios no autenticados
+
+- [ ] **4. Crear UI components de autenticación** (AC: 4, 5)
+  - [ ] 4.1 Crear login form en src/app/(auth)/login/page.tsx
+  - [ ] 4.2 Implementar layout con auth checks
+  - [ ] 4.3 Agregar logout button en header/dashboard
+  - [ ] 4.4 Crear protected route wrapper component
+  - [ ] 4.5 Implementar loading states y error handling
+
+- [ ] **5. Integrar autenticación con Prisma User model** (AC: 2, 4)
+  - [ ] 5.1 Configurar Prisma Adapter para NextAuth.js
+  - [ ] 5.2 Conectar auth system con modelo Usuario existente
+  - [ ] 5.3 Validar credenciales contra base de datos SQLite
+  - [ ] 5.4 Implementar user session management
+  - [ ] 5.5 Test de flujo completo login → dashboard → logout
+
+- [ ] **6. Tests de autenticación** (AC: 5)
+  - [ ] 6.1 Test unitario de auth configuration
+  - [ ] 6.2 Integration test de login/logout flow
+  - [ ] 6.3 Test de middleware protection
+  - [ ] 6.4 Performance test de login <1 segundo
+  - [ ] 6.5 Test de error handling y edge cases</tasks>
+  </story>
+
+  <acceptanceCriteria>1. **Given** usuarios en base de datos y API routes configuradas, **when** los técnicos acceden al sistema con credenciales locales, **then** autenticación funciona con sesión persistente, middleware de protección de rutas y logout completo [Fuente: tech-spec-epic-1.md#AC-3]
+
+2. **Given** la estructura del proyecto Next.js 14 + Prisma configurada, **when** implemento NextAuth.js con Credentials Provider, **then** tengo sistema de autenticación local sin dependencias externas con 7 usuarios técnicos pre-configurados [Fuente: tech-spec-epic-1.md#Authentication-Dependencies]
+
+3. **Given** el sistema de autenticación local, **when** creo API routes RESTful, **then** tengo endpoints para authentication (/api/auth/login, /api/auth/logout, /api/auth/session) y middleware de protección para rutas privadas [Fuente: tech-spec-epic-1.md#APIs-and-Interfaces]
+
+4. **Given** API endpoints de autenticación creados, **when** los técnicos inician sesión, **then** obtienen JWT/session tokens seguros con HTTP-only cookies y validación de credenciales con bcrypt [Fuente: tech-spec-epic-1.md#Security]
+
+5. **Given** el sistema de autenticación funcionando, **when** ejecuto npm run dev, **then** el servidor inicia correctamente con login/logout funcional y tiempo de respuesta <1 segundo [Fuente: tech-spec-epic-1.md#Performance]</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <item>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation for Autonomous System</title>
+        <section>Authentication Dependencies</section>
+        <snippet>NextAuth.js 4.24.7 con Prisma adapter para autenticación local sin dependencias externas. Incluye bcrypt para password hashing y session management con HTTP-only cookies.</snippet>
+      </item>
+      <item>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation for Autonomous System</title>
+        <section>APIs and Interfaces</section>
+        <snippet>API Routes básicas: /api/auth/[...nextauth] para NextAuth endpoints, /api/auth/session para current user info. Autenticación con Credentials Provider local.</snippet>
+      </item>
+      <item>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation for Autonomous System</title>
+        <section>Security</section>
+        <snippet>Password hashing con bcrypt salt rounds estándar, HTTP-only cookies seguras para sesiones persistentes, middleware Next.js para protección de rutas, Zod schemas para validación.</snippet>
+      </item>
+      <item>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation for Autonomous System</title>
+        <section>Performance</section>
+        <snippet>Authentication response &lt; 1 segundo para login/logout local con SQLite, database operations &lt; 500ms para consultas básicas de usuario.</snippet>
+      </item>
+      <item>
+        <path>docs/architecture.md</path>
+        <title>Masirep - Architecture Decision Document</title>
+        <section>Security Architecture</section>
+        <snippet>Local authentication con username/password, secure HTTP-only cookies, bcrypt password hashing, middleware route protection, API security con autenticación requerida para todas las rutas.</snippet>
+      </item>
+      <item>
+        <path>docs/PRD.md</path>
+        <title>Masirep - Product Requirements Document</title>
+        <section>Executive Summary</section>
+        <snippet>Sistema fullstack diseñado para operación local autónoma por 7 técnicos de mantenimiento, recuperando 30 años de experiencia en inventario perdida.</snippet>
+      </item>
+    </docs>
+    <code>
+      <item>
+        <path>masirep/src/lib/auth.ts</path>
+        <kind>auth-configuration</kind>
+        <symbol>NextAuthConfig</symbol>
+        <lines>1-120</lines>
+        <reason>NextAuth.js v4.24.13 completamente configurado con Credentials Provider, Prisma adapter, JWT sessions, y role-based access control</reason>
+      </item>
+      <item>
+        <path>masirep/src/app/api/auth/[...nextauth]/route.ts</path>
+        <kind>api-route</kind>
+        <symbol>NextAuthRouteHandler</symbol>
+        <lines>1-15</lines>
+        <reason>API route handler estándar para NextAuth endpoints (GET/POST methods)</reason>
+      </item>
+      <item>
+        <path>masirep/prisma/schema.prisma</path>
+        <kind>database-model</kind>
+        <symbol>User</symbol>
+        <lines>15-30</lines>
+        <reason>Modelo Usuario con id, email, technicianId, role, isActive, passwordHash - listo para autenticación local</reason>
+      </item>
+      <item>
+        <path>masirep/prisma/seed.ts</path>
+        <kind>database-seed</kind>
+        <symbol>createUsers</symbol>
+        <lines>50-100</lines>
+        <reason>7 técnicos pre-configurados (TEC-001 a TEC-007) con passwords hasheados con bcrypt</reason>
+      </item>
+      <item>
+        <path>masirep/src/app/auth/signin/page.tsx</path>
+        <kind>component</kind>
+        <symbol>SignInPage</symbol>
+        <lines>1-80</lines>
+        <reason>Login form completamente funcional con email/password, loading states, error handling y credenciales de prueba</reason>
+      </item>
+      <item>
+        <path>masirep/src/components/providers/session-provider.tsx</path>
+        <kind>component</kind>
+        <symbol>SessionProvider</symbol>
+        <lines>1-15</lines>
+        <reason>SessionProvider wrapper integrado en root layout para gestión de sesiones</reason>
+      </item>
+      <item>
+        <path>masirep/src/components/layout/protected-route.tsx</path>
+        <kind>component</kind>
+        <symbol>ProtectedRoute</symbol>
+        <lines>1-60</lines>
+        <reason>Componente de protección de rutas con loading states y redirect automático a signin</reason>
+      </item>
+      <item>
+        <path>masirep/src/components/layout/header.tsx</path>
+        <kind>component</kind>
+        <symbol>Header</symbol>
+        <lines>1-50</lines>
+        <reason>Header con user display, technician ID, role badge y sign out functionality</reason>
+      </item>
+      <item>
+        <path>masirep/.env</path>
+        <kind>environment</kind>
+        <symbol>NEXTAUTH_* variables</symbol>
+        <lines>5-7</lines>
+        <reason>Variables de entorno configuradas: NEXTAUTH_SECRET, NEXTAUTH_URL, DATABASE_URL</reason>
+      </item>
+    </code>
+    <dependencies>
+    <ecosystem name="node">
+      <package name="next" version="16.0.1" />
+      <package name="next-auth" version="4.24.13" />
+      <package name="@auth/prisma-adapter" version="2.11.1" />
+      <package name="@prisma/client" version="6.19.0" />
+      <package name="bcryptjs" version="3.0.3" />
+      <package name="react" version="19.2.0" />
+      <package name="react-dom" version="19.2.0" />
+      <package name="react-hook-form" version="7.66.0" />
+      <package name="zod" version="4.1.12" />
+      <package name="@types/bcryptjs" version="2.4.6" />
+    </ecosystem>
+    <ecosystem name="database">
+      <package name="prisma" version="6.19.0" />
+      <package name="sqlite" version="file:./dev.db" />
+    </ecosystem>
+  </dependencies>
+  </artifacts>
+
+  <constraints>
+  <constraint type="authentication">Autenticación 100% local sin Active Directory ni dependencias externas. NextAuth.js v4 con Credentials Provider exclusivamente.</constraint>
+  <constraint type="performance">Login response time &lt;1 segundo basado en performance existente de SQLite queries &lt;20ms.</constraint>
+  <constraint type="security">Password hashing con bcryptjs, HTTP-only cookies para sesiones, middleware de protección de rutas obligatorio.</constraint>
+  <constraint type="user-management">7 usuarios técnicos pre-configurados sin sistema de roles complejo. Todos tienen mismos permisos básicos.</constraint>
+  <constraint type="architecture">Next.js 16 (vs 14 especificado) - mantener compatibilidad con NextAuth.js 4.24.0 ya implementado.</constraint>
+  <constraint type="database">Usar base de datos SQLite existente con modelo User ya implementado. No migrar usuarios existentes.</constraint>
+</constraints>
+  <interfaces>
+    <interface name="NextAuth Session" kind="JWT Session" signature="Session { user: User; expires: string }" path="masirep/src/lib/auth.ts" />
+    <interface name="Credentials Provider" kind="Authentication Provider" signature="CredentialsProvider({ credentials, authorize })" path="masirep/src/lib/auth.ts" />
+    <interface name="Prisma Adapter" kind="Database Adapter" signature="PrismaAdapter(prisma)" path="masirep/src/lib/auth.ts" />
+    <interface name="Protected Route" kind="Component Interface" signature="ProtectedRoute({ children }: { children: React.ReactNode })" path="masirep/src/components/layout/protected-route.tsx" />
+    <interface name="User Model" kind="Database Model" signature="User { id, email, name, technicianId, role, isActive, passwordHash }" path="masirep/prisma/schema.prisma" />
+  </interfaces>
+  <tests>
+    <standards>Auth Testing: Unit tests para auth configuration, bcrypt verification, middleware logic con Jest + React Testing Library. Integration Tests para login/logout flow, session management, route protection con Supertest. Performance Tests para login response time &lt;1 segundo. Database Testing con Prisma test environment y SQLite in-memory para validación de credenciales.</standards>
+    <locations>
+      <location type="unit">src/__tests__/lib/auth.test.ts - Para auth configuration y utilidades</location>
+      <location type="unit">src/__tests__/components/auth/ - Para componentes de login y forms</location>
+      <location type="integration">src/__tests__/api/auth/ - Para API routes de autenticación</location>
+      <location type="e2e">tests/auth/ - Para Playwright E2E tests de flujo completo</location>
+    </locations>
+    <ideas>
+      <test acId="1">Test unitario de auth configuration: Validar NextAuth setup con Credentials Provider</test>
+      <test acId="2">Test de bcrypt verification: Validar hash/compare de passwords funciona correctamente</test>
+      <test acId="3">Integration test de login/logout flow: Probar flujo completo con credenciales de prueba</test>
+      <test acId="4">Test de middleware protection: Verificar rutas protegidas redirigen a signin</test>
+      <test acId="5">Performance test de login: Validar tiempo de respuesta &lt;1 segundo con SQLite</test>
+      <test acId="6">Test de error handling: Validar manejo de credenciales incorrectas y rate limiting</test>
+    </ideas>
+  </tests>
+</story-context>

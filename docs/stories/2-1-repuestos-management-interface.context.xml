@@ -1,0 +1,138 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>1</storyId>
+    <title>Repuestos Management Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/home/analiticos/proyectos/masirep/docs/stories/2-1-repuestos-management-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>maintenance technician</asA>
+    <iWant>create, view, edit, and delete repuestos with all their specific information</iWant>
+    <soThat>I can manage equipment-specific spare parts with complete details</soThat>
+    <tasks>Task 1: Repuesto Data Model and API
+- Implement Repuesto model in Prisma schema (already exists in architecture)
+- Create API endpoints: GET, POST, PUT, DELETE /api/repuestos
+- Implement unique code validation in API
+- Add stock calculation logic from RepuestoUbicacion relationships
+- Create equipment association endpoints
+
+Task 2: Repuesto Management Interface
+- Create RepuestoList component with search and filtering
+- Create RepuestoForm component for create/edit operations
+- Create RepuestoDetail component for viewing complete information
+- Implement EquipmentSelector component for multi-select association
+- Create LocationSelector component for storage location assignment
+
+Task 3: Validation and Error Handling
+- Implement form validation with Zod schemas
+- Add duplicate code validation with real-time feedback
+- Create error handling for API failures
+- Add loading states and optimistic updates
+
+Task 4: Integration with Existing System
+- Integrate with authentication system (reuse from Story 1.4)
+- Apply Ternium Classic theme and shadcn/ui components
+- Ensure responsive design for desktop/tablet use
+- Add breadcrumb navigation integration</tasks>
+  </story>
+
+  <acceptanceCriteria>AC1: Full CRUD Operations
+Given I am logged into the system
+When I access the repuestos management section
+Then I can perform full CRUD operations on repuestos
+
+AC2: Complete Repuesto Data Model
+And each repuesto includes all required fields:
+- Código/número de parte (unique identifier)
+- Descripción
+- Nota (optional)
+- Stock mínimo (default 0)
+- Stock actual (calculated from locations)
+- Equipos asociados (0 to many)
+- Ubicaciones de almacenamiento (multiple locations)
+
+AC3: Equipment Association
+And I can associate repuestos with multiple equipos
+
+AC4: Data Validation
+And the interface validates unique codes and required fields
+
+AC5: Real-time Stock Calculation
+And stock actual is automatically calculated from all storage locations</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Epic 2: Core Inventory Management" snippet="Epic Goal: Implement the heart of Masirep - the dual inventory system for repuestos (equipment-specific) and componentes (general components). Story 2.1 provides full CRUD operations for repuestos with equipment association and storage location management." />
+      <doc path="docs/architecture.md" title="Architecture Decision Document" section="Data Architecture" snippet="Complete database schema with Repuesto model including codigo (unique), descripcion, stockMinimo, stockActual, and many-to-many relationships with equipos and ubicaciones through RepuestoUbicacion association table." />
+      <doc path="docs/architecture.md" title="Architecture Decision Document" section="API Contracts" snippet="RESTful API structure for repuestos: GET/POST/PUT/DELETE /api/repuestos with standard ApiResponse format. Includes search functionality and stock calculation from RepuestoUbicacion relationships." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="Component Library" snippet="Custom components for Masirep including RepuestoForm for create/edit operations, with validation patterns using Zod schemas and shadcn/ui base components with Ternium Classic theme." />
+      <doc path="docs/ux-design-specification.md" title="UX Design Specification" section="User Journey Flows" snippet="Critical user paths for repuestos management including search and location, contextual stock updates, and multi-location management with visual distribution of stock across storage locations." />
+    </docs>
+    <code>
+      <code path="prisma/schema.prisma" kind="schema" symbol="Repuesto" lines="203-221" reason="Core data model for repuestos with all required fields including codigo (unique), stockMinimo, stockActual, and relationships to equipos and ubicaciones" />
+      <code path="prisma/schema.prisma" kind="schema" symbol="RepuestoEquipo" lines="242-254" reason="Many-to-many relationship table between repuestos and equipos with quantity tracking" />
+      <code path="prisma/schema.prisma" kind="schema" symbol="RepuestoUbicacion" lines="256-275" reason="Many-to-many relationship table for storing repuestos in multiple storage locations with quantity tracking and polymorphic location references" />
+      <code path="src/components/ui/button.tsx" kind="component" symbol="Button" lines="41-52" reason="Base button component with variants following shadcn/ui patterns for primary/secondary actions" />
+      <code path="src/components/layout/protected-route.tsx" kind="component" symbol="ProtectedRoute" lines="14-80" reason="Authentication wrapper component to protect repuestos management routes, must be reused for all CRUD operations" />
+      <code path="src/app/api/auth/signin/route.ts" kind="api" symbol="POST" lines="4-27" reason="Example API route pattern with rate limiting that should be applied to repuestos API endpoints" />
+    </code>
+    <dependencies>
+      <dependency ecosystem="frontend" name="next" version="16.0.1" />
+      <dependency ecosystem="frontend" name="react" version="19.2.0" />
+      <dependency ecosystem="frontend" name="react-dom" version="19.2.0" />
+      <dependency ecosystem="frontend" name="react-hook-form" version="7.66.0" />
+      <dependency ecosystem="frontend" name="@hookform/resolvers" version="5.2.2" />
+      <dependency ecosystem="frontend" name="zod" version="4.1.12" />
+      <dependency ecosystem="frontend" name="@radix-ui/react-dialog" version="1.1.15" />
+      <dependency ecosystem="frontend" name="@radix-ui/react-slot" version="1.2.4" />
+      <dependency ecosystem="frontend" name="@radix-ui/react-tabs" version="1.1.13" />
+      <dependency ecosystem="frontend" name="class-variance-authority" version="0.7.1" />
+      <dependency ecosystem="frontend" name="clsx" version="2.1.1" />
+      <dependency ecosystem="frontend" name="tailwind-merge" version="3.3.1" />
+      <dependency ecosystem="frontend" name="lucide-react" version="0.552.0" />
+      <dependency ecosystem="backend" name="next-auth" version="4.24.13" />
+      <dependency ecosystem="backend" name="@auth/prisma-adapter" version="2.11.1" />
+      <dependency ecosystem="backend" name="@prisma/client" version="6.19.0" />
+      <dependency ecosystem="backend" name="bcryptjs" version="3.0.3" />
+      <dependency ecosystem="database" name="prisma" version="6.19.0" />
+      <dependency ecosystem="database" name="sqlite" version="3.45" provider="builtin" />
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">Follow Next.js 14 App Router pattern with Server Components for data fetching and Client Components for interactive UI</constraint>
+    <constraint type="database">Use Prisma ORM for all database operations with proper error handling and type safety</constraint>
+    <constraint type="authentication">All API routes must be protected with session validation using NextAuth.js</constraint>
+    <constraint type="validation">Use Zod schemas for form validation with real-time feedback for duplicate codes</constraint>
+    <constraint type="ui">Follow shadcn/ui component patterns with Ternium Classic theme (orange #FF6B00 primary)</constraint>
+    <constraint type="styling">Use Tailwind CSS utility classes with responsive design for desktop/tablet use</constraint>
+    <constraint type="error-handling">Implement proper error boundaries and user-friendly error messages</constraint>
+    <constraint type="performance">Stock calculations must be optimized for real-time updates from RepuestoUbicacion relationships</constraint>
+    <constraint type="code-quality">TypeScript strict mode enabled, ESLint compliance, proper React keys implementation</constraint>
+  </constraints>
+  <interfaces>
+    <interface name="Repuesto CRUD API" kind="REST endpoints" signature="GET/POST/PUT/DELETE /api/repuestos" path="src/app/api/repuestos/route.ts" />
+    <interface name="Single Repuesto API" kind="REST endpoint" signature="GET/PUT/DELETE /api/repuestos/[id]" path="src/app/api/repuestos/[id]/route.ts" />
+    <interface name="Code Validation API" kind="REST endpoint" signature="GET /api/repuestos/validate/code/:code" path="src/app/api/repuestos/validate/code/[code]/route.ts" />
+    <interface name="Repuesto Form Component" kind="React component" signature="RepuestoForm({ repuesto?, onSubmit, onCancel })" path="src/components/forms/repuesto-form.tsx" />
+    <interface name="Equipment Selector" kind="React component" signature="EquipmentSelector({ selected, onChange, multiple })" path="src/components/forms/equipment-selector.tsx" />
+    <interface name="Location Selector" kind="React component" signature="LocationSelector({ selected, onChange, multiple })" path="src/components/forms/location-selector.tsx" />
+  </interfaces>
+  <tests>
+    <standards>Manual testing approach with component testing using React Testing Library. All API endpoints must be tested with proper error handling. Form validation testing with Zod schemas. Integration testing for CRUD operations with database transactions.</standards>
+    <locations>src/components/__tests__/ for component tests, src/app/api/__tests__/ for API route tests, manual testing scenarios documented in story</locations>
+    <ideas>
+      <test idea="Create Repuesto" ac="AC1, AC2, AC4" description="Test form validation, equipment association, location assignment with unique code validation" />
+      <test idea="Edit Repuesto" ac="AC1, AC2, AC4" description="Test updating all fields, adding/removing equipment and location associations" />
+      <test idea="Delete Repuesto" ac="AC1" description="Test deletion with and without existing stock/locations" />
+      <test idea="Search and Filter" ac="AC1" description="Test search by code, description, equipment, stock levels with performance under 2 seconds" />
+      <test idea="Stock Calculation" ac="AC5" description="Verify real-time stock updates when locations change, test calculation accuracy across multiple locations" />
+      <test idea="Equipment Association" ac="AC3" description="Test multi-select equipment association with search/filter capabilities" />
+      <test idea="Data Validation" ac="AC4" description="Test duplicate code prevention, required field validation, stock minimum validation" />
+    </ideas>
+  </tests>
+</story-context>
