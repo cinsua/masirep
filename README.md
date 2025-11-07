@@ -206,4 +206,4 @@ Para soporte técnico o dudas sobre la configuración:
 
 ---
 
-**Desarrollado para autonomía departamental completa** 🇲🇽
+**Desarrollado para autonomía departamental completa**
