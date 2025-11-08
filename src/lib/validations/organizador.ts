@@ -19,6 +19,11 @@ export const OrganizadorSchema = z.object({
   armarioId: z
     .string()
     .optional(),
+  cantidadCajoncitos: z
+    .number()
+    .int("La cantidad debe ser un número entero")
+    .min(1, "Debe tener al menos 1 cajoncito")
+    .max(50, "No puede tener más de 50 cajoncitos"),
 }).refine((data) => data.estanteriaId || data.armarioId, {
   message: "Debe especificar estanteriaId o armarioId",
   path: ["estanteriaId"],

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LocationCard, UbicacionForm, BreadcrumbNavigation, StorageTree } from "@/components/ubicaciones";
-import { Search, Plus, Grid, List, MapPin, Layers, TreePine } from "lucide-react";
+import { LocationCard, UbicacionForm, StorageTree } from "@/components/ubicaciones";
+import { Plus, Grid, MapPin, TreePine, Grid3x3 } from "lucide-react";
 
 interface Ubicacion {
   id: string;
@@ -35,27 +34,22 @@ export const dynamic = 'force-dynamic';
 export default function UbicacionesPage() {
   const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
-    limit: 12,
+    limit: 10,
     total: 0,
     pages: 0,
   });
-  const [viewMode, setViewMode] = useState<"grid" | "list" | "tree">("grid");
-  const [showActiveOnly, setShowActiveOnly] = useState(true);
-  const [showViewOptions, setShowViewOptions] = useState(true);
+  const [viewMode, setViewMode] = useState<"grid" | "tree">("grid");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUbicacion, setEditingUbicacion] = useState<Ubicacion | null>(null);
 
-  const fetchUbicaciones = async (page: number = 1, searchQuery: string = search) => {
+  const fetchUbicaciones = useCallback(async (page: number = 1, limit: number = 10) => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: pagination.limit.toString(),
-        ...(searchQuery && { search: searchQuery }),
-        ...(showActiveOnly && { isActive: "true" }),
+        limit: limit.toString(),
         sortBy: "codigo",
         sortOrder: "asc",
       });
@@ -74,21 +68,15 @@ export default function UbicacionesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUbicaciones();
-  }, [showActiveOnly]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPagination(prev => ({ ...prev, page: 1 }));
-    fetchUbicaciones(1, search);
-  };
+  }, [fetchUbicaciones]);
 
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }));
-    fetchUbicaciones(newPage, search);
+    fetchUbicaciones(newPage, pagination.limit);
   };
 
   const handleCardClick = (ubicacion: Ubicacion) => {
@@ -124,7 +112,7 @@ export default function UbicacionesPage() {
       const result = await response.json();
 
       if (result.success) {
-        await fetchUbicaciones(pagination.page, search);
+        await fetchUbicaciones(pagination.page, pagination.limit);
       } else {
         alert(`Error al eliminar ubicación: ${result.error}`);
       }
@@ -155,7 +143,7 @@ export default function UbicacionesPage() {
       throw new Error(result.error || "Error al guardar la ubicación");
     }
 
-    await fetchUbicaciones(pagination.page, search);
+    await fetchUbicaciones(pagination.page, pagination.limit);
   };
 
   const totalItems = ubicaciones.reduce(
@@ -163,6 +151,7 @@ export default function UbicacionesPage() {
     0
   );
 
+  
   // Prepare data for StorageTree component
   const storageTreeData = ubicaciones.map(ubicacion => ({
     id: ubicacion.id,
@@ -190,10 +179,32 @@ export default function UbicacionesPage() {
               Gestiona las ubicaciones principales del taller
             </p>
           </div>
-          <Button onClick={handleCreateUbicacion}>
-            <Plus className="h-4 w-4 mr-2" />
-            Nueva Ubicación
-          </Button>
+          <div className="flex gap-2">
+             <div className="flex">
+               <Button
+                 type="button"
+                 variant={viewMode === "grid" ? "default" : "outline"}
+                 size="sm"
+                 onClick={() => setViewMode("grid")}
+                 className="rounded-r-none"
+               >
+                 <Grid className="h-4 w-4" />
+               </Button>
+               <Button
+                 type="button"
+                 variant={viewMode === "tree" ? "default" : "outline"}
+                 size="sm"
+                 onClick={() => setViewMode("tree")}
+                 className="rounded-l-none"
+               >
+                 <TreePine className="h-4 w-4" />
+               </Button>
+             </div>
+            <Button onClick={handleCreateUbicacion}>
+              <Plus className="h-4 w-4 mr-2" />
+              Nueva Ubicación
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -221,7 +232,7 @@ export default function UbicacionesPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Estanterías</CardTitle>
-              <List className="h-4 w-4 text-muted-foreground" />
+               <Grid3x3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -240,70 +251,7 @@ export default function UbicacionesPage() {
           </Card>
         </div>
 
-        {/* Search and Filters */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Búsqueda y Filtros</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSearch} className="flex flex-col gap-4 md:flex-row">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar por código, nombre o descripción..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={showActiveOnly ? "default" : "outline"}
-                  onClick={() => setShowActiveOnly(!showActiveOnly)}
-                >
-                  {showActiveOnly ? "Mostrar Todas" : "Solo Activas"}
-                </Button>
-                <div className="flex">
-                  <Button
-                    type="button"
-                    variant={viewMode === "grid" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className="rounded-r-none"
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={viewMode === "list" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                    className={viewMode === "tree" ? "rounded-none" : "rounded-l-none"}
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={viewMode === "tree" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("tree")}
-                    className="rounded-l-none"
-                  >
-                    <TreePine className="h-4 w-4" />
-                  </Button>
-                </div>
-                <Button type="submit">
-                  <Search className="h-4 w-4 mr-2" />
-                  Buscar
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
+        
         {/* Results */}
         <Card>
           <CardHeader>
@@ -417,12 +365,11 @@ export default function UbicacionesPage() {
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         onSubmit={handleSubmitUbicacion}
-        initialData={editingUbicacion ? {
-          codigo: editingUbicacion.codigo,
-          nombre: editingUbicacion.nombre,
-          descripcion: editingUbicacion.descripcion,
-          isActive: editingUbicacion.isActive,
-        } : undefined}
+         initialData={editingUbicacion ? {
+           nombre: editingUbicacion.nombre,
+           descripcion: editingUbicacion.descripcion,
+           isActive: editingUbicacion.isActive,
+         } : undefined}
         title={editingUbicacion ? "Editar Ubicación" : "Nueva Ubicación"}
         description={editingUbicacion
           ? "Edita los datos de la ubicación seleccionada"

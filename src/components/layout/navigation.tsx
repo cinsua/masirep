@@ -49,7 +49,11 @@ export function Navigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex space-x-1">
+    <nav
+      className="flex space-x-1"
+      data-ai-tag="main-navigation"
+      data-ai-component="layout-navigation"
+    >
       {navigation.map((item) => {
         const isActive = pathname === item.href;
         return (
@@ -62,9 +66,18 @@ export function Navigation() {
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted"
             )}
+            data-ai-tag={`nav-link-${item.name.toLowerCase()}`}
+            data-ai-component={`nav-${item.name.toLowerCase()}-link`}
+            data-ai-active={isActive}
+            data-ai-href={item.href}
           >
-            <item.icon className="h-4 w-4" />
-            <span>{item.name}</span>
+            <item.icon
+              className="h-4 w-4"
+              data-ai-tag={`nav-icon-${item.name.toLowerCase()}`}
+            />
+            <span
+              data-ai-tag={`nav-label-${item.name.toLowerCase()}`}
+            >{item.name}</span>
           </Link>
         );
       })}

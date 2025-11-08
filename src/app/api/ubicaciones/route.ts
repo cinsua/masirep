@@ -10,6 +10,375 @@ import {
   UbicacionUpdateFormData
 } from "@/lib/validations/ubicacion";
 
+// Helper function to build location tree recursively
+async function buildLocationTree() {
+  // Get all locations from the database
+  const [
+    ubicaciones,
+    armarios,
+    estanterias,
+    estantes,
+    cajones,
+    divisions,
+    organizadores,
+    cajoncitos
+  ] = await Promise.all([
+    prisma.ubicacion.findMany({
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.armario.findMany({
+      include: {
+        ubicacion: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.estanteria.findMany({
+      include: {
+        ubicacion: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.estante.findMany({
+      include: {
+        estanteria: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            ubicacion: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.cajon.findMany({
+      include: {
+        armario: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            ubicacion: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+              },
+            },
+          },
+        },
+        estanteria: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            ubicacion: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.division.findMany({
+      include: {
+        cajon: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            armario: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+                ubicacion: {
+                  select: {
+                    id: true,
+                    nombre: true,
+                    codigo: true,
+                  },
+                },
+              },
+            },
+            estanteria: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+                ubicacion: {
+                  select: {
+                    id: true,
+                    nombre: true,
+                    codigo: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.organizador.findMany({
+      include: {
+        estanteria: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            ubicacion: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+              },
+            },
+          },
+        },
+        armario: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            ubicacion: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+    prisma.cajoncito.findMany({
+      include: {
+        organizador: {
+          select: {
+            id: true,
+            nombre: true,
+            codigo: true,
+            estanteria: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+                ubicacion: {
+                  select: {
+                    id: true,
+                    nombre: true,
+                    codigo: true,
+                  },
+                },
+              },
+            },
+            armario: {
+              select: {
+                id: true,
+                nombre: true,
+                codigo: true,
+                ubicacion: {
+                  select: {
+                    id: true,
+                    nombre: true,
+                    codigo: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { nombre: 'asc' }
+    }),
+  ]);
+
+  // Build the hierarchical tree structure
+  const locationTree: any[] = [];
+
+  // Add ubicaciones as root nodes
+  for (const ubicacion of ubicaciones) {
+    const node: any = {
+      id: ubicacion.id,
+      nombre: ubicacion.nombre,
+      codigo: ubicacion.codigo,
+      type: 'ubicacion',
+      children: []
+    };
+
+    // Add armarios for this ubicacion
+    const ubicacionArmarios = armarios.filter(a => a.ubicacionId === ubicacion.id);
+    for (const armario of ubicacionArmarios) {
+      const armarioNode: any = {
+        id: armario.id,
+        nombre: armario.nombre,
+        codigo: armario.codigo,
+        type: 'armario',
+        children: []
+      };
+
+      // Add cajones for this armario
+      const armarioCajones = cajones.filter(c => c.armarioId === armario.id);
+      for (const cajon of armarioCajones) {
+        const cajonNode: any = {
+          id: cajon.id,
+          nombre: cajon.nombre,
+          codigo: cajon.codigo,
+          type: 'cajon',
+          children: []
+        };
+
+        // Add divisions for this cajon
+        const cajonDivisions = divisions.filter(d => d.cajonId === cajon.id);
+        for (const division of cajonDivisions) {
+          cajonNode.children.push({
+            id: division.id,
+            nombre: division.nombre,
+            codigo: division.codigo,
+            type: 'division'
+          });
+        }
+
+        armarioNode.children.push(cajonNode);
+      }
+
+      // Add organizadores for this armario
+      const armarioOrganizadores = organizadores.filter(o => o.armarioId === armario.id);
+      for (const organizador of armarioOrganizadores) {
+        const organizadorNode: any = {
+          id: organizador.id,
+          nombre: organizador.nombre,
+          codigo: organizador.codigo,
+          type: 'organizador',
+          children: []
+        };
+
+        // Add cajoncitos for this organizador
+        const organizadorCajoncitos = cajoncitos.filter(c => c.organizadorId === organizador.id);
+        for (const cajoncito of organizadorCajoncitos) {
+          organizadorNode.children.push({
+            id: cajoncito.id,
+            nombre: cajoncito.nombre,
+            codigo: cajoncito.codigo,
+            type: 'cajoncito'
+          });
+        }
+
+        armarioNode.children.push(organizadorNode);
+      }
+
+      node.children.push(armarioNode);
+    }
+
+    // Add estanterias for this ubicacion
+    const ubicacionEstanterias = estanterias.filter(e => e.ubicacionId === ubicacion.id);
+    for (const estanteria of ubicacionEstanterias) {
+      const estanteriaNode: any = {
+        id: estanteria.id,
+        nombre: estanteria.nombre,
+        codigo: estanteria.codigo,
+        type: 'estanteria',
+        children: []
+      };
+
+      // Add estantes for this estanteria
+      const estanteriaEstantes = estantes.filter(e => e.estanteriaId === estanteria.id);
+      for (const estante of estanteriaEstantes) {
+        const estanteNode: any = {
+          id: estante.id,
+          nombre: estante.nombre,
+          codigo: estante.codigo,
+          type: 'estante',
+          children: []
+        };
+
+        // Cajones are attached to estanteria, not estante - this logic needs to be reviewed
+        // For now, we'll not include cajones under estante
+        const estanteCajones: any[] = [];
+        for (const cajon of estanteCajones) {
+          const cajonNode: any = {
+            id: cajon.id,
+            nombre: cajon.nombre,
+            codigo: cajon.codigo,
+            type: 'cajon',
+            children: []
+          };
+
+          // Add divisions for this cajon
+          const cajonDivisions = divisions.filter(d => d.cajonId === cajon.id);
+          for (const division of cajonDivisions) {
+            cajonNode.children.push({
+              id: division.id,
+              nombre: division.nombre,
+              codigo: division.codigo,
+              type: 'division'
+            });
+          }
+
+          estanteNode.children.push(cajonNode);
+        }
+
+        estanteriaNode.children.push(estanteNode);
+      }
+
+      // Add organizadores for this estanteria
+      const estanteriaOrganizadores = organizadores.filter(o => o.estanteriaId === estanteria.id);
+      for (const organizador of estanteriaOrganizadores) {
+        const organizadorNode: any = {
+          id: organizador.id,
+          nombre: organizador.nombre,
+          codigo: organizador.codigo,
+          type: 'organizador',
+          children: []
+        };
+
+        // Add cajoncitos for this organizador
+        const organizadorCajoncitos = cajoncitos.filter(c => c.organizadorId === organizador.id);
+        for (const cajoncito of organizadorCajoncitos) {
+          organizadorNode.children.push({
+            id: cajoncito.id,
+            nombre: cajoncito.nombre,
+            codigo: cajoncito.codigo,
+            type: 'cajoncito'
+          });
+        }
+
+        estanteriaNode.children.push(organizadorNode);
+      }
+
+      node.children.push(estanteriaNode);
+    }
+
+    locationTree.push(node);
+  }
+
+  return locationTree;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -23,6 +392,16 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search") || "";
     const type = searchParams.get("type") || "";
+    const tree = searchParams.get("tree") === "true";
+
+    // If requesting hierarchical tree structure
+    if (tree) {
+      const locationTree = await buildLocationTree();
+      return NextResponse.json<ApiResponse>({
+        success: true,
+        data: locationTree,
+      });
+    }
 
     // If requesting specific type (legacy support)
     if (type && type !== "ubicacion") {
@@ -179,19 +558,46 @@ export async function POST(req: NextRequest) {
     }
 
     const body: UbicacionFormData = await req.json();
-    const validatedData = UbicacionSchema.parse(body);
 
-    // Check if codigo already exists
-    const existingUbicacion = await prisma.ubicacion.findUnique({
-      where: { codigo: validatedData.codigo },
-    });
+    // Generate code automatically if not provided or empty
+    let finalData = { ...body };
+    if (!finalData.codigo || finalData.codigo.trim() === '') {
+      let generatedCode: string;
+      let attempts = 0;
+      const maxAttempts = 10;
 
-    if (existingUbicacion) {
-      return NextResponse.json<ApiResponse>(
-        { success: false, error: "El código de ubicación ya existe" },
-        { status: 409 }
+      do {
+        generatedCode = `LOC${Date.now().toString().slice(-6)}${attempts > 0 ? attempts.toString() : ''}`;
+        attempts++;
+      } while (
+        attempts < maxAttempts &&
+        await prisma.ubicacion.findUnique({ where: { codigo: generatedCode } })
       );
+
+      if (attempts >= maxAttempts) {
+        return NextResponse.json<ApiResponse>(
+          { success: false, error: "No se pudo generar un código único" },
+          { status: 500 }
+        );
+      }
+
+      finalData.codigo = generatedCode;
+    } else {
+      // Check if codigo already exists
+      const existingUbicacion = await prisma.ubicacion.findUnique({
+        where: { codigo: finalData.codigo },
+      });
+
+      if (existingUbicacion) {
+        return NextResponse.json<ApiResponse>(
+          { success: false, error: "El código de ubicación ya existe" },
+          { status: 409 }
+        );
+      }
     }
+
+    // Now validate with the complete data (codigo is guaranteed to be set at this point)
+    const validatedData = UbicacionSchema.parse(finalData as { codigo: string; nombre: string; descripcion?: string; isActive: boolean });
 
     const ubicacion = await prisma.ubicacion.create({
       data: validatedData,

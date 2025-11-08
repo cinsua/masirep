@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MapPin, Archive, Grid3x3, Edit, MoreVertical } from "lucide-react";
+import { MapPin, Archive, Grid3x3, Edit, Trash2 } from "lucide-react";
 
 export interface LocationCardProps {
   id: string;
@@ -42,8 +42,10 @@ export function LocationCard({
   showActions = false,
   className,
 }: LocationCardProps) {
-  const totalContent = itemCount ?? (armariosCount + estanteriasCount + cajonesCount);
-  const hasContent = totalContent > 0;
+  const subContainersCount = armariosCount + estanteriasCount + cajonesCount;
+  const totalContent = itemCount ?? subContainersCount;
+  const hasContent = totalContent > 0 || subContainersCount > 0;
+  const displayCount = itemCount !== undefined && itemCount > 0 ? itemCount : subContainersCount;
 
   const getIcon = () => {
     switch (type) {
@@ -95,15 +97,26 @@ export function LocationCard({
         className
       )}
       onClick={handleCardClick}
+      data-ai-tag="location-card"
+      data-ai-component="ubicaciones-location-card"
+      data-ai-type={type}
+      data-ai-id={id}
+      data-ai-active={isActive}
+      data-ai-codigo={codigo}
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" data-ai-tag="location-header-title">
             {getIcon()}
-            <CardTitle className="text-lg font-semibold">{nombre}</CardTitle>
+            <CardTitle className="text-lg font-semibold" data-ai-tag="location-name">{nombre}</CardTitle>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className={getTypeColor()}>
+            <Badge
+              variant="secondary"
+              className={getTypeColor()}
+              data-ai-tag="location-type-badge"
+              data-ai-type={type}
+            >
               {getTypeLabel()}
             </Badge>
             {showActions && (
@@ -116,28 +129,31 @@ export function LocationCard({
                     onEdit?.();
                   }}
                   className="h-8 w-8 p-0"
+                  data-ai-tag="location-edit-button"
+                  data-ai-action="edit"
                 >
                   <Edit className="h-3 w-3" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete?.();
-                  }}
-                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <MoreVertical className="h-3 w-3 rotate-90" />
-                </Button>
+                 <Button
+                   variant="ghost"
+                   size="sm"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     onDelete?.();
+                   }}
+                   className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                   data-ai-tag="location-delete-button"
+                   data-ai-action="delete"
+                 >
+                   <Trash2 className="h-3 w-3" />
+                 </Button>
               </div>
             )}
           </div>
         </div>
         <CardDescription className="text-sm">
-          <span className="font-mono">{codigo}</span>
           {!isActive && (
-            <Badge variant="destructive" className="ml-2 text-xs">
+            <Badge variant="destructive" className="ml-2 text-xs" data-ai-tag="location-inactive-badge">
               Inactivo
             </Badge>
           )}
@@ -165,14 +181,14 @@ export function LocationCard({
                 <span>{estanteriasCount}</span>
               </div>
             )}
-            {!hasContent && (
+            {!hasContent && subContainersCount === 0 && (
               <span className="text-xs italic">Vacío</span>
             )}
           </div>
 
           {hasContent && (
             <Badge variant="outline" className="text-xs">
-              {totalContent} unidad{totalContent !== 1 ? "es" : ""}
+              {displayCount} unidad{displayCount !== 1 ? "es" : ""}
             </Badge>
           )}
         </div>

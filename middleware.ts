@@ -26,8 +26,20 @@ export default withAuth(
       }
     }
 
+    // Rutas que están en el grupo (dashboard) pero no tienen /dashboard en la URL
+    const dashboardRoutes = [
+      "/ubicaciones",
+      "/componentes",
+      "/equipos",
+      "/repuestos",
+      "/reportes"
+    ];
+
     // Permitir acceso a rutas de dashboard para técnicos y admin
-    if (req.nextUrl.pathname.startsWith("/dashboard")) {
+    const isDashboardRoute = req.nextUrl.pathname.startsWith("/dashboard") ||
+                             dashboardRoutes.some(route => req.nextUrl.pathname.startsWith(route));
+
+    if (isDashboardRoute) {
       if (!isAdmin && !isTecnico) {
         return NextResponse.redirect(new URL("/auth/signin", req.url));
       }

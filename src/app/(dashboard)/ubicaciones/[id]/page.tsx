@@ -5,10 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { LocationCard, StorageTree, BreadcrumbNavigation, BreadcrumbItem } from "@/components/ubicaciones";
+import { LocationCard, StorageTree, ArmarioForm, EstanteriaForm } from "@/components/ubicaciones";
 import {
-  Search,
   Plus,
   ArrowLeft,
   MapPin,
@@ -74,9 +72,12 @@ export default function UbicacionDetailPage() {
   const [armarios, setArmarios] = useState<Armario[]>([]);
   const [estanterias, setEstanterias] = useState<Estanteria[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+
   const [viewMode, setViewMode] = useState<"grid" | "tree">("grid");
-  const [breadcrumbPath, setBreadcrumbPath] = useState<BreadcrumbItem[]>([]);
+  const [isArmarioFormOpen, setIsArmarioFormOpen] = useState(false);
+  const [isEstanteriaFormOpen, setIsEstanteriaFormOpen] = useState(false);
+  const [editingArmario, setEditingArmario] = useState<Armario | null>(null);
+  const [editingEstanteria, setEditingEstanteria] = useState<Estanteria | null>(null);
 
   useEffect(() => {
     if (ubicacionId) {
@@ -86,20 +87,7 @@ export default function UbicacionDetailPage() {
     }
   }, [ubicacionId]);
 
-  useEffect(() => {
-    if (ubicacion) {
-      setBreadcrumbPath([
-        {
-          id: ubicacion.id,
-          codigo: ubicacion.codigo,
-          nombre: ubicacion.nombre,
-          type: "ubicacion",
-          isActive: ubicacion.isActive,
-        },
-      ]);
-    }
-  }, [ubicacion]);
-
+  
   const fetchUbicacionDetails = async () => {
     try {
       const response = await fetch(`/api/ubicaciones/${ubicacionId}`);
@@ -117,7 +105,7 @@ export default function UbicacionDetailPage() {
 
   const fetchArmarios = async () => {
     try {
-      const response = await fetch(`/api/ubicaciones/${ubicacionId}/armarios${search ? `?search=${search}` : ""}`);
+      const response = await fetch(`/api/ubicaciones/${ubicacionId}/armarios`);
       const result = await response.json();
 
       if (result.success) {
@@ -132,7 +120,7 @@ export default function UbicacionDetailPage() {
 
   const fetchEstanterias = async () => {
     try {
-      const response = await fetch(`/api/ubicaciones/${ubicacionId}/estanterias${search ? `?search=${search}` : ""}`);
+      const response = await fetch(`/api/ubicaciones/${ubicacionId}/estanterias`);
       const result = await response.json();
 
       if (result.success) {
@@ -147,11 +135,7 @@ export default function UbicacionDetailPage() {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchArmarios();
-    fetchEstanterias();
-  };
+
 
   const handleNavigateToArmario = (armario: Armario) => {
     router.push(`/ubicaciones/${ubicacionId}/armarios/${armario.id}/cajones`);
@@ -161,10 +145,82 @@ export default function UbicacionDetailPage() {
     router.push(`/ubicaciones/${ubicacionId}/estanterias/${estanteria.id}/cajones`);
   };
 
-  const handleBreadcrumbNavigate = (item: BreadcrumbItem, index: number) => {
-    if (index === 0) {
-      // Navigate back to main ubicaciones page
-      router.push("/ubicaciones");
+  
+  const handleCreateArmario = () => {
+    setEditingArmario(null);
+    setIsArmarioFormOpen(true);
+  };
+
+  const handleCreateEstanteria = () => {
+    setEditingEstanteria(null);
+    setIsEstanteriaFormOpen(true);
+  };
+
+
+
+  const handleEditArmario = (armario: Armario) => {
+    setEditingArmario(armario);
+    setIsArmarioFormOpen(true);
+  };
+
+  const handleEditEstanteria = (estanteria: Estanteria) => {
+    setEditingEstanteria(estanteria);
+    setIsEstanteriaFormOpen(true);
+  };
+
+  const handleDeleteArmario = async (armario: Armario) => {
+    if (armario._count.cajones > 0 || armario._count.organizadores > 0 || armario._count.repuestos > 0) {
+      alert("No se puede eliminar el armario porque contiene cajones, organizadores o repuestos asociados");
+      return;
+    }
+
+    if (!confirm(`¿Estás seguro de que quieres eliminar el armario "${armario.nombre}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/ubicaciones/${ubicacionId}/armarios/${armario.id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        await fetchArmarios();
+      } else {
+        alert(`Error al eliminar armario: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting armario:", error);
+      alert("Error al eliminar el armario");
+    }
+  };
+
+  const handleDeleteEstanteria = async (estanteria: Estanteria) => {
+    if (estanteria._count.cajones > 0 || estanteria._count.estantes > 0 || estanteria._count.organizadores > 0 || estanteria._count.repuestos > 0) {
+      alert("No se puede eliminar la estantería porque contiene cajones, estantes, organizadores o repuestos asociados");
+      return;
+    }
+
+    if (!confirm(`¿Estás seguro de que quieres eliminar la estantería "${estanteria.nombre}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/ubicaciones/${ubicacionId}/estanterias/${estanteria.id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        await fetchEstanterias();
+      } else {
+        alert(`Error al eliminar estantería: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting estanteria:", error);
+      alert("Error al eliminar la estantería");
     }
   };
 
@@ -244,27 +300,14 @@ export default function UbicacionDetailPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header with Breadcrumb */}
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-2 text-sm">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/ubicaciones")}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Volver
-          </Button>
-        </div>
-
-        <BreadcrumbNavigation
-          items={breadcrumbPath}
-          onNavigate={handleBreadcrumbNavigate}
-          showIcons={true}
-          showTypes={true}
-        />
-
+    <div
+      className="container mx-auto p-6 space-y-6"
+      data-ai-tag="ubicacion-detail-page"
+      data-ai-component="ubicaciones-detail"
+      data-ai-ubicacion-id={ubicacionId}
+    >
+      {/* Header */}
+      <div className="flex flex-col gap-4" data-ai-tag="page-header">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -272,9 +315,6 @@ export default function UbicacionDetailPage() {
               {ubicacion.nombre}
             </h1>
             <div className="flex items-center gap-2 mt-2">
-              <Badge variant="outline" className="font-mono">
-                {ubicacion.codigo}
-              </Badge>
               {ubicacion.descripcion && (
                 <span className="text-muted-foreground">{ubicacion.descripcion}</span>
               )}
@@ -284,11 +324,11 @@ export default function UbicacionDetailPage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button>
+            <Button onClick={handleCreateArmario}>
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Armario
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleCreateEstanteria}>
               <Plus className="h-4 w-4 mr-2" />
               Nueva Estantería
             </Button>
@@ -362,21 +402,6 @@ export default function UbicacionDetailPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearch} className="flex gap-2 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar armarios o estanterías..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button type="submit">
-              <Search className="h-4 w-4 mr-2" />
-              Buscar
-            </Button>
-          </form>
 
           {viewMode === "tree" ? (
             <StorageTree
@@ -403,21 +428,25 @@ export default function UbicacionDetailPage() {
                     <Archive className="h-5 w-5 text-blue-600" />
                     Armarios ({armarios.length})
                   </h3>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {armarios.map((armario) => (
-                      <LocationCard
-                        key={armario.id}
-                        id={armario.id}
-                        codigo={armario.codigo}
-                        nombre={armario.nombre}
-                        descripcion={armario.descripcion}
-                        isActive={armario.isActive}
-                        type="armario"
-                        itemCount={armario._count.repuestos}
-                        onClick={() => handleNavigateToArmario(armario)}
-                      />
-                    ))}
-                  </div>
+                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {armarios.map((armario) => (
+                        <LocationCard
+                          key={armario.id}
+                          id={armario.id}
+                          codigo={armario.codigo}
+                          nombre={armario.nombre}
+                          descripcion={armario.descripcion}
+                          isActive={armario.isActive}
+                          type="armario"
+                          itemCount={armario._count.repuestos}
+                          cajonesCount={armario._count.cajones}
+                          onClick={() => handleNavigateToArmario(armario)}
+                          onEdit={() => handleEditArmario(armario)}
+                          onDelete={() => handleDeleteArmario(armario)}
+                          showActions={true}
+                        />
+                      ))}
+                   </div>
                 </div>
               )}
 
@@ -428,21 +457,26 @@ export default function UbicacionDetailPage() {
                     <Grid3x3 className="h-5 w-5 text-green-600" />
                     Estanterías ({estanterias.length})
                   </h3>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {estanterias.map((estanteria) => (
-                      <LocationCard
-                        key={estanteria.id}
-                        id={estanteria.id}
-                        codigo={estanteria.codigo}
-                        nombre={estanteria.nombre}
-                        descripcion={estanteria.descripcion}
-                        isActive={estanteria.isActive}
-                        type="estanteria"
-                        itemCount={estanteria._count.repuestos}
-                        onClick={() => handleNavigateToEstanteria(estanteria)}
-                      />
-                    ))}
-                  </div>
+                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {estanterias.map((estanteria) => (
+                        <LocationCard
+                          key={estanteria.id}
+                          id={estanteria.id}
+                          codigo={estanteria.codigo}
+                          nombre={estanteria.nombre}
+                          descripcion={estanteria.descripcion}
+                          isActive={estanteria.isActive}
+                          type="estanteria"
+                          itemCount={estanteria._count.repuestos}
+                          cajonesCount={estanteria._count.cajones}
+                          estanteriasCount={estanteria._count.estantes}
+                          onClick={() => handleNavigateToEstanteria(estanteria)}
+                          onEdit={() => handleEditEstanteria(estanteria)}
+                          onDelete={() => handleDeleteEstanteria(estanteria)}
+                          showActions={true}
+                        />
+                      ))}
+                   </div>
                 </div>
               )}
 
@@ -454,11 +488,11 @@ export default function UbicacionDetailPage() {
                     Esta ubicación aún no tiene armarios ni estanterías
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <Button>
+                    <Button onClick={handleCreateArmario}>
                       <Plus className="h-4 w-4 mr-2" />
                       Agregar Armario
                     </Button>
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={handleCreateEstanteria}>
                       <Plus className="h-4 w-4 mr-2" />
                       Agregar Estantería
                     </Button>
@@ -469,6 +503,100 @@ export default function UbicacionDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Armario Form Modal */}
+      <ArmarioForm
+        isOpen={isArmarioFormOpen}
+        onClose={() => {
+          setIsArmarioFormOpen(false);
+          setEditingArmario(null);
+        }}
+        onSubmit={async (formData: any) => {
+          const url = editingArmario
+            ? `/api/ubicaciones/${ubicacionId}/armarios/${editingArmario.id}`
+            : `/api/ubicaciones/${ubicacionId}/armarios`;
+
+          const method = editingArmario ? "PUT" : "POST";
+
+          const response = await fetch(url, {
+            method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(editingArmario ? formData : formData),
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.error || `Error al ${editingArmario ? 'editar' : 'crear'} el armario`);
+          }
+
+          await fetchArmarios();
+          setIsArmarioFormOpen(false);
+          setEditingArmario(null);
+        }}
+        initialData={editingArmario ? {
+          codigo: editingArmario.codigo,
+          nombre: editingArmario.nombre,
+          descripcion: editingArmario.descripcion,
+          isActive: editingArmario.isActive,
+        } : undefined}
+        ubicacionCodigo={ubicacion?.codigo}
+        ubicacionId={ubicacionId}
+        title={editingArmario ? "Editar Armario" : "Nuevo Armario"}
+        description={editingArmario
+          ? "Edita los datos del armario seleccionado"
+          : "Crea un nuevo armario en esta ubicación"
+        }
+      />
+
+      {/* Estanteria Form Modal */}
+      <EstanteriaForm
+        isOpen={isEstanteriaFormOpen}
+        onClose={() => {
+          setIsEstanteriaFormOpen(false);
+          setEditingEstanteria(null);
+        }}
+        onSubmit={async (formData: any) => {
+          const url = editingEstanteria
+            ? `/api/ubicaciones/${ubicacionId}/estanterias/${editingEstanteria.id}`
+            : `/api/ubicaciones/${ubicacionId}/estanterias`;
+
+          const method = editingEstanteria ? "PUT" : "POST";
+
+          const response = await fetch(url, {
+            method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(editingEstanteria ? formData : formData),
+          });
+
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.error || `Error al ${editingEstanteria ? 'editar' : 'crear'} la estantería`);
+          }
+
+          await fetchEstanterias();
+          setIsEstanteriaFormOpen(false);
+          setEditingEstanteria(null);
+        }}
+        initialData={editingEstanteria ? {
+          codigo: editingEstanteria.codigo,
+          nombre: editingEstanteria.nombre,
+          descripcion: editingEstanteria.descripcion,
+          isActive: editingEstanteria.isActive,
+        } : undefined}
+        ubicacionCodigo={ubicacion?.codigo}
+        ubicacionId={ubicacionId}
+        title={editingEstanteria ? "Editar Estantería" : "Nueva Estantería"}
+        description={editingEstanteria
+          ? "Edita los datos de la estantería seleccionada"
+          : "Crea una nueva estantería en esta ubicación"
+        }
+      />
     </div>
   );
 }

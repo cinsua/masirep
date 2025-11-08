@@ -55,16 +55,64 @@ export async function GET(req: NextRequest, { params }: Params) {
             cajones: true,
             estantes: true,
             organizadores: true,
-            repuestos: true,
           }
         }
       }
     });
 
+    // Count repuestos for each estanteria
+    const estanteriasWithRepuestosCount = await Promise.all(
+      estanterias.map(async (estanteria) => {
+        const repuestosCount = await prisma.repuestoUbicacion.count({
+          where: {
+            OR: [
+              { estanteriaId: estanteria.id },
+              {
+                cajonId: {
+                  in: (await prisma.cajon.findMany({
+                    where: { estanteriaId: estanteria.id },
+                    select: { id: true }
+                  })).map(c => c.id)
+                }
+              },
+              {
+                estanteId: {
+                  in: (await prisma.estante.findMany({
+                    where: { estanteriaId: estanteria.id },
+                    select: { id: true }
+                  })).map(e => e.id)
+                }
+              },
+              {
+                divisionId: {
+                  in: (await prisma.division.findMany({
+                    where: {
+                      cajon: {
+                        estanteriaId: estanteria.id
+                      }
+                    },
+                    select: { id: true }
+                  })).map(d => d.id)
+                }
+              }
+            ]
+          }
+        });
+
+        return {
+          ...estanteria,
+          _count: {
+            ...estanteria._count,
+            repuestos: repuestosCount
+          }
+        };
+      })
+    );
+
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
-        estanterias,
+        estanterias: estanteriasWithRepuestosCount,
         ubicacion: {
           id: ubicacion.id,
           codigo: ubicacion.codigo,
@@ -151,3 +199,4 @@ export async function POST(req: NextRequest, { params }: Params) {
     );
   }
 }
+

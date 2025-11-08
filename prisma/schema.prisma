@@ -275,6 +275,13 @@ model RepuestoUbicacion {
   armario      Armario?    @relation(fields: [armarioId], references: [id], onDelete: Cascade)
   repuesto     Repuesto    @relation(fields: [repuestoId], references: [id], onDelete: Cascade)
 
+  @@index([repuestoId])
+  @@index([armarioId])
+  @@index([estanteriaId])
+  @@index([estanteId])
+  @@index([cajonId])
+  @@index([divisionId])
+  @@index([createdAt])
   @@map("repuesto_ubicacion")
 }
 
@@ -289,6 +296,9 @@ model ComponenteUbicacion {
   componente   Componente @relation(fields: [componenteId], references: [id], onDelete: Cascade)
 
   @@unique([componenteId, cajoncitoId])
+  @@index([componenteId])
+  @@index([cajoncitoId])
+  @@index([createdAt])
   @@map("componente_ubicacion")
 }
 

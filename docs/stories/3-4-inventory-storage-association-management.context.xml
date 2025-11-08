@@ -1,0 +1,132 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>4</storyId>
+    <title>Inventory-Storage Association Management</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-4-inventory-storage-association-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>maintenance technician</asA>
+    <iWant>associate repuestos and componentes with their specific storage locations</iWant>
+    <soThat>the system accurately reflects where every item is physically located</soThat>
+    <tasks>Task 1: Backend API - Association Management (AC: 1, 2, 8, 9, 10, 11)
+  - Subtask 1.1: Implement /api/repuestos/[id]/ubicaciones endpoints (GET, POST) with quantity tracking
+  - Subtask 1.2: Implement /api/componentes/[id]/ubicaciones endpoints (GET, POST) for cajoncitos only
+  - Subtask 1.3: Implement PUT/DELETE /api/repuestos/[id]/ubicaciones/[assocId] for quantity updates
+  - Subtask 1.4: Implement PUT/DELETE /api/componentes/[id]/ubicaciones/[assocId] for quantity updates
+  - Subtask 1.5: Create validation schemas for associations with Spanish error messages
+
+- [ ] Task 2: Backend API - Location Contents Management (AC: 5)
+  - Subtask 2.1: Implement /api/ubicaciones/[id]/contents endpoint to show all items at location
+  - Subtask 2.2: Implement recursive content loading for hierarchical locations
+  - Subtask 2.3: Add content aggregation for parent locations (show total items in children)
+  - Subtask 2.4: Implement content filtering by item type (repuestos vs componentes)
+
+- [ ] Task 3: Backend API - Stock Calculation Engine (AC: 7)
+  - Subtask 3.1: Create stock calculation service for real-time stock across locations
+  - Subtask 3.2: Implement stock recalculation triggers on association changes
+  - Subtask 3.3: Add distributed stock view showing quantities by location
+  - Subtask 3.4: Optimize stock queries for performance with proper indexes
+
+- [ ] Task 4: Frontend Interface - Association Panel (AC: 4, 6)
+  - Subtask 4.1: Create AssociationPanel component for item-location assignment workflow
+  - Subtask 4.2: Implement LocationPicker with hierarchical navigation and search
+  - Subtask 4.3: Add quantity input controls with validation
+  - Subtask 4.4: Create confirmation dialogs for association creation/deletion
+  - Subtask 4.5: Add bulk association operations for multiple items
+
+- [ ] Task 5: Frontend Interface - Location Contents Viewer (AC: 3, 5)
+  - Subtask 5.1: Create LocationContentsPanel component showing items at any location
+  - Subtask 5.2: Implement visual indicators for item counts in storage hierarchy views
+  - Subtask 5.3: Add content summary badges in LocationCard, StorageTree components
+  - Subtask 5.4: Create content detail view with item information and quantities
+  - Subtask 5.5: Implement content search and filtering within locations
+
+- [ ] Task 6: Integration with Existing Components (AC: 3)
+  - Subtask 6.1: Update LocationCard to show item count indicators
+  - Subtask 6.2: Update StorageTree to show content summaries for each node
+  - Subtask 6.3: Add "Ver Contenidos" quick actions to storage unit cards
+  - Subtask 6.4: Integrate association management in existing item detail views
+  - Subtask 6.5: Add stock breakdown by location to repuestos/componentes detail views
+
+- [ ] Task 7: Testing and Validation (AC: All)
+  - Subtask 7.1: Write unit tests for association API endpoints (CRUD, validation, stock recalculation)
+  - Subtask 7.2: Write unit tests for location contents API with hierarchical queries
+  - Subtask 7.3: Test validation rules (componentes to cajoncitos only, positive quantities, no duplicates)
+  - Subtask 7.4: Test frontend association workflow components and user interactions
+  - Subtask 7.5: Validate stock calculation accuracy across complex association scenarios
+  - Subtask 7.6: Performance testing for content loading in large storage hierarchies</tasks>
+  </story>
+
+  <acceptanceCriteria>1. Soportar múltiples ubicaciones por item
+2. Seguimiento de cantidad por ubicación
+3. Indicadores visuales de items en cada ubicación
+4. Operaciones fáciles de agregar/eliminar asociaciones
+5. Ver qué items están almacenados en cada ubicación
+6. Actualizar cantidades en ubicaciones específicas
+7. Ver cálculo automático de stock total across locations
+8. Componentes solo pueden asignarse a cajoncitos
+9. Repuestos pueden asignarse a cualquier tipo de almacenamiento
+10. Cantidades deben ser positivas
+11. No permite duplicados en misma ubicación</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact path="docs/epics.md" title="Masirep - Epic Breakdown" section="Epic 3: Hierarchical Storage System" snippet="Epic 3 builds the complete physical storage hierarchy that allows technicians to navigate and organize inventory exactly as it exists in the real world. Story 3.4 implements the critical association system that links inventory items with their physical storage locations." />
+      <artifact path="docs/architecture.md" title="Masirep - Architecture Decision Document" section="Data Architecture" snippet="Complete database schema with RepuestoUbicacion and ComponenteUbicacion models for many-to-many relationships. Polymorphic storage location associations with quantity tracking per location." />
+      <artifact path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="AC-3.4: Inventory-Storage Association Management" snippet="Complete API contracts for association management with validation rules: components only to cajoncitos, positive quantities, no duplicates in same location." />
+      <artifact path="docs/stories/3-3-organizers-compartments-system.md" title="Story 3.3: Organizers and Compartments System" section="Previous Story Patterns" snippet="Assignment workflow patterns from CajoncitoAssignmentPanel and ComponenteAssignmentForm provide foundation for general AssociationPanel with location picker." />
+    </docs>
+    <code>
+      <artifact path="src/app/api/componentes/[id]/ubicaciones/route.ts" kind="api" symbol="ComponenteUbicacionAPI" lines="1-205" reason="Existing pattern for component-location associations. Provides GET and POST endpoints with validation, transaction handling, and Spanish error messages. Template for repuestos association endpoints." />
+      <artifact path="src/components/ubicaciones/componente-assignment-form.tsx" kind="component" symbol="ComponenteAssignmentForm" lines="1-370" reason="Complete assignment workflow with search, selection, quantity input, and confirmation. Provides reusable pattern for general AssociationPanel with location picker instead of specific cajoncito assignment." />
+      <artifact path="prisma/schema.prisma" kind="schema" symbol="RepuestoUbicacion" lines="260-279" reason="Polymorphic association model supporting all storage types (armarioId, estanteriaId, estanteId, cajonId, divisionId). Includes quantity tracking and cascade delete constraints." />
+      <artifact path="prisma/schema.prisma" kind="schema" symbol="ComponenteUbicacion" lines="281-293" reason="Association model for components to cajoncitos only. Includes unique constraint [componenteId, cajoncitoId] and quantity tracking." />
+      <artifact path="src/lib/validations/organizador.ts" kind="validation" symbol="ZodValidationPattern" lines="1-76" reason="Spanish-language validation patterns with refine logic for mutually exclusive fields. Template for association validation schemas." />
+      <artifact path="src/types/api.ts" kind="types" symbol="APIResponse" lines="1-27" reason="Standard API response format used across all endpoints. Consistent success/error structure with optional pagination." />
+      <artifact path="src/types/api.ts" kind="types" symbol="RepuestoWithRelations" lines="47-110" reason="Complete type definition including ubicaciones array with polymorphic location relationships and nested location objects." />
+    </code>
+    <dependencies>
+  <dependency name="prisma" version="6.19.0" category="database" purpose="ORM for polymorphic association queries and transactions" />
+  <dependency name="@prisma/client" version="6.19.0" category="database" purpose="Type-safe database access for association CRUD operations" />
+  <dependency name="next-auth" version="4.24.13" category="authentication" purpose="Session management and route protection for association endpoints" />
+  <dependency name="@auth/prisma-adapter" version="2.11.1" category="authentication" purpose="Database session storage for user authentication" />
+  <dependency name="react-hook-form" version="7.66.0" category="forms" purpose="Association form handling with validation integration" />
+  <dependency name="@hookform/resolvers" version="5.2.2" category="validation" purpose="Zod schema integration for form validation" />
+  <dependency name="zod" version="4.1.12" category="validation" purpose="Spanish-language validation schemas for association operations" />
+  <dependency name="@radix-ui/react-dialog" version="1.1.15" category="ui" purpose="Modal dialogs for association creation workflows" />
+  <dependency name="@radix-ui/react-alert-dialog" version="1.1.15" category="ui" purpose="Confirmation dialogs for destructive association operations" />
+  <dependency name="@radix-ui/react-tabs" version="1.1.13" category="ui" purpose="Tabbed interface for repuestos vs componentes associations" />
+  <dependency name="next" version="16.0.1" category="framework" purpose="Next.js App Router for server-side association API routes" />
+  <dependency name="react" version="19.2.0" category="ui" purpose="React components for association management interface" />
+  <dependency name="typescript" version="5" category="language" purpose="Type safety for association interfaces and API contracts" />
+</dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint name="Component Assignment Restriction" description="Components can only be assigned to cajoncitos (small compartments), not to any other storage type. This is enforced at both API and UI level." source="prisma/schema.prisma:ComponenteUbicacion" />
+    <constraint name="Repuesto Assignment Flexibility" description="Repuestos can be assigned to any storage type: armarios, estanterias, estantes, cajones, divisiones, or cajoncitos through polymorphic relationship." source="prisma/schema.prisma:RepuestoUbicacion" />
+    <constraint name="Positive Quantities Only" description="All association quantities must be positive integers (> 0). Zero or negative quantities are rejected with Spanish error messages." source="src/app/api/componentes/[id]/ubicaciones/route.ts:116" />
+    <constraint name="No Duplicates in Same Location" description="Same item cannot be assigned to same location multiple times. Unique constraints enforced at database level [componenteId, cajoncitoId] and validation in API." source="prisma/schema.prisma:291" />
+    <constraint name="Authentication Required" description="All association operations require valid user session via NextAuth.js middleware." source="src/app/api/componentes/[id]/ubicaciones/route.ts:14-20" />
+    <constraint name="Transaction Safety" description="All association CRUD operations must use Prisma transactions to ensure data consistency and enable rollback on errors." source="src/app/api/componentes/[id]/ubicaciones/route.ts:165" />
+    <constraint name="Spanish Language Validation" description="All validation error messages, UI labels, and user-facing text must be in Spanish." source="src/lib/validations/organizador.ts:6" />
+  </constraints>
+  <interfaces>
+    <interface name="Repuesto Association API" kind="REST endpoints" signature="GET/POST /api/repuestos/[id]/ubicaciones + PUT/DELETE /api/repuestos/[id]/ubicaciones/[assocId]" path="To be implemented following componente pattern" />
+    <interface name="Componente Association API" kind="REST endpoints" signature="GET/POST /api/componentes/[id]/ubicaciones + PUT/DELETE /api/componentes/[id]/ubicaciones/[ubicacionId]" path="src/app/api/componentes/[id]/ubicaciones/route.ts" />
+    <interface name="Association Panel Component" kind="React component" signature="AssociationPanel({ itemType, itemId, onAssociationUpdate })" path="To be implemented extending ComponenteAssignmentForm" />
+    <interface name="Location Picker Component" kind="React component" signature="LocationPicker({ itemType, onLocationSelect, selectedLocation })" path="To be implemented with hierarchical navigation" />
+    <interface name="Location Contents API" kind="REST endpoint" signature="GET /api/ubicaciones/[id]/contents?itemType=repuestos|componentes" path="To be implemented for hierarchical content viewing" />
+    <interface name="Stock Calculation Service" kind="Service class" signature="calculateStock(itemId, itemType) => Promise&lt;{ total: number, byLocation: LocationStock[] }&gt;" path="To be implemented in src/lib/services/stock-calculator.ts" />
+  </interfaces>
+  <tests>
+    <standards>Testing follows Jest + Testing Library patterns with comprehensive API endpoint testing using mocked Prisma clients. Component testing uses React Testing Library with user interaction simulation. All tests use Spanish error messages and follow the established patterns from existing componente ubicaciones tests. Performance testing targets: association operations &lt; 1 second, content loading &lt; 2 seconds.</standards>
+    <locations>API tests: src/app/api/**/__tests__/route.test.ts. Component tests: src/components/**/__tests__/*.test.tsx. Validation tests: src/lib/validations/__tests__/*.test.ts. Run tests with npm run test, npm run test:watch for development, npm run test:coverage for coverage reports.</locations>
+    <ideas>Test AC-1 (multiple locations per item): Create test that assigns same repuesto to armario + cajoncito, verify both associations exist. Test AC-8 (componentes only to cajoncitos): Attempt to assign componente to armario, expect 400 error with Spanish message. Test AC-11 (no duplicates): Try to create duplicate association, expect 409 conflict response. Test stock recalculation: Create association, verify stock total updates correctly across all locations. Test hierarchical content loading: Test /api/ubicaciones/[id]/contents returns aggregated items from child locations.</ideas>
+  </tests>
+</story-context>

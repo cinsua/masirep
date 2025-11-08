@@ -3,8 +3,8 @@ import { z } from "zod";
 export const UbicacionSchema = z.object({
   codigo: z
     .string()
-    .min(1, "El código es requerido")
-    .max(50, "El código no puede exceder 50 caracteres"),
+    .max(50, "El código no puede exceder 50 caracteres")
+    .optional(),
   nombre: z
     .string()
     .min(1, "El nombre es requerido")
@@ -64,7 +64,7 @@ export const UbicacionSearchParamsSchema = z.object({
   search: z.string().max(100).optional(),
   sortBy: z.enum(["codigo", "nombre", "createdAt"]).default("codigo"),
   sortOrder: z.enum(["asc", "desc"]).default("asc"),
-  isActive: z.enum(["true", "false"]).optional().transform(val => val === "true"),
+  isActive: z.enum(["true", "false"]).optional().transform(val => val === "true" ? true : val === "false" ? false : undefined),
 });
 
 export type UbicacionFormData = z.infer<typeof UbicacionSchema>;

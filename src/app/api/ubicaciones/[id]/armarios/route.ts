@@ -54,16 +54,56 @@ export async function GET(req: NextRequest, { params }: Params) {
           select: {
             cajones: true,
             organizadores: true,
-            repuestos: true,
           }
         }
       }
     });
 
+    // Count repuestos for each armario
+    const armariosWithRepuestosCount = await Promise.all(
+      armarios.map(async (armario) => {
+        const repuestosCount = await prisma.repuestoUbicacion.count({
+          where: {
+            OR: [
+              { armarioId: armario.id },
+              {
+                cajonId: {
+                  in: (await prisma.cajon.findMany({
+                    where: { armarioId: armario.id },
+                    select: { id: true }
+                  })).map(c => c.id)
+                }
+              },
+              {
+                divisionId: {
+                  in: (await prisma.division.findMany({
+                    where: {
+                      cajon: {
+                        armarioId: armario.id
+                      }
+                    },
+                    select: { id: true }
+                  })).map(d => d.id)
+                }
+              }
+            ]
+          }
+        });
+
+        return {
+          ...armario,
+          _count: {
+            ...armario._count,
+            repuestos: repuestosCount
+          }
+        };
+      })
+    );
+
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
-        armarios,
+        armarios: armariosWithRepuestosCount,
         ubicacion: {
           id: ubicacion.id,
           codigo: ubicacion.codigo,
@@ -149,3 +189,4 @@ export async function POST(req: NextRequest, { params }: Params) {
     );
   }
 }
+

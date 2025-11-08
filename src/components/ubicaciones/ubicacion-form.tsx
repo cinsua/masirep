@@ -20,7 +20,7 @@ import { z } from "zod";
 import { UbicacionSchema } from "@/lib/validations/ubicacion";
 
 interface UbicacionFormData {
-  codigo: string;
+  codigo?: string;
   nombre: string;
   descripcion?: string;
   isActive: boolean;
@@ -44,7 +44,6 @@ export function UbicacionForm({
   description,
 }: UbicacionFormProps) {
   const [formData, setFormData] = useState<UbicacionFormData>({
-    codigo: "",
     nombre: "",
     descripcion: "",
     isActive: true,
@@ -57,14 +56,12 @@ export function UbicacionForm({
   useEffect(() => {
     if (initialData) {
       setFormData({
-        codigo: initialData.codigo || "",
         nombre: initialData.nombre || "",
         descripcion: initialData.descripcion || "",
         isActive: initialData.isActive ?? true,
       });
     } else {
       setFormData({
-        codigo: "",
         nombre: "",
         descripcion: "",
         isActive: true,
@@ -117,51 +114,39 @@ export function UbicacionForm({
   const handleInputChange = (field: keyof UbicacionFormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error for this field when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+    if (errors[field as string]) {
+      setErrors(prev => ({ ...prev, [field as string]: "" }));
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent
+        className="sm:max-w-[500px]"
+        data-ai-tag="ubicacion-form-dialog"
+        data-ai-component="ubicaciones-form"
+      >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2" data-ai-tag="form-title">
             <MapPin className="h-5 w-5" />
             {title}
           </DialogTitle>
           {description && (
-            <DialogDescription>{description}</DialogDescription>
+            <DialogDescription data-ai-tag="form-description">{description}</DialogDescription>
           )}
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" data-ai-tag="ubicacion-form">
           {submitError && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" data-ai-tag="form-error-alert">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{submitError}</AlertDescription>
+              <AlertDescription data-ai-tag="form-error-message">{submitError}</AlertDescription>
             </Alert>
           )}
 
           <div className="grid gap-4">
             <div className="space-y-2">
-              <Label htmlFor="codigo">
-                Código <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="codigo"
-                placeholder="Ej: ACERIA, MASI, REDUCCION"
-                value={formData.codigo}
-                onChange={(e) => handleInputChange("codigo", e.target.value)}
-                className={errors.codigo ? "border-red-500" : ""}
-              />
-              {errors.codigo && (
-                <p className="text-sm text-red-500">{errors.codigo}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="nombre">
+              <Label htmlFor="nombre" data-ai-tag="form-nombre-label">
                 Nombre <span className="text-red-500">*</span>
               </Label>
               <Input
@@ -170,23 +155,27 @@ export function UbicacionForm({
                 value={formData.nombre}
                 onChange={(e) => handleInputChange("nombre", e.target.value)}
                 className={errors.nombre ? "border-red-500" : ""}
+                data-ai-tag="form-nombre-input"
+                data-ai-field="nombre"
               />
               {errors.nombre && (
-                <p className="text-sm text-red-500">{errors.nombre}</p>
+                <p className="text-sm text-red-500" data-ai-tag="form-nombre-error">{errors.nombre}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="descripcion">Descripción</Label>
+              <Label htmlFor="descripcion" data-ai-tag="form-descripcion-label">Descripción</Label>
               <Textarea
                 id="descripcion"
                 placeholder="Describe la ubicación, su propósito o características especiales..."
                 value={formData.descripcion || ""}
                 onChange={(e) => handleInputChange("descripcion", e.target.value)}
                 rows={3}
+                data-ai-tag="form-descripcion-input"
+                data-ai-field="descripcion"
               />
               {errors.descripcion && (
-                <p className="text-sm text-red-500">{errors.descripcion}</p>
+                <p className="text-sm text-red-500" data-ai-tag="form-descripcion-error">{errors.descripcion}</p>
               )}
             </div>
 
@@ -197,6 +186,8 @@ export function UbicacionForm({
                 checked={formData.isActive}
                 onChange={(e) => handleInputChange("isActive", e.target.checked)}
                 className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                data-ai-tag="form-is-active-checkbox"
+                data-ai-field="isActive"
               />
               <Label htmlFor="isActive" className="text-sm">
                 Ubicación activa

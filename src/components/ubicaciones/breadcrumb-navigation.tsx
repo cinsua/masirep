@@ -130,13 +130,18 @@ export function BreadcrumbNavigation({
     : items;
 
   return (
-    <nav className={cn("flex items-center gap-2 text-sm flex-wrap", className)}>
+    <nav
+      className={cn("flex items-center gap-2 text-sm flex-wrap", className)}
+      data-ai-tag="breadcrumb-navigation"
+      data-ai-component="ubicaciones-breadcrumb"
+    >
       {/* Home/Root link */}
       <Button
         variant="ghost"
         size="sm"
         className="h-6 px-2 text-muted-foreground hover:text-foreground"
         onClick={() => handleItemClick(items[0], 0)}
+        data-ai-tag="breadcrumb-home"
       >
         <Home className="h-4 w-4" />
       </Button>
@@ -150,7 +155,7 @@ export function BreadcrumbNavigation({
         if (isEllipsis) {
           return (
             <React.Fragment key="ellipsis">
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground" data-ai-tag="breadcrumb-ellipsis" />
               <span className="text-muted-foreground">...</span>
             </React.Fragment>
           );
@@ -158,9 +163,9 @@ export function BreadcrumbNavigation({
 
         return (
           <React.Fragment key={item.id}>
-            <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" data-ai-tag="breadcrumb-chevron" />
 
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center gap-2 min-w-0" data-ai-tag={`breadcrumb-element-${item.type}`}>
               {showIcons && getIcon(item.type)}
 
               <Button
@@ -175,6 +180,7 @@ export function BreadcrumbNavigation({
                 )}
                 onClick={() => handleItemClick(item, actualIndex)}
                 disabled={isLastItem}
+                data-ai-tag={`breadcrumb-button-${item.type}-${index}`}
               >
                 <span className="truncate max-w-[150px]">{item.nombre}</span>
               </Button>
@@ -183,13 +189,14 @@ export function BreadcrumbNavigation({
                 <Badge
                   variant="secondary"
                   className={cn("text-xs", getTypeColor(item.type))}
+                  data-ai-tag={`breadcrumb-type-${item.type}`}
                 >
                   {getTypeLabel(item.type)}
                 </Badge>
               )}
 
               {!item.isActive && (
-                <Badge variant="destructive" className="text-xs">
+                <Badge variant="destructive" className="text-xs" data-ai-tag="breadcrumb-inactive">
                   Inactivo
                 </Badge>
               )}

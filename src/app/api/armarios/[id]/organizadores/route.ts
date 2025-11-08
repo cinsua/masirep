@@ -31,6 +31,24 @@ async function generateOrganizadorCode(armarioId: string): Promise<string> {
   return "ORG-001";
 }
 
+// Helper function to generate cajoncito code
+function generateCajoncitoCode(index: number): string {
+  return `CAJ-${index.toString().padStart(3, '0')}`;
+}
+
+// Helper function to create cajoncitos for an organizador
+async function createCajoncitosForOrganizador(organizadorId: string, cantidad: number): Promise<void> {
+  const cajoncitos = Array.from({ length: cantidad }, (_, index) => ({
+    codigo: generateCajoncitoCode(index + 1),
+    nombre: `Cajoncito ${index + 1}`,
+    organizadorId,
+  }));
+
+  await prisma.cajoncito.createMany({
+    data: cajoncitos,
+  });
+}
+
 export async function GET(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions);
@@ -159,9 +177,26 @@ export async function POST(req: NextRequest, { params }: Params) {
       }
     });
 
+    // Create cajoncitos automatically if cantidadCajoncitos is provided
+    if (validatedData.cantidadCajoncitos && validatedData.cantidadCajoncitos > 0) {
+      await createCajoncitosForOrganizador(organizador.id, validatedData.cantidadCajoncitos);
+    }
+
+    // Fetch the organizador again with the cajoncitos count
+    const updatedOrganizador = await prisma.organizador.findUnique({
+      where: { id: organizador.id },
+      include: {
+        _count: {
+          select: {
+            cajoncitos: true,
+          }
+        }
+      }
+    });
+
     return NextResponse.json<ApiResponse>({
       success: true,
-      data: organizador,
+      data: updatedOrganizador,
     }, { status: 201 });
   } catch (error) {
     console.error("Error creating organizador:", error);

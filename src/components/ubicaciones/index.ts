@@ -3,6 +3,10 @@ export type { LocationCardProps } from "./location-card";
 
 export { UbicacionForm } from "./ubicacion-form";
 
+export { ArmarioForm } from "./armario-form";
+
+export { EstanteriaForm } from "./estanteria-form";
+
 export { StorageTree } from "./storage-tree";
 export type { StorageNode, StorageTreeProps } from "./storage-tree";
 
@@ -35,6 +39,9 @@ export type { CajoncitoAssignmentPanelProps } from "./cajoncito-assignment-panel
 
 export { ComponenteAssignmentForm } from "./componente-assignment-form";
 export type { ComponenteAssignmentFormProps } from "./componente-assignment-form";
+
+export { OrganizadorForm } from "./organizador-form";
+export type { OrganizadorFormProps } from "./organizador-form";
 
 // Export Cajon and Division types from drawer-grid
 export type { Cajon, Division } from "./drawer-grid";
