@@ -3,8 +3,9 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MapPin, Archive, Grid3x3 } from "lucide-react";
+import { MapPin, Archive, Grid3x3, Edit, MoreVertical } from "lucide-react";
 
 export interface LocationCardProps {
   id: string;
@@ -14,8 +15,13 @@ export interface LocationCardProps {
   isActive?: boolean;
   armariosCount?: number;
   estanteriasCount?: number;
+  cajonesCount?: number;
+  itemCount?: number;
   type?: "ubicacion" | "armario" | "estanteria";
   onClick?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  showActions?: boolean;
   className?: string;
 }
 
@@ -27,11 +33,16 @@ export function LocationCard({
   isActive = true,
   armariosCount = 0,
   estanteriasCount = 0,
+  cajonesCount = 0,
+  itemCount,
   type = "ubicacion",
   onClick,
+  onEdit,
+  onDelete,
+  showActions = false,
   className,
 }: LocationCardProps) {
-  const totalContent = armariosCount + estanteriasCount;
+  const totalContent = itemCount ?? (armariosCount + estanteriasCount + cajonesCount);
   const hasContent = totalContent > 0;
 
   const getIcon = () => {
@@ -67,15 +78,23 @@ export function LocationCard({
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent card click when clicking on actions
+    if ((e.target as HTMLElement).closest('.location-actions')) {
+      return;
+    }
+    onClick?.();
+  };
+
   return (
     <Card
       className={cn(
-        "cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] border-2",
+        "cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] border-2 group relative",
         !isActive && "opacity-60 border-muted",
         onClick && "hover:border-primary",
         className
       )}
-      onClick={onClick}
+      onClick={handleCardClick}
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -83,9 +102,37 @@ export function LocationCard({
             {getIcon()}
             <CardTitle className="text-lg font-semibold">{nombre}</CardTitle>
           </div>
-          <Badge variant="secondary" className={getTypeColor()}>
-            {getTypeLabel()}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className={getTypeColor()}>
+              {getTypeLabel()}
+            </Badge>
+            {showActions && (
+              <div className="location-actions flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit?.();
+                  }}
+                  className="h-8 w-8 p-0"
+                >
+                  <Edit className="h-3 w-3" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete?.();
+                  }}
+                  className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <MoreVertical className="h-3 w-3 rotate-90" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
         <CardDescription className="text-sm">
           <span className="font-mono">{codigo}</span>

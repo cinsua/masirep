@@ -1,0 +1,146 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3</storyId>
+    <title>Organizers and Compartments System</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-3-organizers-compartments-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>maintenance technician</asA>
+    <iWant>manage organizadores (organizers) with their cajoncitos (small compartments)</iWant>
+    <soThat>I can organize small components like resistors and capacitors efficiently</soThat>
+    <tasks>- Task 1: Database Models Implementation (AC: 1, 2, 3, 4, 5, 6, 7)
+  - Subtask 1.1: Create Organizador model with unique name and parent relationships (estanteriaId OR armarioId)
+  - Subtask 1.2: Create Cajoncito model with sequential numbering (numero) and parent relationship (organizadorId)
+  - Subtask 1.3: Add foreign key constraints and indexes for performance (organizadorId, estanteriaId, armarioId)
+  - Subtask 1.4: Create Prisma migration for organizadores and cajoncitos tables
+  - Subtask 1.5: Update ComponenteUbicacion and RepuestoUbicacion models to support cajoncitoId
+- Task 2: Backend API - Organizadores Management (AC: 1, 2)
+  - Subtask 2.1: Implement /api/estanterias/[id]/organizadores endpoints (GET, POST) with auto-naming
+  - Subtask 2.2: Implement /api/armarios/[id]/organizadores endpoints (GET, POST) with auto-naming
+  - Subtask 2.3: Create validation schemas in src/lib/validations/organizador.ts with Spanish error messages
+  - Subtask 2.4: Add error handling for parent validation and unique name constraints
+  - Subtask 2.5: Implement individual organizador CRUD: /api/organizadores/[id]/route.ts
+- Task 3: Backend API - Cajoncitos Management (AC: 3, 4, 5, 6, 7)
+  - Subtask 3.1: Implement /api/organizadores/[id]/cajoncitos endpoints with sequential numbering (1, 2, 3...)
+  - Subtask 3.2: Add generateCajoncitoCode() function for automatic numbering within organizador
+  - Subtask 3.3: Implement validation for maximum cajoncitos per organizador (business rule: 50 max)
+  - Subtask 3.4: Add CRUD operations for cajoncito management with parent validation
+  - Subtask 3.5: Implement individual cajoncito CRUD: /api/cajoncitos/[id]/route.ts
+- Task 4: Frontend Components - Organizers Visualization (AC: 8, 10, 11)
+  - Subtask 4.1: Create OrganizerGrid component for visual grid layout with cajoncito cards
+  - Subtask 4.2: Create CajoncitoCard component with content indicators and hover tooltips
+  - Subtask 4.3: Implement visual distinction (colors/icons) for empty vs occupied cajoncitos
+  - Subtask 4.4: Add content summary indicators (repuestos count, componentes count, mixed content)
+  - Subtask 4.5: Create search/filter functionality within organizador contents
+- Task 5: Frontend Interface - Component Assignment (AC: 9)
+  - Subtask 5.1: Create CajoncitoAssignmentPanel component for drag-and-drop assignment
+  - Subtask 5.2: Implement assignment forms for repuestos and componentes to cajoncitos
+  - Subtask 5.3: Add visual feedback for successful assignments and quantity updates
+  - Subtask 5.4: Create confirmation dialogs for bulk assignment operations
+  - Subtask 5.5: Implement undo functionality for recent assignments
+- Task 6: Integration with Storage Hierarchy (AC: 2, 4)
+  - Subtask 6.1: Integrate Organizador management with existing Estanteria views (add organizadores section)
+  - Subtask 6.2: Integrate Organizador management with existing Armario views (add organizadores section)
+  - Subtask 6.3: Update breadcrumb navigation to include organizador → cajoncito levels
+  - Subtask 6.4: Add organizadores/cajoncitos to StorageTree component with proper nesting
+  - Subtask 6.5: Ensure OrganizerGrid/CajoncitoCard follow LocationCard/DrawerCard patterns
+- Task 7: Testing and Validation (AC: All)
+  - Subtask 7.1: Write unit tests for Organizador API endpoints (CRUD, validation, auto-naming)
+  - Subtask 7.2: Write unit tests for Cajoncito API endpoints (CRUD, sequential numbering, constraints)
+  - Subtask 7.3: Test polymorphic associations (repuestos/componentes to cajoncitos)
+  - Subtask 7.4: Test frontend component rendering and user interactions (if Jest config allows)
+  - Subtask 7.5: Validate parent-child relationships and cascading deletes
+  - Subtask 7.6: Performance testing for organizador/cajoncito loading (&lt; 1 second target)</tasks>
+  </story>
+
+  <acceptanceCriteria>1. Crear organizadores con nombre único alfanumérico
+2. Asociar organizadores a estantería o armario padre
+3. Crear cajoncitos numerados correlativamente (desde 1)
+4. Asociar cajoncitos a organizador padre
+5. Soportar múltiples repuestos por cajoncito
+6. Soportar múltiples componentes por cajoncitos
+7. Mezclar diferentes componentes pequeños en un cajoncito
+8. Proporcionar grid visual de organizador con cajoncitos
+9. Asignación fácil de componentes a compartimientos
+10. Identificación rápida de contenidos por cajoncito
+11. Búsqueda dentro de contenidos de organizador</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="Detailed Design - Data Models and Contracts" snippet="Complete Prisma models for Organizador and Cajoncito with parent relationships, auto-numbering, and ComponenteUbicacion associations for small component storage." />
+      <doc path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="APIs and Interfaces" snippet="RESTful API structure for organizers management: /api/estanterias/[id]/organizadores and /api/organizadores/[id]/cajoncitos with auto-numbering logic and validation." />
+      <doc path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="Acceptance Criteria - AC-3.3" snippet="Authoritative acceptance criteria for organizers and compartments system including unique naming, parent associations, and component assignment capabilities." />
+      <doc path="docs/architecture.md" title="Masirep Architecture Decision Document" section="Data Architecture" snippet="Complete database schema with Organizador and Cajoncito models, ComponenteUbicacion many-to-many relationships, and polymorphic RepuestoUbicacion associations." />
+      <doc path="docs/architecture.md" title="Masirep Architecture Decision Document" section="Architecture Decision Summary" snippet="Next.js 14 App Router with TypeScript, Prisma ORM, and shadcn/ui components for consistent implementation patterns across storage hierarchy." />
+      <doc path="docs/stories/3-2-drawers-divisions-system.context.xml" title="Story 3.2 Context: Drawers and Divisions System" section="Code artifacts and patterns" snippet="Established patterns for storage hierarchy components, API endpoints, and validation schemas that should be extended for organizers and cajoncitos." />
+    </docs>
+    <code>
+      <code path="prisma/schema.prisma" kind="database" symbol="Organizador" lines="161-175" reason="Existing Organizador model with unique codigo, parent relationships to Estanteria/Armario, and cajoncitos relationship - ready for implementation" />
+      <code path="prisma/schema.prisma" kind="database" symbol="Cajoncito" lines="177-189" reason="Existing Cajoncito model with unique codigo, parent relationship to Organizador, and componentes relationship for small component storage" />
+      <code path="prisma/schema.prisma" kind="database" symbol="ComponenteUbicacion" lines="276-288" reason="Many-to-many association table for componentes to cajoncitos with unique constraint and cascade delete relationships" />
+      <code path="src/app/api/cajoncitos/route.ts" kind="api" symbol="GET cajoncitos" lines="30-67" reason="Existing API endpoint for fetching cajoncitos with full location hierarchy - follow this pattern for organizadores endpoints" />
+      <code path="src/app/api/componentes/[id]/ubicaciones/route.ts" kind="api" symbol="POST/PUT/DELETE componente assignments" lines="110-180" reason="Component assignment logic to cajoncitos - use as template for repuesto assignments to cajoncitos if needed" />
+      <code path="src/lib/validations/componente.ts" kind="validation" symbol="ComponenteUbicacionSchema" lines="30-50" reason="Zod validation schema for componente assignments to cajoncitos with required fields and error messages in Spanish" />
+      <code path="src/types/api.ts" kind="interface" symbol="ComponenteUbicacion" lines="115-145" reason="TypeScript interfaces for componente assignment requests and responses including cajoncito relationship data" />
+      <code path="src/components/ubicaciones/index.ts" kind="component" symbol="ubicaciones exports" lines="1-15" reason="Component export pattern for ubicaciones module - add OrganizerGrid and CajoncitoCard exports following existing DrawerGrid pattern" />
+      <code path="prisma/seed.ts" kind="database" symbol="organizadores and cajoncitos seed" lines="245-290" reason="Seed data creation for organizadores and cajoncitos with proper parent relationships - use as reference for testing data" />
+    </code>
+    <dependencies>
+      <framework name="Next.js" version="14.2.4" packages="next, react, react-dom" />
+      <framework name="Prisma ORM" version="5.14.0" packages="@prisma/client, prisma" />
+      <framework name="Authentication" version="4.24.13" packages="next-auth, @auth/prisma-adapter" />
+      <framework name="Validation" version="4.1.12" packages="zod, @hookform/resolvers, react-hook-form" />
+      <framework name="UI Components" version="various" packages="@radix-ui/react-dialog, @radix-ui/react-slot, @radix-ui/react-tabs, class-variance-authority, clsx, tailwind-merge" />
+      <framework name="Styling" version="4" packages="tailwindcss" />
+      <framework name="Testing" version="30.2.0" packages="jest, @testing-library/jest-dom, @testing-library/react" />
+      <framework name="TypeScript" version="5" packages="typescript, @types/*" />
+      <framework name="Database" version="SQLite 3" packages="sqlite3 (via prisma)" />
+    </dependencies>
+  </artifacts>
+
+  <constraints>- Next.js 14 App Router pattern: Server components for data fetching, client components for interactive UI
+- Prisma ORM with SQLite: Use existing Organizador and Cajoncito models with proper foreign key relationships
+- TypeScript strict mode: All API contracts and component props must be fully typed
+- shadcn/ui component library: Use Ternium Classic theme for consistent visual design
+- Auto-numbering implementation: Query max numero within parent organizador context and increment (cajoncito 1, 2, 3...)
+- RESTful API structure: Nested routes following pattern /api/estanterias/[id]/organizadores and /api/organizadores/[id]/cajoncitos
+- Zod validation: All API inputs must be validated using structured schemas following existing patterns
+- Spanish language: All database models, API responses, and UI text in Spanish as per domain context
+- Error handling: Consistent ApiResponse format with Spanish error messages for technicians
+- Authentication: All endpoints protected with NextAuth.js session validation
+- Component assignment: Only componentes can be assigned to cajoncitos (not repuestos) per business rules
+- Unique naming: Organizador names must be unique within parent estanteria/armario context</constraints>
+  <interfaces>
+    <interface name="Organizador API" kind="REST endpoints" signature="GET/POST /api/estanterias/[id]/organizadores, GET/PUT/DELETE /api/organizadores/[id]" path="src/app/api/estanterias/[id]/organizadores/route.ts" />
+    <interface name="Cajoncito API" kind="REST endpoints" signature="GET/POST /api/organizadores/[id]/cajoncitos, GET/PUT/DELETE /api/cajoncitos/[id]" path="src/app/api/organizadores/[id]/cajoncitos/route.ts" />
+    <interface name="Componente Assignment API" kind="REST endpoints" signature="GET/POST /api/componentes/[id]/ubicaciones, PUT/DELETE /api/componentes/[id]/ubicaciones/[ubicacionId]" path="src/app/api/componentes/[id]/ubicaciones/route.ts" />
+    <interface name="OrganizadorCreateInput" kind="TypeScript interface" signature="estanteriaId?: string, armarioId?: string, nombre: string, descripcion?: string" path="src/types/api.ts" />
+    <interface name="CajoncitoCreateInput" kind="TypeScript interface" signature="organizadorId: string, nombre: string, descripcion?: string" path="src/types/api.ts" />
+    <interface name="OrganizadorSchema" kind="Zod validation" signature="nombre: string(min=1, max=100), descripcion?: string(max=500), parent validation" path="src/lib/validations/organizador.ts" />
+    <interface name="CajoncitoSchema" kind="Zod validation" signature="nombre: string(min=1, max=100), descripcion?: string(max=500), organizadorId required" path="src/lib/validations/organizador.ts" />
+    <interface name="OrganizerGrid" kind="React component" signature="organizador: Organizador, cajoncitos: Cajoncito[], onAssign: (cajoncitoId) => void" path="src/components/ubicaciones/organizer-grid.tsx" />
+    <interface name="CajoncitoCard" kind="React component" signature="cajoncito: Cajoncito, componentes: Componente[], onClick: () => void" path="src/components/ubicaciones/cajoncito-card.tsx" />
+  </interfaces>
+  <tests>
+    <standards>Unit testing with Jest for API endpoints and component logic. Integration testing with Prisma test suite for database operations. Component testing with React Testing Library for UI interactions. Performance testing to ensure organizador/cajoncito loading &lt; 1 second. All tests use Spanish language and follow existing __tests__ directory structure.</standards>
+    <locations>API tests in src/app/api/**/__tests__/ directories. Component tests in src/components/**/__tests__/ directories. Database tests using Prisma test client with in-memory SQLite. Integration tests in __tests__/integration directories.</locations>
+    <ideas>
+      <idea ac="1">Test Organizador creation with unique naming within parent context - verify auto-generated names and parent validation</idea>
+      <idea ac="2">Test Organizador API endpoints - GET/POST /api/estanterias/[id]/organizadores and /api/armarios/[id]/organizadores</idea>
+      <idea ac="3">Test Cajoncito creation with sequential numbering - verify auto-numbering (1, 2, 3...) within parent organizador</idea>
+      <idea ac="4">Test Cajoncito API endpoints - GET/POST /api/organizadores/[id]/cajoncitos with parent validation</idea>
+      <idea ac="5">Test componente assignment to cajoncitos - POST /api/componentes/[id]/ubicaciones with cajoncitoId</idea>
+      <idea ac="6">Test OrganizerGrid component rendering - visual grid layout with cajoncito cards and content indicators</idea>
+      <idea ac="7">Test CajoncitoCard component - content display, hover tooltips, and assignment interactions</idea>
+      <idea ac="8">Test polymorphic storage - verify componentes only in cajoncitos, repuestos in any storage level</idea>
+      <idea ac="9">Test error handling - invalid parent IDs, duplicate names, missing associations with Spanish error messages</idea>
+      <idea ac="10">Test performance - organizador/cajoncito loading times under 1 second with realistic data volumes</idea>
+      <idea ac="11">Test navigation integration - breadcrumb updates when navigating organizador → cajoncito levels</idea>
+    </ideas>
+  </tests>
+</story-context>

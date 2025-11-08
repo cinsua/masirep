@@ -123,6 +123,9 @@ model Cajon {
   divisiones   Division[]
   repuestos    RepuestoUbicacion[]
 
+  @@index([estanteriaId])
+  @@index([armarioId])
+  @@index([createdAt])
   @@map("cajones")
 }
 
@@ -150,6 +153,8 @@ model Division {
   cajon     Cajon               @relation(fields: [cajonId], references: [id], onDelete: Cascade)
   repuestos RepuestoUbicacion[]
 
+  @@index([cajonId])
+  @@index([createdAt])
   @@map("divisiones")
 }
 
@@ -166,6 +171,9 @@ model Organizador {
   armario      Armario?    @relation(fields: [armarioId], references: [id], onDelete: Cascade)
   estanteria   Estanteria? @relation(fields: [estanteriaId], references: [id], onDelete: Cascade)
 
+  @@index([estanteriaId])
+  @@index([armarioId])
+  @@index([createdAt])
   @@map("organizadores")
 }
 
@@ -180,6 +188,8 @@ model Cajoncito {
   organizador   Organizador           @relation(fields: [organizadorId], references: [id], onDelete: Cascade)
   componentes   ComponenteUbicacion[]
 
+  @@index([organizadorId])
+  @@index([createdAt])
   @@map("cajoncitos")
 }
 

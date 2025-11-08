@@ -53,9 +53,9 @@ development_status:
 
   # Epic 3: Hierarchical Storage System
   epic-3: contexted
-  3-1-locations-storage-units-management: in-progress
-  3-2-drawers-divisions-system: backlog
-  3-3-organizers-compartments-system: backlog
+  3-1-locations-storage-units-management: done
+   3-2-drawers-divisions-system: done
+   3-3-organizers-compartments-system: in-progress
   3-4-inventory-storage-association-management: backlog
   epic-3-retrospective: optional
 

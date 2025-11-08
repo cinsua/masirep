@@ -1,0 +1,146 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>2</storyId>
+    <title>Drawers and Divisions System</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-2-drawers-divisions-system.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>técnico de mantenimiento</asA>
+    <iWant>gestionar cajones y divisiones internas de almacenamiento</iWant>
+    <soThat>puedo organizar el inventario en el nivel más fino de detalle que coincide con el almacenamiento físico</soThat>
+    <tasks>- Task 1: Database Models Implementation (AC: 1, 2, 5, 6)
+  - Subtask 1.1: Create Cajon model with auto-numbering and parent relationships
+  - Subtask 1.2: Create Division model with sequential numbering and parent relationship
+  - Subtask 1.3: Add foreign key constraints to Estanteria and Armario models
+  - Subtask 1.4: Create Prisma migration for cajones and divisiones tables
+  - Subtask 1.5: Add database indexes for performance optimization
+
+- Task 2: Backend API - Cajones Management (AC: 1, 2, 3, 4)
+  - Subtask 2.1: Implement /api/estanterias/[id]/cajones endpoints
+  - Subtask 2.2: Implement /api/armarios/[id]/cajones endpoints
+  - Subtask 2.3: Add auto-numbering logic for Cajon creation
+  - Subtask 2.4: Implement input validation using Zod schemas
+  - Subtask 2.5: Add error handling for parent validation
+
+- Task 3: Backend API - Divisiones Management (AC: 5, 6, 7)
+  - Subtask 3.1: Implement /api/cajones/[id]/divisiones endpoints
+  - Subtask 3.2: Add sequential numbering logic for Division creation
+  - Subtask 3.3: Implement validation for maximum divisions per cajón
+  - Subtask 3.4: Add CRUD operations for division management
+  - Subtask 3.5: Ensure parent cajón validation in all operations
+
+- Task 4: Frontend Components - Cajones Visualization (AC: 8, 11)
+  - Subtask 4.1: Create DrawerGrid component for visual cajón layout
+  - Subtask 4.2: Create DrawerCard component with division indicators
+  - Subtask 4.3: Implement visual distinction between simple/d divided drawers
+  - Subtask 4.4: Add content indicators for repuestos in cajones
+  - Subtask 4.5: Create responsive layout for mobile/tablet use
+
+- Task 5: Frontend Interface - Division Management (AC: 9, 10)
+  - Subtask 5.1: Create DivisionPanel component for division CRUD operations
+  - Subtask 5.2: Create forms for adding/editing divisiones
+  - Subtask 5.3: Implement repuesto assignment to cajón or division level
+  - Subtask 5.4: Add visual feedback for assignment operations
+  - Subtask 5.5: Create confirmation dialogs for destructive operations
+
+- Task 6: Integration with Storage Hierarchy (AC: 2, 6)
+  - Subtask 6.1: Integrate Cajon management with existing Estanteria views
+  - Subtask 6.2: Integrate Cajon management with existing Armario views
+  - Subtask 6.3: Update breadcrumb navigation to include cajones/divisiones
+  - Subtask 6.4: Add cajones/divisiones to StorageTree component
+  - Subtask 6.5: Ensure consistency with existing LocationCard patterns
+
+- Task 7: Testing and Validation (AC: All)
+  - Subtask 7.1: Write unit tests for Cajon API endpoints
+  - Subtask 7.2: Write unit tests for Division API endpoints
+  - Subtask 7.3: Test auto-numbering logic for both cajones and divisiones
+  - Subtask 7.4: Test frontend component rendering and interactions
+  - Subtask 7.5: Validate parent-child relationships and constraints
+  - Subtask 7.6: Performance testing for cajón/division loading (< 1 second)</tasks>
+  </story>
+
+  <acceptanceCriteria>1. Crear cajones con número correlativo automático (cajón 1, cajón 2, etc.)
+2. Asociar cajones a estantería o armario padre
+3. Soportar divisiones (0 a muchas) por cajón
+4. Soportar repuestos sueltos (0 a muchos) por cajón
+5. Crear divisiones con número correlativo automático (desde 1)
+6. Asociar divisiones a cajón padre
+7. Soportar múltiples repuestos por división
+8. Permitir cajones simples sin divisiones
+9. Agregar divisiones a cajones existentes
+10. Asignar repuestos a nivel de cajón o división
+11. Visualizar layout de cajones y divisiones</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="Detailed Design - Data Models and Contracts" snippet="Complete Prisma models for Cajon and Division with auto-numbering, parent relationships, and polymorphic associations for inventory storage." />
+      <doc path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="APIs and Interfaces" snippet="RESTful API structure for drawers management: /api/estanterias/[id]/cajones and /api/cajones/[id]/divisiones with auto-numbering logic and validation." />
+      <doc path="docs/tech-spec-epic-3.md" title="Epic Technical Specification: Hierarchical Storage System" section="Acceptance Criteria - AC-3.2" snippet="Authoritative acceptance criteria for drawers and divisions system including auto-numbering, parent associations, and inventory assignment capabilities." />
+      <doc path="docs/architecture.md" title="Masirep Architecture Decision Document" section="Architecture Decision Summary" snippet="Next.js 14 App Router with TypeScript, Prisma ORM, and shadcn/ui components for consistent implementation patterns." />
+      <doc path="docs/architecture.md" title="Masirep Architecture Decision Document" section="Complete Project Structure" snippet="Component organization patterns with src/components/ubicaciones/ for storage hierarchy components and API routes structure." />
+    </docs>
+    <code>
+      <code path="prisma/schema.prisma" kind="database" symbol="Cajon" lines="112-127" reason="Existing Cajon model with parent relationships to Estanteria/Armario, includes codigo, nombre, and foreign keys for polymorphic associations" />
+      <code path="prisma/schema.prisma" kind="database" symbol="Division" lines="143-154" reason="Existing Division model with parent relationship to Cajon, includes codigo, nombre, and cajonId foreign key" />
+      <code path="prisma/schema.prisma" kind="database" symbol="RepuestoUbicacion" lines="250-269" reason="Polymorphic association table supporting cajonId and divisionId for inventory assignment at drawer or division level" />
+      <code path="src/app/api/ubicaciones/[id]/estanterias/route.ts" kind="api" symbol="GET/POST estanterias" lines="12-153" reason="RESTful API pattern for nested storage units - follow same structure for cajones endpoints under estanterias/armarios" />
+      <code path="src/lib/validations/ubicacion.ts" kind="validation" symbol="EstanteriaSchema" lines="21-37" reason="Zod validation pattern for storage units - extend with CajonSchema and DivisionSchema following same structure" />
+      <code path="src/components/ubicaciones/ubicacion-form.tsx" kind="component" symbol="UbicacionForm" lines="38-239" reason="Form component pattern with shadcn/ui, Zod validation, and error handling - use as template for CajonForm and DivisionForm" />
+      <code path="src/types/api.ts" kind="interface" symbol="ApiResponse" lines="1-7" reason="Standardized API response format used across all endpoints for consistent error handling and success responses" />
+    </code>
+    <dependencies>
+    <framework name="Next.js" version="16.0.1" packages="next, react, react-dom" />
+    <framework name="Prisma ORM" version="6.19.0" packages="@prisma/client, prisma" />
+    <framework name="Authentication" version="4.24.13" packages="next-auth, @auth/prisma-adapter" />
+    <framework name="Validation" version="4.1.12" packages="zod, @hookform/resolvers, react-hook-form" />
+    <framework name="UI Components" version="various" packages="@radix-ui/react-dialog, @radix-ui/react-slot, @radix-ui/react-tabs, class-variance-authority, clsx, tailwind-merge" />
+    <framework name="Styling" version="4" packages="tailwindcss" />
+    <framework name="Testing" version="30.2.0" packages="jest, @testing-library/jest-dom, @testing-library/react" />
+    <framework name="TypeScript" version="5" packages="typescript, @types/*" />
+    <framework name="Database" version="SQLite 3" packages="sqlite3 (via prisma)" />
+  </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Next.js 14 App Router pattern: Server components for data fetching, client components for interactive UI
+    - Prisma ORM with SQLite: Use existing Cajon and Division models, maintain polymorphic relationships
+    - TypeScript strict mode: All API contracts and component props must be fully typed
+    - shadcn/ui component library: Use Ternium Classic theme for consistent visual design
+    - Auto-numbering implementation: Query max number within parent context and increment (cajón 1, 2, 3...; división 1, 2, 3...)
+    - RESTful API structure: Nested routes following pattern /api/estanterias/[id]/cajones and /api/cajones/[id]/divisiones
+    - Zod validation: All API inputs must be validated using structured schemas following existing patterns
+    - Spanish language: All database models, API responses, and UI text in Spanish as per domain context
+    - Error handling: Consistent ApiResponse format with Spanish error messages for technicians
+    - Authentication: All endpoints protected with NextAuth.js session validation
+  </constraints>
+  <interfaces>
+    <interface name="Cajon API" kind="REST endpoints" signature="GET/POST /api/estanterias/[id]/cajones, GET/PUT/DELETE /api/cajones/[id]" path="src/app/api/estanterias/[id]/cajones/route.ts" />
+    <interface name="Division API" kind="REST endpoints" signature="GET/POST /api/cajones/[id]/divisiones, GET/PUT/DELETE /api/divisiones/[id]" path="src/app/api/cajones/[id]/divisiones/route.ts" />
+    <interface name="CajonCreateInput" kind="TypeScript interface" signature="estanteriaId?: string, armarioId?: string, nombre: string, descripcion?: string" path="src/types/api.ts" />
+    <interface name="DivisionCreateInput" kind="TypeScript interface" signature="cajonId: string, nombre: string, descripcion?: string" path="src/types/api.ts" />
+    <interface name="CajonSchema" kind="Zod validation" signature="nombre: string(min=1, max=100), descripcion?: string(max=500), parent validation" path="src/lib/validations/ubicacion.ts" />
+    <interface name="DivisionSchema" kind="Zod validation" signature="nombre: string(min=1, max=100), descripcion?: string(max=500), cajonId required" path="src/lib/validations/ubicacion.ts" />
+  </interfaces>
+  <tests>
+    <standards>Unit testing with Jest for API endpoints and component logic. Integration testing with Prisma test suite for database operations. Component testing with React Testing Library for UI interactions. Performance testing to ensure Cajon and Division loading < 1 second. All tests use Spanish language and follow existing __tests__ directory structure.</standards>
+    <locations>API tests in src/app/api/**/__tests__/ directories. Component tests in src/components/**/__tests__/ directories. Database tests using Prisma test client with in-memory SQLite. Integration tests in __tests__/integration directories.</locations>
+    <ideas>
+      <idea ac="1">Test auto-numbering logic for Cajon creation - verify sequential numbering within parent context (1, 2, 3...)</idea>
+      <idea ac="2">Test Cajon API endpoints - GET/POST /api/estanterias/[id]/cajones and /api/armarios/[id]/cajones</idea>
+      <idea ac="3">Test Division API endpoints - GET/POST /api/cajones/[id]/divisiones with parent validation</idea>
+      <idea ac="4">Test parent-child relationships - ensure Cajon properly associates with Estanteria or Armario</idea>
+      <idea ac="5">Test Division sequential numbering - verify numbering starts from 1 for each Cajon</idea>
+      <idea ac="6">Test DrawerGrid component rendering - visual layout of cajones and division indicators</idea>
+      <idea ac="7">Test CajonForm and DivisionForm components - form validation and submission handling</idea>
+      <idea ac="8">Test inventory assignment - repuestos at Cajon and Division level via RepuestoUbicacion</idea>
+      <idea ac="9">Test error handling - invalid parent IDs, duplicate codes, missing associations</idea>
+      <idea ac="10">Test performance - Cajon and Division loading times under 1 second with test data</idea>
+      <idea ac="11">Test navigation integration - breadcrumb updates when navigating to Cajon/Division levels</idea>
+    </ideas>
+  </tests>
+</story-context>

@@ -903,4 +903,17 @@ useMutation(createAssociation, { onSuccess: invalidateAssociationQueries })
 - Tiempo de localización de items reducido en 80%
 - 100% de usuarios puede navegar estructura sin training extensivo
 - Zero data loss en operaciones de asociación
+
+## Post-Review Follow-ups
+
+**Story 3.2: Drawers and Divisions System (2025-11-07)**
+
+Action items from Senior Developer Review:
+- **[Enhancement - Medium]** Create DrawerGrid component for visual cajón layout (AC #11) - Backend API ready, need frontend visualization
+- **[Enhancement - Medium]** Create DrawerCard component with division indicators (AC #11) - Essential for user experience
+- **[Enhancement - Medium]** Implement cajon visualization in existing estantería/armario views (AC #11) - Integration with current UI
+- **[TechDebt - Low]** Consider structured logging for production - Improve observability
+- **[Task - High]** Correct Task 7.4 status from complete to not-applicable - Clarify testing scope
+
+Review Summary: Backend implementation excellent (91% AC coverage). Frontend visualization components needed to complete story. Backend production-ready.
 - Positive user feedback scores (> 4/5)

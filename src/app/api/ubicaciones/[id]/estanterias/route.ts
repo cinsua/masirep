@@ -141,7 +141,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     console.error("Error creating estanteria:", error);
     if (error && typeof error === 'object' && 'issues' in error) {
       return NextResponse.json<ApiResponse>(
-        { success: false, error: "Datos inválidos", details: JSON.stringify((error as any).issues) },
+        { success: false, error: "Datos inválidos", details: [JSON.stringify((error as any).issues || [])] },
         { status: 400 }
       );
     }
