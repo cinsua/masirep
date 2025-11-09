@@ -10,10 +10,13 @@ import { EquipoDetail } from "./equipo-detail";
 import { EquipoRepuestoManager } from "./equipo-repuesto-manager";
 import { EquipoWithRelations } from "@/types/api";
 import { EquipoFormData } from "@/lib/validations/equipo";
+import { createDebugAttributes } from "@/lib/debug-attributes";
+import { useEquipos } from "@/hooks/use-equipos";
 
 type View = "list" | "create" | "edit" | "detail" | "manage-repuestos";
 
 export function EquiposManager() {
+  const { data: equipos, delete: deleteEquipo, create: createEquipo, update: updateEquipo } = useEquipos();
   const [currentView, setCurrentView] = useState<View>("list");
   const [selectedEquipo, setSelectedEquipo] = useState<EquipoWithRelations | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,17 +37,14 @@ export function EquiposManager() {
     setCurrentView("edit");
   };
 
-  const handleView = (equipo: EquipoWithRelations) => {
-    setSelectedEquipo(equipo);
-    setCurrentView("detail");
-  };
+
 
   const handleManageRepuestos = (equipo: EquipoWithRelations) => {
     setSelectedEquipo(equipo);
     setCurrentView("manage-repuestos");
   };
 
-  const handleDelete = async (equipo: EquipoWithRelations) => {
+const handleDelete = async (equipo: EquipoWithRelations) => {
     if (!confirm(`¿Estás seguro de que quieres eliminar el equipo "${equipo.nombre}" (${equipo.codigo})? Esta acción se puede deshacer.`)) {
       return;
     }
@@ -53,17 +53,13 @@ export function EquiposManager() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/equipos/${equipo.id}`, {
-        method: "DELETE",
-      });
+      const success = await deleteEquipo(equipo.id);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (success) {
         setRefreshKey(prev => prev + 1);
         setCurrentView("list");
       } else {
-        setError(data.error || "Error al eliminar equipo");
+        setError("Error al eliminar equipo");
       }
     } catch (error) {
       setError("Error de conexión al eliminar equipo");
@@ -72,31 +68,23 @@ export function EquiposManager() {
     }
   };
 
-  const handleFormSubmit = async (data: EquipoFormData) => {
+const handleFormSubmit = async (data: EquipoFormData) => {
     try {
       setLoading(true);
       setError(null);
 
-      const url = selectedEquipo
-        ? `/api/equipos/${selectedEquipo.id}`
-        : "/api/equipos";
-      const method = selectedEquipo ? "PUT" : "POST";
+      let result;
+      if (selectedEquipo) {
+        result = await updateEquipo(selectedEquipo.id, data as Partial<EquipoWithRelations>);
+      } else {
+        result = await createEquipo(data as Partial<EquipoWithRelations>);
+      }
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
+      if (result) {
         setRefreshKey(prev => prev + 1);
         setCurrentView("list");
       } else {
-        setError(result.error || "Error al guardar equipo");
+        setError("Error al guardar equipo");
       }
     } catch (error) {
       setError("Error de conexión al guardar equipo");
@@ -105,7 +93,7 @@ export function EquiposManager() {
     }
   };
 
-  const handleSaveAssociations = async (associations: Array<{ repuestoId: string }>) => {
+const handleSaveAssociations = async (associations: Array<{ repuestoId: string }>) => {
     if (!selectedEquipo) {
       setError("No se ha seleccionado ningún equipo");
       return;
@@ -115,23 +103,15 @@ export function EquiposManager() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/equipos/${selectedEquipo.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          repuestos: associations,
-        }),
+      const result = await updateEquipo(selectedEquipo.id, {
+        repuestos: associations as any,
       });
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (result) {
         setRefreshKey(prev => prev + 1);
         setCurrentView("list");
       } else {
-        setError(data.error || "Error al actualizar asociaciones");
+        setError("Error al actualizar asociaciones");
       }
     } catch (error) {
       setError("Error de conexión al actualizar asociaciones");
@@ -168,9 +148,9 @@ export function EquiposManager() {
         return (
           <EquipoList
             key={refreshKey}
+            equipos={equipos || []}
             onCreateNew={handleCreateNew}
             onEdit={handleEdit}
-            onView={handleView}
             onDelete={handleDelete}
           />
         );
@@ -198,7 +178,6 @@ export function EquiposManager() {
         return selectedEquipo ? (
           <EquipoDetail
             equipo={selectedEquipo}
-            onBack={handleCancel}
             onEdit={() => handleEdit(selectedEquipo)}
             onManageRepuestos={() => handleManageRepuestos(selectedEquipo)}
           />
@@ -219,8 +198,8 @@ export function EquiposManager() {
     }
   };
 
-  return (
-    <div className="container mx-auto p-6">
+return (
+    <div className="container mx-auto p-6" {...createDebugAttributes({componentName: 'EquiposManager', filePath: 'src/components/equipos/equipos-manager.tsx'})}>
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />

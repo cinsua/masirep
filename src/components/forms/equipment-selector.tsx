@@ -3,17 +3,13 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Search, X, Check } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
+import { useEquipos } from "@/hooks/use-equipos";
 
-interface Equipo {
-  id: string;
-  codigo: string;
-  nombre: string;
-  descripcion?: string;
-}
+
 
 interface EquipmentSelectorProps {
   selected: string[];
@@ -30,38 +26,17 @@ export function EquipmentSelector({
 }: EquipmentSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [equipos, setEquipos] = useState<Equipo[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchEquipos = async () => {
-    if (!search.trim()) {
-      setEquipos([]);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/equipos?search=${encodeURIComponent(search)}&limit=20`);
-      const data = await response.json();
-      
-      if (data.success) {
-        setEquipos(data.data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching equipos:", error);
-      setEquipos([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: equipos, loading, fetch } = useEquipos();
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchEquipos();
-    }, 300);
+    if (search.trim()) {
+      const timeoutId = setTimeout(() => {
+        fetch({ search: search, limit: 20 });
+      }, 300);
 
-    return () => clearTimeout(timeoutId);
-  }, [search]);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [search, fetch]);
 
   const handleSelect = (equipoId: string) => {
     if (multiple) {
@@ -81,11 +56,17 @@ export function EquipmentSelector({
   };
 
   const getSelectedEquipos = () => {
-    return equipos.filter(equipo => selected.includes(equipo.id));
+    return (equipos || []).filter(equipo => selected.includes(equipo.id));
   };
 
   return (
-    <div className="space-y-2">
+    <div 
+      className="space-y-2"
+      {...createDebugAttributes({
+        componentName: 'EquipmentSelector',
+        filePath: 'src/components/forms/equipment-selector.tsx'
+      })}
+    >
       <Label>Equipos Asociados</Label>
       
       {/* Selected Items */}
@@ -129,13 +110,13 @@ export function EquipmentSelector({
               <p className="text-sm text-muted-foreground text-center py-2">
                 Buscando...
               </p>
-            ) : equipos.length === 0 ? (
+            ) : (equipos || []).length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-2">
                 No se encontraron equipos
               </p>
             ) : (
               <div className="space-y-1">
-                {equipos.map((equipo) => {
+                {(equipos || []).map((equipo) => {
                   const isSelected = selected.includes(equipo.id);
                   return (
                     <div

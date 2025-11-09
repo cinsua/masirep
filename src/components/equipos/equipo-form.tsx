@@ -11,9 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Save, X, Plus, Wrench, Trash2 } from "lucide-react";
+import { Loader2, Save, X, Wrench, Trash2 } from "lucide-react";
 import { EquipoFormData, EquipoSchema } from "@/lib/validations/equipo";
 import { EquipoWithRelations } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
+import { useRepuestos } from "@/hooks/use-repuestos";
 
 interface EquipoFormProps {
   item?: EquipoWithRelations;
@@ -22,27 +24,19 @@ interface EquipoFormProps {
   isLoading?: boolean;
 }
 
-interface RepuestoItem {
-  id: string;
-  codigo: string;
-  nombre: string;
-  stockActual: number;
-}
+
 
 export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: EquipoFormProps) {
-  const [repuestos, setRepuestos] = useState<RepuestoItem[]>([]);
-  const [selectedRepuestos, setSelectedRepuestos] = useState<Array<{ repuestoId: string }>>(
-    item?.repuestos.map(r => ({ repuestoId: r.repuesto.id })) || []
+  const { data: repuestosData, loading: loadingRepuestos, error: repuestosError, fetch } = useRepuestos();
+  const [selectedRepuestos, setSelectedRepuestos] = useState<Array<{ repuestoId: string; cantidad: number }>>(
+    item?.repuestos.map(r => ({ repuestoId: r.repuesto.id, cantidad: 1 })) || []
   );
-  const [loadingRepuestos, setLoadingRepuestos] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
-    reset,
-    setValue,
   } = useForm({
     resolver: zodResolver(EquipoSchema),
     defaultValues: item ? {
@@ -67,27 +61,10 @@ export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: Equi
   });
 
   useEffect(() => {
-    fetchRepuestos();
-  }, []);
+    fetch({ limit: 1000 });
+  }, [fetch]);
 
-  const fetchRepuestos = async () => {
-    try {
-      setLoadingRepuestos(true);
-      const response = await fetch("/api/repuestos?limit=1000");
-      const data = await response.json();
-
-      if (data.success) {
-        setRepuestos(data.data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching repuestos:", error);
-      setError("Error al cargar repuestos disponibles");
-    } finally {
-      setLoadingRepuestos(false);
-    }
-  };
-
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: EquipoFormData) => {
     try {
       setError(null);
       const submitData = {
@@ -103,7 +80,7 @@ export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: Equi
   const addRepuesto = (repuestoId: string) => {
     const existing = selectedRepuestos.find(r => r.repuestoId === repuestoId);
     if (!existing) {
-      setSelectedRepuestos([...selectedRepuestos, { repuestoId }]);
+      setSelectedRepuestos([...selectedRepuestos, { repuestoId, cantidad: 1 }]);
     }
   };
 
@@ -113,14 +90,14 @@ export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: Equi
 
   // Función updateRepuestoCantidad eliminada - las asociaciones técnicas no manejan cantidades
 
-  const getRepuestoById = (id: string) => repuestos.find(r => r.id === id);
+  const getRepuestoById = (id: string) => repuestosData?.find(r => r.id === id);
 
-  const availableRepuestos = repuestos.filter(
+  const availableRepuestos = (repuestosData || []).filter(
     r => !selectedRepuestos.find(sr => sr.repuestoId === r.id)
   );
 
-  return (
-    <Card className="w-full max-w-4xl mx-auto">
+return (
+    <Card className="w-full max-w-4xl mx-auto" {...createDebugAttributes({componentName: 'EquipoForm', filePath: 'src/components/equipos/equipo-form.tsx'})}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Wrench className="h-5 w-5" />
@@ -129,9 +106,9 @@ export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: Equi
       </CardHeader>
 
       <CardContent>
-        {error && (
+        {(error || repuestosError) && (
           <Alert variant="destructive" className="mb-6">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>{error || repuestosError}</AlertDescription>
           </Alert>
         )}
 
@@ -283,7 +260,7 @@ export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: Equi
               <div className="space-y-2">
                 <Label>Repuestos Seleccionados ({selectedRepuestos.length})</Label>
                 <div className="space-y-2">
-                  {selectedRepuestos.map(({ repuestoId }) => {
+                  {selectedRepuestos.map(({ repuestoId, cantidad }) => {
                     const repuesto = getRepuestoById(repuestoId);
                     if (!repuesto) return null;
 
@@ -298,7 +275,7 @@ export function EquipoForm({ item, onSubmit, onCancel, isLoading = false }: Equi
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary" className="text-xs">
-                            Asociación Técnica
+                            Asociación Técnica (x{cantidad})
                           </Badge>
                           <Button
                             type="button"
