@@ -77,7 +77,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
       (prisma.cajoncito.findMany as jest.Mock).mockResolvedValue(mockCajoncitos);
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/org-1/cajoncitos");
-      const response = await GET(request, { params: { id: "org-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -134,7 +134,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
       (prisma.cajoncito.findMany as jest.Mock).mockResolvedValue(mockCajoncitos);
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/org-1/cajoncitos?search=Primera");
-      const response = await GET(request, { params: { id: "org-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "org-1" }) });
 
       expect(prisma.cajoncito.findMany).toHaveBeenCalledWith({
         where: {
@@ -173,7 +173,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
       (prisma.organizador.findUnique as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/org-999/cajoncitos");
-      const response = await GET(request, { params: { id: "org-999" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "org-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -192,7 +192,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
       (prisma.cajoncito.findMany as jest.Mock).mockResolvedValue([]);
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/org-1/cajoncitos");
-      const response = await GET(request, { params: { id: "org-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -249,7 +249,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "org-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(201);
@@ -304,7 +304,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "org-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(201);
@@ -342,7 +342,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "org-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -365,7 +365,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "org-999" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "org-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -394,7 +394,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "org-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -423,7 +423,7 @@ describe("/api/organizadores/[id]/cajoncitos", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "org-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "org-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);

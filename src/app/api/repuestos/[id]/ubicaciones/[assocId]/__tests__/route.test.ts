@@ -85,7 +85,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -114,7 +114,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "rep-1", assocId: "assoc-999" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -144,7 +144,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -165,7 +165,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -186,7 +186,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "", assocId: "" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "", assocId: "" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -210,7 +210,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(401);
@@ -232,7 +232,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -250,7 +250,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "rep-1", assocId: "assoc-999" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -272,7 +272,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -285,7 +285,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "", assocId: "" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "", assocId: "" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -301,7 +301,7 @@ describe("/api/repuestos/[id]/ubicaciones/[assocId]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "rep-1", assocId: "assoc-1" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "rep-1", assocId: "assoc-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(401);

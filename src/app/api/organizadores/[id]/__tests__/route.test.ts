@@ -49,7 +49,7 @@ describe("/api/organizadores/[id]", () => {
       (prisma.organizador.findUnique as jest.Mock).mockResolvedValue(mockOrganizador);
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/1");
-      const response = await GET(request, { params: { id: "1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -85,7 +85,7 @@ describe("/api/organizadores/[id]", () => {
       (prisma.organizador.findUnique as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/999");
-      const response = await GET(request, { params: { id: "999" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -99,7 +99,7 @@ describe("/api/organizadores/[id]", () => {
       );
 
       const request = new NextRequest("http://localhost:3000/api/organizadores/1");
-      const response = await GET(request, { params: { id: "1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "1" }) });
 
       expect(response.status).toBe(500);
     });
@@ -145,7 +145,7 @@ describe("/api/organizadores/[id]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -171,7 +171,7 @@ describe("/api/organizadores/[id]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -194,7 +194,7 @@ describe("/api/organizadores/[id]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "999" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -215,7 +215,7 @@ describe("/api/organizadores/[id]", () => {
         },
       });
 
-      const response = await PUT(request, { params: { id: "1" } });
+      const response = await PUT(request, { params: Promise.resolve({ id: "1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -253,7 +253,7 @@ describe("/api/organizadores/[id]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "1" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -288,7 +288,7 @@ describe("/api/organizadores/[id]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "1" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -303,7 +303,7 @@ describe("/api/organizadores/[id]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "999" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -320,7 +320,7 @@ describe("/api/organizadores/[id]", () => {
         method: "DELETE",
       });
 
-      const response = await DELETE(request, { params: { id: "1" } });
+      const response = await DELETE(request, { params: Promise.resolve({ id: "1" }) });
 
       expect(response.status).toBe(500);
     });

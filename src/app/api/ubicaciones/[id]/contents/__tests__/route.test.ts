@@ -131,7 +131,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue(mockComponentes);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -149,7 +149,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.repuestoUbicacion.findMany as jest.Mock).mockResolvedValue(mockRepuestos);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?itemType=repuestos");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -167,7 +167,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue(mockComponentes);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?itemType=componentes");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -186,7 +186,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue(mockComponentes);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?page=1&limit=10");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -205,7 +205,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue([]);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -221,7 +221,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.ubicacion.findUnique as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-999/contents");
-      const response = await GET(request, { params: { id: "ubic-999" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -234,7 +234,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (getServerSession as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(401);
@@ -244,7 +244,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
 
     it("should handle invalid itemType parameter", async () => {
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?itemType=invalid");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -254,7 +254,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
 
     it("should handle invalid page parameter", async () => {
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?page=invalid");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -264,7 +264,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
 
     it("should handle invalid limit parameter", async () => {
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?limit=invalid");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -278,7 +278,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.repuestoUbicacion.findMany as jest.Mock).mockResolvedValue(mockRepuestos.slice(0, 1)); // Only items in the location itself
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/ubic-1/contents?includeChildren=false");
-      const response = await GET(request, { params: { id: "ubic-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "ubic-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -302,7 +302,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue([]);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/arm-1/contents");
-      const response = await GET(request, { params: { id: "arm-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "arm-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -328,7 +328,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue(mockComponentes);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/est-1/contents");
-      const response = await GET(request, { params: { id: "est-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -352,7 +352,7 @@ describe("/api/ubicaciones/[id]/contents", () => {
       (prisma.componenteUbicacion.findMany as jest.Mock).mockResolvedValue(mockComponentes);
 
       const request = new NextRequest("http://localhost:3000/api/ubicaciones/caj-1/contents");
-      const response = await GET(request, { params: { id: "caj-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "caj-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);

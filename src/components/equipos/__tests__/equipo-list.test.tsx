@@ -9,6 +9,14 @@ global.fetch = jest.fn();
 
 const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
 
+// Helper function to create mock Response
+const createMockResponse = (data: any, status = 200) => {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json' }
+  });
+};
+
 describe("EquipoList", () => {
   const mockEquipos: EquipoWithRelations[] = [
     {
@@ -55,14 +63,13 @@ describe("EquipoList", () => {
   });
 
   it("should render loading state initially", () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [],
         pagination: { totalPages: 1, total: 0 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -70,14 +77,16 @@ describe("EquipoList", () => {
   });
 
   it("should render equipos list after loading", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      new Response(JSON.stringify({
         success: true,
-        data: mockEquipos,
-        pagination: { totalPages: 1, total: 2 },
-      }),
-    });
+        data: [],
+        pagination: { totalPages: 1, total: 0 },
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -92,14 +101,13 @@ describe("EquipoList", () => {
   });
 
   it("should display SAP badge when present", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [mockEquipos[0]],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -111,14 +119,13 @@ describe("EquipoList", () => {
   });
 
   it("should display 'Sin SAP' when SAP is null", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [mockEquipos[1]],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -128,14 +135,13 @@ describe("EquipoList", () => {
   });
 
   it("should display repuestos count badge", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [mockEquipos[0]],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -145,14 +151,13 @@ describe("EquipoList", () => {
   });
 
   it("should handle create new button click", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [],
         pagination: { totalPages: 1, total: 0 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -165,23 +170,17 @@ describe("EquipoList", () => {
   });
 
   it("should handle search input", async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: mockEquipos,
-          pagination: { totalPages: 1, total: 2 },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: [mockEquipos[0]],
-          pagination: { totalPages: 1, total: 1 },
-        }),
-      });
+mockFetch
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: mockEquipos,
+        pagination: { totalPages: 1, total: 2 },
+      }))
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: [mockEquipos[0]],
+        pagination: { totalPages: 1, total: 1 },
+      }));
 
     render(<EquipoList {...defaultProps} />);
 
@@ -201,14 +200,13 @@ describe("EquipoList", () => {
   });
 
   it("should handle edit button click", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [mockEquipos[0]],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -224,14 +222,13 @@ describe("EquipoList", () => {
   });
 
   it("should handle view button click", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [mockEquipos[0]],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -247,14 +244,13 @@ describe("EquipoList", () => {
   });
 
   it("should handle delete button click", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [mockEquipos[0]],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -270,14 +266,13 @@ describe("EquipoList", () => {
   });
 
   it("should display empty state when no equipos", async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [],
         pagination: { totalPages: 1, total: 0 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 
@@ -290,23 +285,17 @@ describe("EquipoList", () => {
   });
 
   it("should display search empty state when search yields no results", async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: mockEquipos,
-          pagination: { totalPages: 1, total: 2 },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: [],
-          pagination: { totalPages: 1, total: 0 },
-        }),
-      });
+mockFetch
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: mockEquipos,
+        pagination: { totalPages: 1, total: 2 },
+      }))
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: [],
+        pagination: { totalPages: 1, total: 0 },
+      }));
 
     render(<EquipoList {...defaultProps} />);
 
@@ -320,23 +309,17 @@ describe("EquipoList", () => {
   });
 
   it("should handle pagination", async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: mockEquipos,
-          pagination: { totalPages: 2, total: 25 },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: [mockEquipos[0]],
-          pagination: { totalPages: 2, total: 25 },
-        }),
-      });
+mockFetch
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: mockEquipos,
+        pagination: { totalPages: 2, total: 25 },
+      }))
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: [mockEquipos[0]],
+        pagination: { totalPages: 2, total: 25 },
+      }));
 
     render(<EquipoList {...defaultProps} />);
 
@@ -368,23 +351,17 @@ describe("EquipoList", () => {
   });
 
   it("should handle sorting by clicking column headers", async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: [mockEquipos[0]],
-          pagination: { totalPages: 1, total: 1 },
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          success: true,
-          data: [mockEquipos[0]],
-          pagination: { totalPages: 1, total: 1 },
-        }),
-      });
+mockFetch
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: [mockEquipos[0]],
+        pagination: { totalPages: 1, total: 1 },
+      }))
+      .mockResolvedValueOnce(createMockResponse({
+        success: true,
+        data: [mockEquipos[0]],
+        pagination: { totalPages: 1, total: 1 },
+      }));
 
     render(<EquipoList {...defaultProps} />);
 
@@ -409,14 +386,13 @@ describe("EquipoList", () => {
       descripcion: "This is a very long description that should be truncated in the table view to maintain readability and proper layout",
     };
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
+mockFetch.mockResolvedValueOnce(
+      createMockResponse({
         success: true,
         data: [equipoWithLongDescription],
         pagination: { totalPages: 1, total: 1 },
-      }),
-    });
+})
+    );
 
     render(<EquipoList {...defaultProps} />);
 

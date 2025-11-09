@@ -8,6 +8,14 @@ import { ComponenteWithRelations } from '@/types/api';
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
+// Helper function to create mock Response
+const createMockResponse = (data: any, status = 200) => {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json' }
+  });
+};
+
 const mockComponentes: ComponenteWithRelations[] = [
   {
     id: '1',
@@ -70,10 +78,7 @@ describe('ComponenteList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockFetch.mockResolvedValue({
-      json: () => Promise.resolve(mockPaginatedResponse),
-      ok: true,
-    });
+mockFetch.mockResolvedValue(createMockResponse(mockPaginatedResponse));
   });
 
   it('renders componente list correctly', async () => {
@@ -111,8 +116,7 @@ describe('ComponenteList', () => {
   });
 
   it('displays empty state when no componentes found', async () => {
-    mockFetch.mockResolvedValue({
-      json: () => Promise.resolve({
+mockFetch.mockResolvedValue(createMockResponse({
         success: true,
         data: [],
         pagination: {
@@ -123,9 +127,7 @@ describe('ComponenteList', () => {
           hasNext: false,
           hasPrev: false,
         },
-      }),
-      ok: true,
-    });
+      }));
 
     render(
       <ComponenteList
@@ -343,8 +345,7 @@ describe('ComponenteList', () => {
     const user = userEvent.setup();
 
     // Mock response with multiple pages
-    mockFetch.mockResolvedValue({
-      json: () => Promise.resolve({
+mockFetch.mockResolvedValue(createMockResponse({
         success: true,
         data: mockComponentes,
         pagination: {
@@ -355,9 +356,7 @@ describe('ComponenteList', () => {
           hasNext: true,
           hasPrev: false,
         },
-      }),
-      ok: true,
-    });
+      }));
 
     render(
       <ComponenteList
@@ -431,8 +430,7 @@ describe('ComponenteList', () => {
       ],
     };
 
-    mockFetch.mockResolvedValue({
-      json: () => Promise.resolve({
+mockFetch.mockResolvedValue(createMockResponse({
         success: true,
         data: [componenteWithMultipleUbicaciones],
         pagination: {
@@ -443,9 +441,7 @@ describe('ComponenteList', () => {
           hasNext: false,
           hasPrev: false,
         },
-      }),
-      ok: true,
-    });
+      }));
 
     render(
       <ComponenteList

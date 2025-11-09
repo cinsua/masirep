@@ -3,12 +3,27 @@ import { GET, POST } from "../route";
 import { prisma } from "@/lib/prisma";
 
 // Mock dependencies
-jest.mock("@/lib/prisma");
+const mockPrisma = {
+  equipo: {
+    count: jest.fn(),
+    findMany: jest.fn(),
+    findFirst: jest.fn(),
+    create: jest.fn(),
+    findUnique: jest.fn(),
+    update: jest.fn(),
+  },
+  repuestoEquipo: {
+    create: jest.fn(),
+    createMany: jest.fn(),
+  },
+  $transaction: jest.fn(),
+};
+
+jest.mock("@/lib/prisma", () => ({ prisma: mockPrisma }));
 jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
-const mockPrisma = prisma as jest.Mocked<typeof prisma>;
 const mockGetServerSession = require("next-auth").getServerSession;
 
 describe("/api/equipos", () => {

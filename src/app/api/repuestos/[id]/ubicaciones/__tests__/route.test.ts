@@ -92,7 +92,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
       (prisma.repuestoUbicacion.findMany as jest.Mock).mockResolvedValue(mockUbicaciones);
 
       const request = new NextRequest("http://localhost:3000/api/repuestos/rep-1/ubicaciones");
-      const response = await GET(request, { params: { id: "rep-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -107,7 +107,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
       (prisma.repuesto.findUnique as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/repuestos/rep-999/ubicaciones");
-      const response = await GET(request, { params: { id: "rep-999" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "rep-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -120,7 +120,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
       (getServerSession as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/repuestos/rep-1/ubicaciones");
-      const response = await GET(request, { params: { id: "rep-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(401);
@@ -170,7 +170,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "rep-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(201);
@@ -224,7 +224,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "rep-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(201);
@@ -245,7 +245,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "rep-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -278,7 +278,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "rep-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(409);
@@ -303,7 +303,7 @@ describe("/api/repuestos/[id]/ubicaciones", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "rep-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "rep-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);

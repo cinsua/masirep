@@ -67,7 +67,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
       (prisma.organizador.findMany as jest.Mock).mockResolvedValue(mockOrganizadores);
 
       const request = new NextRequest("http://localhost:3000/api/estanterias/est-1/organizadores");
-      const response = await GET(request, { params: { id: "est-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -110,7 +110,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
       (prisma.organizador.findMany as jest.Mock).mockResolvedValue(mockOrganizadores);
 
       const request = new NextRequest("http://localhost:3000/api/estanterias/est-1/organizadores?search=Resistencias");
-      const response = await GET(request, { params: { id: "est-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "est-1" }) });
 
       expect(prisma.organizador.findMany).toHaveBeenCalledWith({
         where: {
@@ -136,7 +136,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
       (prisma.estanteria.findUnique as jest.Mock).mockResolvedValue(null);
 
       const request = new NextRequest("http://localhost:3000/api/estanterias/est-999/organizadores");
-      const response = await GET(request, { params: { id: "est-999" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "est-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -155,7 +155,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
       (prisma.organizador.findMany as jest.Mock).mockResolvedValue([]);
 
       const request = new NextRequest("http://localhost:3000/api/estanterias/est-1/organizadores");
-      const response = await GET(request, { params: { id: "est-1" } });
+      const response = await GET(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -211,7 +211,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "est-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(201);
@@ -265,7 +265,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "est-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(201);
@@ -288,7 +288,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "est-999" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "est-999" }) });
       const data = await response.json();
 
       expect(response.status).toBe(404);
@@ -317,7 +317,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "est-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
@@ -346,7 +346,7 @@ describe("/api/estanterias/[id]/organizadores", () => {
         },
       });
 
-      const response = await POST(request, { params: { id: "est-1" } });
+      const response = await POST(request, { params: Promise.resolve({ id: "est-1" }) });
       const data = await response.json();
 
       expect(response.status).toBe(400);
