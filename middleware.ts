@@ -73,6 +73,17 @@ export default withAuth(
           "/api/auth/providers",
           "/api/auth/csrf",
           "/api/auth/session",
+          "/api/componentes",
+          "/api/componentes/",
+          "/api/ubicaciones",
+          "/api/equipos",
+          "/api/repuestos",
+          "/api/armarios",
+          "/api/cajones",
+          "/api/cajoncitos",
+          "/api/organizadores",
+          "/api/estanterias",
+          "/api/divisiones",
         ];
 
         const isPublicPath = publicPaths.some((path) =>

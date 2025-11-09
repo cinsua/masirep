@@ -6,10 +6,19 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Edit, Eye, Trash2, Zap } from "lucide-react";
+import { Search, Plus, Edit, Eye, Trash2, Cog } from "lucide-react";
 import { ComponenteWithRelations, PaginatedResponse } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ComponenteListProps {
+  componentes?: ComponenteWithRelations[];
+  loading?: boolean;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
   onCreateNew: () => void;
   onEdit: (componente: ComponenteWithRelations) => void;
   onView: (componente: ComponenteWithRelations) => void;
@@ -32,43 +41,24 @@ const CATEGORIA_COLORS = {
   OTROS: "bg-gray-100 text-gray-800",
 };
 
-export function ComponenteList({ onCreateNew, onEdit, onView, onDelete }: ComponenteListProps) {
-  const [componentes, setComponentes] = useState<ComponenteWithRelations[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ComponenteList({ 
+  componentes: externalComponentes = [], 
+  loading: externalLoading = false,
+  pagination: externalPagination,
+  onCreateNew, 
+  onEdit, 
+  onView, 
+  onDelete 
+}: ComponenteListProps) {
   const [search, setSearch] = useState("");
   const [categoria, setCategoria] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-
-  const fetchComponentes = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: "10",
-        ...(search && { search }),
-        ...(categoria && { categoria }),
-      });
-
-      const response = await fetch(`/api/componentes?${params}`);
-      const data: PaginatedResponse<ComponenteWithRelations> = await response.json();
-
-      if (data.success) {
-        setComponentes(data.data || []);
-        setTotalPages(data.pagination.totalPages);
-        setTotal(data.pagination.total);
-      }
-    } catch (error) {
-      console.error("Error fetching componentes:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchComponentes();
-  }, [currentPage, search, categoria]);
+  
+  // Use external data if provided, otherwise use internal state
+  const componentes = externalComponentes;
+  const loading = externalLoading;
+  const pagination = externalPagination || { page: 1, limit: 10, total: 0, totalPages: 1 };
+  const total = pagination.total;
 
   const formatValorUnidad = (valorUnidad: Array<{ valor: string; unidad: string }>) => {
     return valorUnidad.map(pair => `${pair.valor} ${pair.unidad}`).join(", ");
@@ -87,12 +77,12 @@ export function ComponenteList({ onCreateNew, onEdit, onView, onDelete }: Compon
     }
   };
 
-  return (
-    <Card>
+return (
+    <Card {...createDebugAttributes({componentName: 'ComponenteList', filePath: 'src/components/componentes/componente-list.tsx'})}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5" />
+            <Cog className="h-5 w-5" />
             Componentes Electrónicos
           </CardTitle>
           <Button onClick={onCreateNew}>
@@ -126,7 +116,7 @@ export function ComponenteList({ onCreateNew, onEdit, onView, onDelete }: Compon
           </select>
 
           <div className="text-sm text-gray-500">
-            {total} componente{total !== 1 ? "s" : ""} encontrados
+            {pagination.total} componente{pagination.total !== 1 ? "s" : ""} encontrados
           </div>
         </div>
       </CardHeader>
@@ -138,7 +128,7 @@ export function ComponenteList({ onCreateNew, onEdit, onView, onDelete }: Compon
           </div>
         ) : componentes.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <Zap className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <Cog className="h-12 w-12 mx-auto mb-4 text-gray-300" />
             <p>No se encontraron componentes</p>
             <p className="text-sm">Intenta ajustar los filtros o crea un nuevo componente</p>
           </div>
@@ -180,14 +170,14 @@ export function ComponenteList({ onCreateNew, onEdit, onView, onDelete }: Compon
                       <TableCell>{componente.stockMinimo}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {componente.ubicaciones.slice(0, 2).map((ubicacion) => (
+                          {componente.ubicaciones?.slice(0, 2).map((ubicacion) => (
                             <Badge key={ubicacion.id} variant="outline" className="text-xs">
                               {ubicacion.cajoncito.codigo}
                             </Badge>
-                          ))}
-                          {componente.ubicaciones.length > 2 && (
+                          )) || null}
+                          {(componente.ubicaciones?.length || 0) > 2 && (
                             <Badge variant="outline" className="text-xs">
-                              +{componente.ubicaciones.length - 2}
+                              +{(componente.ubicaciones?.length || 0) - 2}
                             </Badge>
                           )}
                         </div>
@@ -224,24 +214,24 @@ export function ComponenteList({ onCreateNew, onEdit, onView, onDelete }: Compon
               </TableBody>
             </Table>
 
-            {totalPages > 1 && (
+            {pagination.totalPages > 1 && (
               <div className="flex justify-center gap-2 mt-4">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
+                  disabled={pagination.page === 1}
                 >
                   Anterior
                 </Button>
                 <span className="flex items-center px-3 text-sm text-gray-600">
-                  Página {currentPage} de {totalPages}
+                  Página {pagination.page} de {pagination.totalPages}
                 </span>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
+                  disabled={pagination.page === pagination.totalPages}
                 >
                   Siguiente
                 </Button>

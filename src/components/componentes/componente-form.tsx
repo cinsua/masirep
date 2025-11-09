@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { X, Plus, Save, XCircle } from "lucide-react";
 import { ComponenteWithRelations, ComponenteCreateInput, ComponenteUpdateInput } from "@/types/api";
 import { validateComponente, validateComponenteByCategory } from "@/lib/validations/componente";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 type ComponenteFormData = {
   categoria: string;
@@ -58,7 +59,7 @@ export function ComponenteForm({ componente, onSubmit, onCancel, isLoading = fal
   const watchedCategoria = watch("categoria");
 
   useEffect(() => {
-    if (componente) {
+    if (componente && componente.ubicaciones) {
       setSelectedUbicaciones(
         componente.ubicaciones.map(ub => ({
           cajoncitoId: ub.cajoncitoId,
@@ -139,8 +140,8 @@ export function ComponenteForm({ componente, onSubmit, onCancel, isLoading = fal
     await onSubmit(submitData);
   };
 
-  return (
-    <Card className="max-w-4xl mx-auto">
+return (
+    <Card className="max-w-4xl mx-auto" {...createDebugAttributes({componentName: 'ComponenteForm', filePath: 'src/components/componentes/componente-form.tsx'})}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>
