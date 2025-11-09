@@ -22,6 +22,9 @@ export async function GET(
       where: { id: params.id, isActive: true },
       include: {
         equipos: {
+          where: {
+            equipo: { isActive: true },
+          },
           include: {
             equipo: {
               select: {

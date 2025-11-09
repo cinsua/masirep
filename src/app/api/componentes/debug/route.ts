@@ -3,43 +3,20 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   try {
-    console.log("Componentes API called");
+    console.log("Componentes API called (debug version)");
     
-    // Query with relaciones included - filter only active components
+    // Simple query without authentication for testing
     const componentes = await prisma.componente.findMany({
       where: { isActive: true },
       take: 10,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        ubicaciones: {
-          include: {
-            cajoncito: {
-              select: {
-                id: true,
-                nombre: true,
-                codigo: true,
-              },
-            },
-          },
-        },
-      },
+      orderBy: { createdAt: 'desc' }
     });
 
     console.log("Componentes found:", componentes.length);
 
-    // Transform data to match expected types
-    const componentesWithStock = componentes.map(componente => ({
-      ...componente,
-      valorUnidad: componente.valorUnidad as Array<{ valor: string; unidad: string }>,
-      stockActual: componente.ubicaciones.reduce(
-        (total, ubicacion) => total + ubicacion.cantidad,
-        0
-      ),
-    }));
-
     return NextResponse.json({
       success: true,
-      data: componentesWithStock,
+      data: componentes,
       pagination: {
         page: 1,
         limit: 10,

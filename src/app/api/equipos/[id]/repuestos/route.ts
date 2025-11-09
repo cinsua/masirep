@@ -20,7 +20,7 @@ export async function GET(
 
     // Check if equipo exists
     const equipo = await prisma.equipo.findUnique({
-      where: { id },
+      where: { id, isActive: true },
     });
 
     if (!equipo) {
@@ -36,7 +36,10 @@ export async function GET(
 
     // Get repuestos associations
     const repuestosAsociados = await prisma.repuestoEquipo.findMany({
-      where: { equipoId: id },
+      where: { 
+        equipoId: id,
+        repuesto: { isActive: true },
+      },
       include: {
         repuesto: true,
       },

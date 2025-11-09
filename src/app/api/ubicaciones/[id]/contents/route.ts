@@ -172,7 +172,10 @@ async function getItemsAtLocation(
         : { OR: repuestosConditions };
 
       repuestosItems = await prisma.repuestoUbicacion.findMany({
-        where: whereClause,
+        where: {
+          ...whereClause,
+          repuesto: { isActive: true },
+        },
         include: {
           repuesto: {
             select: {
@@ -323,7 +326,10 @@ async function getItemsAtLocation(
 
     if (cajoncitoIds.length > 0) {
       componentesItems = await prisma.componenteUbicacion.findMany({
-        where: { cajoncitoId: { in: cajoncitoIds } },
+        where: { 
+          cajoncitoId: { in: cajoncitoIds },
+          componente: { isActive: true },
+        },
         include: {
           componente: {
             select: {

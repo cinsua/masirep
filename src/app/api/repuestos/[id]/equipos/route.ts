@@ -20,7 +20,10 @@ export async function GET(
 
     const params = await context.params;
     const equipos = await prisma.repuestoEquipo.findMany({
-      where: { repuestoId: params.id },
+      where: { 
+        repuestoId: params.id,
+        equipo: { isActive: true },
+      },
       include: {
         equipo: {
           select: {

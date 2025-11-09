@@ -19,9 +19,12 @@ export async function GET(
     }
 
     const equipo = await prisma.equipo.findUnique({
-      where: { id },
+      where: { id, isActive: true },
       include: {
         repuestos: {
+          where: {
+            repuesto: { isActive: true },
+          },
           include: {
             repuesto: true,
           },

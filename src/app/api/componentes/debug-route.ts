@@ -1,45 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   try {
     console.log("Componentes API called");
     
-    // Query with relaciones included - filter only active components
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      console.log("No session found");
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    console.log("Session found:", session.user?.email);
+
+    // Simple query without any complex relations
     const componentes = await prisma.componente.findMany({
       where: { isActive: true },
       take: 10,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        ubicaciones: {
-          include: {
-            cajoncito: {
-              select: {
-                id: true,
-                nombre: true,
-                codigo: true,
-              },
-            },
-          },
-        },
-      },
+      orderBy: { createdAt: 'desc' }
     });
 
     console.log("Componentes found:", componentes.length);
 
-    // Transform data to match expected types
-    const componentesWithStock = componentes.map(componente => ({
-      ...componente,
-      valorUnidad: componente.valorUnidad as Array<{ valor: string; unidad: string }>,
-      stockActual: componente.ubicaciones.reduce(
-        (total, ubicacion) => total + ubicacion.cantidad,
-        0
-      ),
-    }));
-
     return NextResponse.json({
       success: true,
-      data: componentesWithStock,
+      data: componentes,
       pagination: {
         page: 1,
         limit: 10,

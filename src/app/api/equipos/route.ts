@@ -49,6 +49,9 @@ export async function GET(req: NextRequest) {
       orderBy: { [sortBy]: sortOrder },
       include: {
         repuestos: {
+          where: {
+            repuesto: { isActive: true },
+          },
           include: {
             repuesto: true,
           },

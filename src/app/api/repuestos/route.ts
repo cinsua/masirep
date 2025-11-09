@@ -50,6 +50,9 @@ export async function GET(req: NextRequest) {
       orderBy: { [sortBy]: sortOrder },
       include: {
         equipos: {
+          where: {
+            equipo: { isActive: true },
+          },
           include: {
             equipo: {
               select: {
