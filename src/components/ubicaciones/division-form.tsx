@@ -14,8 +14,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Grid3x3 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import { DivisionSchema, DivisionFormData } from "@/lib/validations/cajon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface DivisionFormProps {
   isOpen: boolean;
@@ -123,10 +125,16 @@ export function DivisionForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        {...createDebugAttributes({
+          componentName: 'DivisionForm',
+          filePath: 'src/components/ubicaciones/division-form.tsx'
+        })}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Grid3x3 className="h-5 w-5" />
+            <EntityIcon entityType="division" className="h-5 w-5" />
             {title}
           </DialogTitle>
           {description && (
@@ -181,7 +189,7 @@ export function DivisionForm({
 
           {/* Auto-numbering Information */}
           <Alert>
-            <Grid3x3 className="h-4 w-4" />
+            <EntityIcon entityType="division" className="h-4 w-4" />
             <AlertDescription>
               El código de la división se generará automáticamente (ej: DIV-001, DIV-002, etc.)
             </AlertDescription>

@@ -20,6 +20,7 @@ import {
   User
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 const navigation = [
   {
@@ -73,7 +74,13 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-background">
+    <div 
+      className="flex h-screen bg-background"
+      {...createDebugAttributes({
+        componentName: 'SidebarLayout',
+        filePath: 'src/components/layout/sidebar-layout.tsx'
+      })}
+    >
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div

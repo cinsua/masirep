@@ -5,7 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MapPin, Archive, Grid3x3, Edit, Trash2 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
+import { Edit, Trash2, Columns2, Rows3 } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface LocationCardProps {
   id: string;
@@ -47,15 +49,14 @@ export function LocationCard({
   const hasContent = totalContent > 0 || subContainersCount > 0;
   const displayCount = itemCount !== undefined && itemCount > 0 ? itemCount : subContainersCount;
 
+  // Atributos de depuración para el componente principal
+  const debugAttrs = createDebugAttributes({
+    componentName: 'LocationCard',
+    filePath: 'src/components/ubicaciones/location-card.tsx'
+  });
+
   const getIcon = () => {
-    switch (type) {
-      case "armario":
-        return <Archive className="h-5 w-5" />;
-      case "estanteria":
-        return <Grid3x3 className="h-5 w-5" />;
-      default:
-        return <MapPin className="h-5 w-5" />;
-    }
+    return <EntityIcon entityType={type} className="h-5 w-5" />;
   };
 
   const getTypeLabel = () => {
@@ -97,30 +98,47 @@ export function LocationCard({
         className
       )}
       onClick={handleCardClick}
-      data-ai-tag="location-card"
-      data-ai-component="ubicaciones-location-card"
-      data-ai-type={type}
-      data-ai-id={id}
-      data-ai-active={isActive}
-      data-ai-codigo={codigo}
+      {...debugAttrs}
     >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2" data-ai-tag="location-header-title">
+          <div 
+            className="flex items-center gap-2"
+            {...createDebugAttributes({
+              componentName: 'LocationCard-Header',
+              filePath: 'src/components/ubicaciones/location-card.tsx'
+            })}
+          >
             {getIcon()}
-            <CardTitle className="text-lg font-semibold" data-ai-tag="location-name">{nombre}</CardTitle>
+            <CardTitle 
+              className="text-lg font-semibold"
+              {...createDebugAttributes({
+                componentName: 'LocationCard-Title',
+                filePath: 'src/components/ubicaciones/location-card.tsx'
+              })}
+            >
+              {nombre}
+            </CardTitle>
           </div>
           <div className="flex items-center gap-2">
             <Badge
               variant="secondary"
               className={getTypeColor()}
-              data-ai-tag="location-type-badge"
-              data-ai-type={type}
+              {...createDebugAttributes({
+                componentName: 'LocationCard-TypeBadge',
+                filePath: 'src/components/ubicaciones/location-card.tsx'
+              })}
             >
               {getTypeLabel()}
             </Badge>
             {showActions && (
-              <div className="location-actions flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div 
+                className="location-actions flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                {...createDebugAttributes({
+                  componentName: 'LocationCard-Actions',
+                  filePath: 'src/components/ubicaciones/location-card.tsx'
+                })}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
@@ -129,8 +147,10 @@ export function LocationCard({
                     onEdit?.();
                   }}
                   className="h-8 w-8 p-0"
-                  data-ai-tag="location-edit-button"
-                  data-ai-action="edit"
+                  {...createDebugAttributes({
+                    componentName: 'LocationCard-EditButton',
+                    filePath: 'src/components/ubicaciones/location-card.tsx'
+                  })}
                 >
                   <Edit className="h-3 w-3" />
                 </Button>
@@ -141,9 +161,11 @@ export function LocationCard({
                      e.stopPropagation();
                      onDelete?.();
                    }}
-                   className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                   data-ai-tag="location-delete-button"
-                   data-ai-action="delete"
+                    className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    {...createDebugAttributes({
+                      componentName: 'LocationCard-DeleteButton',
+                      filePath: 'src/components/ubicaciones/location-card.tsx'
+                    })}
                  >
                    <Trash2 className="h-3 w-3" />
                  </Button>
@@ -153,7 +175,14 @@ export function LocationCard({
         </div>
         <CardDescription className="text-sm">
           {!isActive && (
-            <Badge variant="destructive" className="ml-2 text-xs" data-ai-tag="location-inactive-badge">
+            <Badge 
+              variant="destructive" 
+              className="ml-2 text-xs"
+              {...createDebugAttributes({
+                componentName: 'LocationCard-InactiveBadge',
+                filePath: 'src/components/ubicaciones/location-card.tsx'
+              })}
+            >
               Inactivo
             </Badge>
           )}
@@ -171,14 +200,20 @@ export function LocationCard({
           <div className="flex gap-4 text-sm text-muted-foreground">
             {armariosCount > 0 && (
               <div className="flex items-center gap-1">
-                <Archive className="h-4 w-4" />
+                <EntityIcon entityType="armario" className="h-4 w-4" />
                 <span>{armariosCount}</span>
               </div>
             )}
             {estanteriasCount > 0 && (
               <div className="flex items-center gap-1">
-                <Grid3x3 className="h-4 w-4" />
+                <EntityIcon entityType="estanteria" className="h-4 w-4" />
                 <span>{estanteriasCount}</span>
+              </div>
+            )}
+            {cajonesCount > 0 && (
+              <div className="flex items-center gap-1">
+                <EntityIcon entityType="cajon" className="h-4 w-4" />
+                <span>{cajonesCount}</span>
               </div>
             )}
             {!hasContent && subContainersCount === 0 && (

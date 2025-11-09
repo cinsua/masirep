@@ -11,6 +11,8 @@ import {
   MapPin,
   FileText
 } from "lucide-react";
+import { ICON_SYSTEM } from "@/lib/icons";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 const navigation = [
   {
@@ -21,17 +23,17 @@ const navigation = [
   {
     name: "Repuestos",
     href: "/repuestos",
-    icon: Package,
+    icon: Wrench, // Usando wrench para repuestos según nuestro sistema
   },
   {
     name: "Componentes",
     href: "/componentes",
-    icon: Cog,
+    icon: Cog, // Usando cog para componentes según nuestro sistema
   },
   {
     name: "Equipos",
     href: "/equipos",
-    icon: Wrench,
+    icon: Package, // Usando package para equipos según nuestro sistema
   },
   {
     name: "Ubicaciones",
@@ -51,8 +53,10 @@ export function Navigation() {
   return (
     <nav
       className="flex space-x-1"
-      data-ai-tag="main-navigation"
-      data-ai-component="layout-navigation"
+      {...createDebugAttributes({
+        componentName: 'Navigation',
+        filePath: 'src/components/layout/navigation.tsx'
+      })}
     >
       {navigation.map((item) => {
         const isActive = pathname === item.href;

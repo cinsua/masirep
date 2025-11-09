@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Search, Plus, Trash2, MapPin } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface Cajoncito {
   id: string;
@@ -146,7 +147,10 @@ export function ComponenteLocationSelector({ selected, onChange, disabled = fals
   };
 
   return (
-    <Card>
+    <Card {...createDebugAttributes({
+      componentName: 'ComponenteLocationSelector',
+      filePath: 'src/components/forms/componente-location-selector.tsx'
+    })}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="flex items-center gap-2 text-lg">

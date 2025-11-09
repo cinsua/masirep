@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { CajoncitoCard } from "./cajoncito-card";
 import { Button } from "@/components/ui/button";
 import { Plus, Grid, Package } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 // Re-export CajoncitoCard types for convenience
 export type { CajoncitoCardProps } from "./cajoncito-card";
@@ -104,7 +105,13 @@ export function OrganizerGrid({
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div 
+      className={cn("space-y-6", className)}
+      {...createDebugAttributes({
+        componentName: 'OrganizerGrid',
+        filePath: 'src/components/ubicaciones/organizer-grid.tsx'
+      })}
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { DrawerCard } from "./drawer-card";
 import { Button } from "@/components/ui/button";
 import { Plus, Grid, Layers } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface Cajon {
   id: string;
@@ -93,7 +94,13 @@ export function DrawerGrid({
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div 
+      className={cn("space-y-6", className)}
+      {...createDebugAttributes({
+        componentName: 'DrawerGrid',
+        filePath: 'src/components/ubicaciones/drawer-grid.tsx'
+      })}
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">

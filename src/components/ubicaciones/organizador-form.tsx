@@ -14,8 +14,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Package, Grid3X3 } from "lucide-react";
+import { Loader2, Package } from "lucide-react";
 import { OrganizadorSchema, OrganizadorFormData } from "@/lib/validations/organizador";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface OrganizadorFormProps {
   isOpen: boolean;
@@ -129,10 +131,16 @@ export function OrganizadorForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        {...createDebugAttributes({
+          componentName: 'OrganizadorForm',
+          filePath: 'src/components/ubicaciones/organizador-form.tsx'
+        })}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" />
+            <EntityIcon entityType="organizador" className="h-5 w-5 text-pink-600" />
             {title}
           </DialogTitle>
           {description && (
@@ -212,7 +220,7 @@ export function OrganizadorForm({
 
           {/* Auto-numbering and Cajoncitos Information */}
           <Alert>
-            <Grid3X3 className="h-4 w-4" />
+            <EntityIcon entityType="organizador" className="h-4 w-4" />
             <AlertDescription>
               <strong>Importante:</strong> Al crear este organizador se generarán automáticamente{" "}
               <strong>{formData.cantidadCajoncitos} cajoncitos</strong> numerados correlativamente.
@@ -242,7 +250,7 @@ export function OrganizadorForm({
                 </>
               ) : (
                 <>
-                  <Package className="mr-2 h-4 w-4" />
+                  <EntityIcon entityType="organizador" className="mr-2 h-4 w-4" />
                   Crear Organizador
                 </>
               )}

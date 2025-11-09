@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   Loader2,
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +26,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { DivisionForm } from "./division-form";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface Cajon {
   id: string;
@@ -198,8 +200,20 @@ export function DivisionPanel({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        {...createDebugAttributes({
+          componentName: 'DivisionPanel',
+          filePath: 'src/components/ubicaciones/division-panel.tsx'
+        })}
+      >
+        <div 
+          className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+          {...createDebugAttributes({
+            componentName: 'DivisionPanel',
+            filePath: 'src/components/ubicaciones/division-panel.tsx'
+          })}
+        >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b">
             <div>
@@ -317,7 +331,7 @@ export function DivisionPanel({
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
-                            <Grid3x3 className="h-4 w-4 text-blue-600" />
+                            <EntityIcon entityType="division" className="h-4 w-4 text-blue-600" />
                             {division.codigo}
                           </CardTitle>
                           <CardDescription className="text-sm text-gray-600 mt-1">

@@ -2,6 +2,7 @@
 
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ComponenteCategorySelectorProps {
   value: string;
@@ -35,7 +36,13 @@ const CATEGORIA_DESCRIPTIONS = {
 
 export function ComponenteCategorySelector({ value, onChange, disabled = false }: ComponenteCategorySelectorProps) {
   return (
-    <div className="space-y-2">
+    <div 
+      className="space-y-2"
+      {...createDebugAttributes({
+        componentName: 'ComponenteCategorySelector',
+        filePath: 'src/components/forms/componente-category-selector.tsx'
+      })}
+    >
       <Label htmlFor="categoria">Categoría</Label>
       <select
         value={value}

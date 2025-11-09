@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Wrench, AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -16,6 +17,12 @@ export function LoginForm() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const { signIn, isLoading, error, isAuthenticated } = useAuth();
   const router = useRouter();
+
+  // Atributos de depuración para el componente principal
+  const debugAttrs = createDebugAttributes({
+    componentName: 'LoginForm',
+    filePath: 'src/components/auth/login-form.tsx'
+  });
 
   const validateForm = (): boolean => {
     const newErrors: typeof errors = {};
@@ -61,7 +68,7 @@ export function LoginForm() {
   }, []);
 
   return (
-    <Card className="w-full max-w-md shadow-lg">
+    <Card className="w-full max-w-md shadow-lg" {...debugAttrs}>
       <CardHeader className="space-y-1 pb-6">
         <div className="flex items-center justify-center space-x-2 mb-4">
           <div className="p-2 bg-primary/10 rounded-full">
@@ -84,7 +91,14 @@ export function LoginForm() {
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form 
+          onSubmit={handleSubmit} 
+          className="space-y-4"
+          {...createDebugAttributes({
+            componentName: 'LoginForm-Form',
+            filePath: 'src/components/auth/login-form.tsx'
+          })}
+        >
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -136,6 +150,10 @@ export function LoginForm() {
             className="w-full"
             disabled={isLoading}
             size="lg"
+            {...createDebugAttributes({
+              componentName: 'LoginForm-SubmitButton',
+              filePath: 'src/components/auth/login-form.tsx'
+            })}
           >
             {isLoading ? (
               <>

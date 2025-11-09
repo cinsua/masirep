@@ -36,8 +36,10 @@ import {
   Layers,
   Grid3x3
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import { useNotifications } from "@/components/notifications/notification-provider";
 import { LocationPicker } from "./location-picker";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ItemData {
   id: string;
@@ -191,13 +193,13 @@ export function AssociationPanel({
 
   const getLocationIcon = (type: string) => {
     switch (type) {
-      case 'ubicacion': return <Building className="h-4 w-4" />;
-      case 'armario': return <Archive className="h-4 w-4" />;
-      case 'estanteria': return <Layers className="h-4 w-4" />;
-      case 'estante': return <Package className="h-4 w-4" />;
-      case 'cajon': return <Package className="h-4 w-4" />;
-      case 'division': return <Grid3x3 className="h-4 w-4" />;
-      case 'cajoncito': return <Cpu className="h-4 w-4" />;
+      case 'ubicacion': return <EntityIcon entityType="ubicacion" className="h-4 w-4" />;
+      case 'armario': return <EntityIcon entityType="armario" className="h-4 w-4" />;
+      case 'estanteria': return <EntityIcon entityType="estanteria" className="h-4 w-4" />;
+      case 'estante': return <EntityIcon entityType="estante" className="h-4 w-4" />;
+      case 'cajon': return <EntityIcon entityType="cajon" className="h-4 w-4" />;
+      case 'division': return <EntityIcon entityType="division" className="h-4 w-4" />;
+      case 'cajoncito': return <EntityIcon entityType="cajoncito" className="h-4 w-4" />;
       default: return <MapPin className="h-4 w-4" />;
     }
   };
@@ -271,16 +273,35 @@ export function AssociationPanel({
   return (
     <>
       {trigger ? (
-        <div onClick={() => setIsOpen(true)}>{trigger}</div>
+        <div 
+          onClick={() => setIsOpen(true)}
+          {...createDebugAttributes({
+            componentName: 'AssociationPanel',
+            filePath: 'src/components/ubicaciones/association-panel.tsx'
+          })}
+        >{trigger}</div>
       ) : (
-        <Button onClick={() => setIsOpen(true)} size="sm">
+        <Button 
+          onClick={() => setIsOpen(true)} 
+          size="sm"
+          {...createDebugAttributes({
+            componentName: 'AssociationPanel',
+            filePath: 'src/components/ubicaciones/association-panel.tsx'
+          })}
+        >
           <MapPin className="h-4 w-4 mr-2" />
           Gestionar Ubicaciones
         </Button>
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent 
+          className="max-w-4xl max-h-[90vh] overflow-y-auto"
+          {...createDebugAttributes({
+            componentName: 'AssociationPanel',
+            filePath: 'src/components/ubicaciones/association-panel.tsx'
+          })}
+        >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {itemType === 'repuesto' ? (
@@ -366,9 +387,9 @@ export function AssociationPanel({
                   </div>
                   <div className="flex items-center gap-2">
                     {itemType === 'repuesto' ? (
-                      <Package className="h-4 w-4 text-blue-600" />
+                      <EntityIcon entityType="repuesto" className="h-4 w-4 text-blue-600" />
                     ) : (
-                      <Cpu className="h-4 w-4 text-orange-600" />
+                      <EntityIcon entityType="componente" className="h-4 w-4 text-orange-600" />
                     )}
                     <span className="font-medium">{itemCode}</span>
                     <span className="text-gray-600">-</span>

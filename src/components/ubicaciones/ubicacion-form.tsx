@@ -15,9 +15,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, MapPin, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { z } from "zod";
 import { UbicacionSchema } from "@/lib/validations/ubicacion";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface UbicacionFormData {
   codigo?: string;
@@ -123,12 +125,14 @@ export function UbicacionForm({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className="sm:max-w-[500px]"
-        data-ai-tag="ubicacion-form-dialog"
-        data-ai-component="ubicaciones-form"
+        {...createDebugAttributes({
+          componentName: 'UbicacionForm',
+          filePath: 'src/components/ubicaciones/ubicacion-form.tsx'
+        })}
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2" data-ai-tag="form-title">
-            <MapPin className="h-5 w-5" />
+            <EntityIcon entityType="ubicacion" className="h-5 w-5" />
             {title}
           </DialogTitle>
           {description && (

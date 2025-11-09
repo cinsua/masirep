@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Calculator, Package, AlertTriangle, CheckCircle } from "lucide-react";
 import { ComponenteWithRelations } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface StockCalculatorProps {
   componente: ComponenteWithRelations;
@@ -51,8 +52,8 @@ export function StockCalculator({ componente, className = "" }: StockCalculatorP
   const stockStatus = getStockStatus();
   const StatusIcon = stockStatus.icon;
 
-  return (
-    <Card className={className}>
+return (
+    <Card className={className} {...createDebugAttributes({componentName: 'StockCalculator', filePath: 'src/components/componentes/stock-calculator.tsx'})}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Calculator className="h-5 w-5 text-orange-600" />

@@ -4,17 +4,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { EntityIcon } from "@/components/ui/icon";
 import {
   ChevronRight,
-  MapPin,
-  Archive,
-  Grid3x3,
-  Layers,
-  FolderOpen,
-  Package,
-  Wrench,
   Home,
 } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface BreadcrumbItem {
   id: string;
@@ -42,25 +37,18 @@ export function BreadcrumbNavigation({
   className,
 }: BreadcrumbNavigationProps) {
   const getIcon = (type: BreadcrumbItem["type"]) => {
-    const iconClass = "h-4 w-4";
-    switch (type) {
-      case "ubicacion":
-        return <MapPin className={cn(iconClass, "text-purple-600")} />;
-      case "armario":
-        return <Archive className={cn(iconClass, "text-blue-600")} />;
-      case "estanteria":
-        return <Grid3x3 className={cn(iconClass, "text-green-600")} />;
-      case "cajon":
-        return <Layers className={cn(iconClass, "text-orange-600")} />;
-      case "division":
-        return <FolderOpen className={cn(iconClass, "text-yellow-600")} />;
-      case "organizador":
-        return <Package className={cn(iconClass, "text-pink-600")} />;
-      case "cajoncito":
-        return <Wrench className={cn(iconClass, "text-indigo-600")} />;
-      default:
-        return <MapPin className={iconClass} />;
-    }
+    // Asignar colores según el tipo
+    const colorMap: Record<string, string> = {
+      'ubicacion': "text-purple-600",
+      'armario': "text-blue-600",
+      'estanteria': "text-green-600",
+      'cajon': "text-orange-600",
+      'division': "text-yellow-600",
+      'organizador': "text-pink-600",
+      'cajoncito': "text-indigo-600",
+    };
+    
+    return <EntityIcon entityType={type} className={cn("h-4 w-4", colorMap[type] || "")} />;
   };
 
   const getTypeLabel = (type: BreadcrumbItem["type"]) => {
@@ -132,8 +120,10 @@ export function BreadcrumbNavigation({
   return (
     <nav
       className={cn("flex items-center gap-2 text-sm flex-wrap", className)}
-      data-ai-tag="breadcrumb-navigation"
-      data-ai-component="ubicaciones-breadcrumb"
+      {...createDebugAttributes({
+        componentName: 'BreadcrumbNavigation',
+        filePath: 'src/components/ubicaciones/breadcrumb-navigation.tsx'
+      })}
     >
       {/* Home/Root link */}
       <Button

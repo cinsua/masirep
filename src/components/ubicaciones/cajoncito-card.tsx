@@ -16,6 +16,7 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface Organizador {
   id: string;
@@ -158,12 +160,16 @@ export function CajoncitoCard({
           className
         )}
         onClick={onClick}
+        {...createDebugAttributes({
+          componentName: 'CajoncitoCard',
+          filePath: 'src/components/ubicaciones/cajoncito-card.tsx'
+        })}
       >
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <Package className="h-4 w-4 text-gray-600" />
+                <EntityIcon entityType="organizador" className="h-4 w-4 text-gray-600" />
                 {organizador.codigo}
               </CardTitle>
               <CardDescription className="text-sm text-gray-600 mt-1">
@@ -321,7 +327,7 @@ export function CajoncitoCard({
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Cpu className="h-4 w-4 text-green-600" />
+                  <EntityIcon entityType="componente" className="h-4 w-4 text-green-600" />
                   <span className="text-sm font-medium text-green-800">
                     Componentes Directos
                   </span>

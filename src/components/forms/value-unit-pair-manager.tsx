@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X, AlertCircle } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ValorUnidadPair {
   valor: string;
@@ -80,7 +81,10 @@ export function ValueUnitPairManager({
   const validPairs = value.filter(isValidPair);
 
   return (
-    <Card>
+    <Card {...createDebugAttributes({
+      componentName: 'ValueUnitPairManager',
+      filePath: 'src/components/forms/value-unit-pair-manager.tsx'
+    })}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg">Especificaciones Técnicas</CardTitle>

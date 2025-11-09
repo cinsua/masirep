@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Wrench } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export function Header() {
   const { data: session } = useSession();
@@ -23,7 +24,13 @@ export function Header() {
   };
 
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header 
+      className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      {...createDebugAttributes({
+        componentName: 'Header',
+        filePath: 'src/components/layout/header.tsx'
+      })}
+    >
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
           <Wrench className="h-6 w-6 text-primary" />

@@ -8,13 +8,13 @@ import { DrawerGrid, Cajon, Division, OrganizerGrid, Organizador, Cajoncito, Org
 import { CajonForm } from "@/components/ubicaciones/cajon-form";
 import {
   Plus,
-  Archive,
   Layers,
   Home,
   Package,
   Grid3X3,
   ArrowLeft,
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Armario {
@@ -350,15 +350,9 @@ export default function CajonesPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">
             <div>
-              <div className="flex items-center space-x-2">
-                <Home className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-500">
-                  {ubicacion?.codigo} - {ubicacion?.nombre}
-                </span>
-              </div>
               <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <Archive className="h-6 w-6 text-gray-600" />
-                {armario.codigo} - {armario.nombre}
+                <EntityIcon entityType="armario" className="h-6 w-6 text-gray-600" />
+                {armario.nombre}
               </h1>
               {armario.descripcion && (
                 <p className="text-gray-600 mt-1">{armario.descripcion}</p>
@@ -386,7 +380,7 @@ export default function CajonesPage() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
-                <Archive className="h-4 w-4" />
+                <EntityIcon entityType="cajon" className="h-4 w-4" />
                 Cajones
               </CardTitle>
             </CardHeader>
@@ -403,7 +397,7 @@ export default function CajonesPage() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
-                <Layers className="h-4 w-4" />
+                <EntityIcon entityType="division" className="h-4 w-4" />
                 Divisiones
               </CardTitle>
             </CardHeader>
@@ -420,7 +414,7 @@ export default function CajonesPage() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
-                <Package className="h-4 w-4" />
+                <EntityIcon entityType="organizador" className="h-4 w-4" />
                 Organizadores
               </CardTitle>
             </CardHeader>
@@ -436,7 +430,10 @@ export default function CajonesPage() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Contenido</CardTitle>
+              <CardTitle className="text-base flex items-center gap-2">
+                <EntityIcon entityType="contenido" className="h-4 w-4" />
+                Contenido
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">
@@ -455,11 +452,11 @@ export default function CajonesPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="cajones" className="flex items-center gap-2">
-            <Archive className="h-4 w-4" />
+            <EntityIcon entityType="cajon" className="h-4 w-4" />
             Cajones ({cajones.length})
           </TabsTrigger>
           <TabsTrigger value="organizadores" className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
+            <EntityIcon entityType="organizador" className="h-4 w-4" />
             Organizadores ({organizadores.length})
           </TabsTrigger>
         </TabsList>

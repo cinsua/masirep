@@ -23,17 +23,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Search, Package, Cpu, Loader2, AlertTriangle } from "lucide-react";
+import { Search, Loader2, AlertTriangle } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import { useNotifications } from "@/components/notifications/notification-provider";
+import { createDebugAttributes } from "@/lib/debug-attributes";
+import { useComponentes } from "@/hooks/use-componentes";
+import { ComponenteWithRelations } from "@/types/api";
 
-interface ComponenteData {
-  id: string;
-  categoria: 'RESISTENCIA' | 'CAPACITOR' | 'INTEGRADO' | 'VENTILADOR' | 'OTROS';
-  descripcion: string;
-  valorUnidad: string;
-  stockMinimo: number;
-  stockActual: number;
-}
+// Use ComponenteWithRelations type instead of custom ComponenteData
+type ComponenteData = ComponenteWithRelations;
 
 interface Cajoncito {
   id: string;
@@ -53,49 +51,24 @@ export function ComponenteAssignmentForm({
   trigger,
 }: ComponenteAssignmentFormProps) {
   const { showSuccess, showError } = useNotifications();
+  const { data: componentes, loading, fetch: fetchComponentes } = useComponentes();
   const [isOpen, setIsOpen] = useState(false);
-  const [componentes, setComponentes] = useState<ComponenteData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(false);
   const [assigning, setAssigning] = useState<string | null>(null);
   const [selectedComponente, setSelectedComponente] = useState<ComponenteData | null>(null);
   const [cantidad, setCantidad] = useState(1);
   const [confirmDialog, setConfirmDialog] = useState(false);
 
-  // Fetch componentes based on search
-  const fetchComponentes = async () => {
-    if (!searchTerm.trim()) {
-      setComponentes([]);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/componentes?search=${encodeURIComponent(searchTerm)}&limit=10`);
-      const data = await response.json();
-
-      if (data.success) {
-        setComponentes(data.data || []);
-      } else {
-        showError(data.error || "Error al buscar componentes", "Error de búsqueda");
-      }
-    } catch (error) {
-      console.error("Error fetching componentes:", error);
-      showError("Error de conexión al buscar componentes", "Error de conexión");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+// Fetch componentes based on search using hook
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (isOpen) {
-        fetchComponentes();
+      if (isOpen && searchTerm.trim()) {
+        fetchComponentes({ search: searchTerm, limit: 10 });
       }
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, isOpen]);
+  }, [searchTerm, isOpen, fetchComponentes]);
 
   const handleAssignComponente = async () => {
     if (!selectedComponente) return;
@@ -120,10 +93,10 @@ export function ComponenteAssignmentForm({
         showSuccess(`Componente asignado exitosamente al cajoncito ${cajoncito.codigo}`, "Asignación exitosa");
         setIsOpen(false);
         setConfirmDialog(false);
-        setSelectedComponente(null);
+setSelectedComponente(null);
         setCantidad(1);
         setSearchTerm("");
-        setComponentes([]);
+        fetchComponentes({ search: "", limit: 10 });
       } else {
         showError(data.error || "Error al asignar componente", "Error de asignación");
       }
@@ -163,19 +136,38 @@ export function ComponenteAssignmentForm({
   return (
     <>
       {trigger ? (
-        <div onClick={() => setIsOpen(true)}>{trigger}</div>
+        <div 
+          onClick={() => setIsOpen(true)}
+          {...createDebugAttributes({
+            componentName: 'ComponenteAssignmentForm',
+            filePath: 'src/components/ubicaciones/componente-assignment-form.tsx'
+          })}
+        >{trigger}</div>
       ) : (
-        <Button onClick={() => setIsOpen(true)} size="sm">
-          <Package className="h-4 w-4 mr-2" />
+        <Button 
+          onClick={() => setIsOpen(true)} 
+          size="sm"
+          {...createDebugAttributes({
+            componentName: 'ComponenteAssignmentForm',
+            filePath: 'src/components/ubicaciones/componente-assignment-form.tsx'
+          })}
+        >
+          <EntityIcon entityType="componente" className="h-4 w-4 mr-2" />
           Asignar Componente
         </Button>
       )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent 
+          className="max-w-2xl"
+          {...createDebugAttributes({
+            componentName: 'ComponenteAssignmentForm',
+            filePath: 'src/components/ubicaciones/componente-assignment-form.tsx'
+          })}
+        >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Package className="h-5 w-5 text-orange-600" />
+              <EntityIcon entityType="componente" className="h-5 w-5 text-orange-600" />
               Asignar Componente al Cajoncito
             </DialogTitle>
             <DialogDescription>
@@ -188,7 +180,7 @@ export function ComponenteAssignmentForm({
             <div className="p-3 bg-orange-50 rounded-lg">
               <div className="font-medium text-sm mb-1">Cajoncito Destino:</div>
               <div className="flex items-center gap-2">
-                <Cpu className="h-4 w-4 text-orange-600" />
+                <EntityIcon entityType="cajoncito" className="h-4 w-4 text-orange-600" />
                 <span className="font-medium">{cajoncito.codigo}</span>
                 <span className="text-gray-600">-</span>
                 <span>{cajoncito.nombre}</span>
@@ -224,9 +216,9 @@ export function ComponenteAssignmentForm({
                     </Badge>
                     <span className="font-medium">{selectedComponente.descripcion}</span>
                   </div>
-                  <div className="text-sm text-gray-600">
-                    Valor: {selectedComponente.valorUnidad} |
-                    Stock: {selectedComponente.stockActual}/{selectedComponente.stockMinimo}
+<div className="text-sm text-gray-600">
+                    Valor: {selectedComponente.valorUnidad.map(v => `${v.valor} ${v.unidad}`).join(', ')} |
+                    Stock: {selectedComponente.stockActual || 0}/{selectedComponente.stockMinimo}
                   </div>
                 </div>
 
@@ -236,12 +228,12 @@ export function ComponenteAssignmentForm({
                     id="cantidad"
                     type="number"
                     min="1"
-                    max={selectedComponente.stockActual}
+                    max={selectedComponente.stockActual || 0}
                     value={cantidad}
                     onChange={(e) => setCantidad(parseInt(e.target.value) || 1)}
                   />
                   <p className="text-xs text-gray-600">
-                    Stock disponible: {selectedComponente.stockActual} unidades
+                    Stock disponible: {selectedComponente.stockActual || 0} unidades
                   </p>
                 </div>
 
@@ -255,7 +247,7 @@ export function ComponenteAssignmentForm({
                   </Button>
                   <Button
                     onClick={() => setConfirmDialog(true)}
-                    disabled={cantidad <= 0 || cantidad > selectedComponente.stockActual}
+                    disabled={cantidad <= 0 || cantidad > (selectedComponente.stockActual || 0)}
                     className="flex-1 bg-orange-600 hover:bg-orange-700"
                   >
                     Asignar
@@ -294,8 +286,8 @@ export function ComponenteAssignmentForm({
                             </Badge>
                             <span className="font-medium text-sm">{componente.descripcion}</span>
                           </div>
-                          <div className="text-xs text-gray-600">
-                            Valor: {componente.valorUnidad} | Stock: {componente.stockActual}/{componente.stockMinimo}
+<div className="text-xs text-gray-600">
+                            Valor: {componente.valorUnidad.map(v => `${v.valor} ${v.unidad}`).join(', ')} | Stock: {componente.stockActual || 0}/{componente.stockMinimo}
                           </div>
                         </div>
                       </div>
