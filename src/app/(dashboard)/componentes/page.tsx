@@ -80,13 +80,13 @@ export default function ComponentesPage() {
   }, []);
 
   const handleEdit = useCallback((componente: ComponenteWithRelations) => {
-    setSelectedComponente(componente);
-    setView("form");
+    // Navigate to edit page with query parameter
+    window.location.href = `/componentes/${componente.id}?edit=true`;
   }, []);
 
   const handleView = useCallback((componente: ComponenteWithRelations) => {
-    setSelectedComponente(componente);
-    setView("detail");
+    // Navigate to individual component page
+    window.location.href = `/componentes/${componente.id}`;
   }, []);
 
 const handleDelete = useCallback(async (componente: ComponenteWithRelations) => {
@@ -104,7 +104,6 @@ const handleDelete = useCallback(async (componente: ComponenteWithRelations) => 
 
       if (result.success) {
         alert("Componente eliminado exitosamente");
-        setView("list");
         await fetchComponentes(pagination.page, pagination.limit);
       } else {
         alert(`Error al eliminar componente: ${result.error}`);
