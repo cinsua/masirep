@@ -43,7 +43,6 @@
 - refactor: Complete migration from BMAD to OpenCode framework
 - feat: Simplified project structure removing legacy dependencies
 - BREAKING CHANGE: Removed entire BMAD framework system
-
 #### [Agregar nuevas versiones aquí]
 
 ## CONVENCIONES DE COMMIT ESPECÍFICAS DEL PROYECTO
