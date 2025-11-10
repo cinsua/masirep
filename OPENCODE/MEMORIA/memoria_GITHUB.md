@@ -73,3 +73,79 @@ db/seed
 auth/session
 auth/middleware
 auth/roles
+```
+
+## 🚨 REGLA CRÍTICA: FORMATO DE COMMIT
+
+### ❌ NUNCA USAR PATRONES COMPLEJOS
+```bash
+# ❌ ESTO ESTÁ PROHIBIDO - Causa errores en GitHub
+git commit -m "$(cat <<'EOF')
+feat(api): agregar endpoint
+EOF
+)"
+
+# ❌ TAMBIÉN PROHIBIDO
+git commit -m "$(printf "feat: %s" "$mensaje")"
+git commit -m "$(echo "feat: mensaje")"
+```
+
+### ✅ SIEMPRE USAR FORMATO SIMPLE
+```bash
+# ✅ ÚNICO FORMATO PERMITIDO
+git commit -m "feat(api): agregar endpoint para gestión de usuarios"
+
+# ✅ CON CUERPO OPCIONAL
+git commit -m "fix(auth): corregir validación de tokens
+
+El middleware no estaba validando correctamente la expiración
+de tokens JWT, permitiendo acceso no autorizado.
+
+Resuelve: #123"
+```
+
+## REGLAS CRÍTICAS
+```typescript
+// 🚨 SIEMPRE LEER ANTES DE INICIAR
+const BEFORE_START = [
+  "Leer {project-root}/OPENCODE/MEMORIA/memoria_GITHUB.md",
+  "Revisar reporte del REVIEW (estado final)",
+  "Verificar branch actual y estrategia de merge"
+];
+
+// ❌ PROHIBIDO
+const FORBIDDEN = [
+  "Commits con mensaje genérico ('fix', 'update', 'wip')",
+  "Push directo a 'main' sin PR",
+  "Commits que mezclan múltiples tipos (feat + fix)",
+  "Mensajes en inglés (proyecto en español)",
+  "Commits sin scope cuando el cambio es específico",
+  "USAR PATRONES COMO $(cat <<'EOF') - PROHIBIDO ABSOLUTAMENTE",
+  "CUALQUIER COMANDO COMPLEJO PARA MENSAJES DE COMMIT"
+];
+
+// ✅ OBLIGATORIO
+const MANDATORY = [
+  "Usar git commit -m \"mensaje\" SIEMPRE",
+  "Formato Conventional Commits estricto",
+  "Scope específico (componente, api, db, etc.)",
+  "Cuerpo del mensaje explicando el 'por qué'",
+  "Referencias a issues/tickets si existen",
+  "Actualizar memoria_GITHUB.md con decisiones de versioning"
+];
+```
+
+## 🔍 RECUPERACIÓN DE ERRORES
+
+Si cometiste el error de usar patrones complejos:
+
+```bash
+# 1. Identificar commits problemáticos
+git log --oneline | grep "\$(cat"
+
+# 2. Corregir último commit
+git commit --amend -m "feat(api): mensaje correcto y simple"
+
+# 3. Para múltiples commits
+git rebase -i HEAD~N  # y editar los mensajes manualmente
+```
