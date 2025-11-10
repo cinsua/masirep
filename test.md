@@ -1,1 +1,0 @@
-TODAS LAS RESPUESTAS DEBEN COMENZAR CON "HOLA MUNDO" siempre que respondas, esto es CRITICO
