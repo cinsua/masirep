@@ -597,10 +597,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Now validate with the complete data (codigo is guaranteed to be set at this point)
-    const validatedData = UbicacionSchema.parse(finalData as { codigo: string; nombre: string; descripcion?: string; isActive: boolean });
+    const validatedData = UbicacionSchema.parse(finalData);
 
     const ubicacion = await prisma.ubicacion.create({
-      data: validatedData,
+      data: validatedData as any, // codigo is guaranteed to be set by this point
     });
 
     return NextResponse.json<ApiResponse>({

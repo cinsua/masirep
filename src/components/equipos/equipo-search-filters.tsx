@@ -17,8 +17,10 @@ import {
   Building,
   Hash
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import { EquipoSearchParamsSchema } from "@/lib/validations/equipo";
 import { EquipoWithRelations } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface EquipoSearchFiltersProps {
   onSearch: (params: any) => void;
@@ -123,8 +125,8 @@ export function EquipoSearchFilters({
   const uniqueMarcas = getUniqueValues('marca');
   const uniqueModelos = getUniqueValues('modelo');
 
-  return (
-    <div className="space-y-4">
+return (
+    <div className="space-y-4" {...createDebugAttributes({componentName: 'EquipoSearchFilters', filePath: 'src/components/equipos/equipo-search-filters.tsx'})}>
       {/* Main Search Bar */}
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
@@ -258,7 +260,7 @@ export function EquipoSearchFilters({
                 <div className="space-y-2">
                   <Label htmlFor="nombre">Nombre</Label>
                   <div className="relative">
-                    <Wrench className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <EntityIcon entityType="equipo" className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="nombre"
                       placeholder="Ej: ESP20, PREPMASTER"

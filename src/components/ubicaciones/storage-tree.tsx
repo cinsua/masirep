@@ -8,14 +8,9 @@ import { cn } from "@/lib/utils";
 import {
   ChevronRight,
   ChevronDown,
-  MapPin,
-  Archive,
-  Grid3x3,
-  Layers,
-  FolderOpen,
-  Package,
-  Wrench,
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface StorageNode {
   id: string;
@@ -62,25 +57,18 @@ function TreeNode({
   const isBeyondMaxDepth = level >= maxDepth;
 
   const getIcon = () => {
-    const iconClass = "h-4 w-4";
-    switch (node.type) {
-      case "ubicacion":
-        return <MapPin className={cn(iconClass, "text-purple-600")} />;
-      case "armario":
-        return <Archive className={cn(iconClass, "text-blue-600")} />;
-      case "estanteria":
-        return <Grid3x3 className={cn(iconClass, "text-green-600")} />;
-      case "cajon":
-        return <Layers className={cn(iconClass, "text-orange-600")} />;
-      case "division":
-        return <FolderOpen className={cn(iconClass, "text-yellow-600")} />;
-      case "organizador":
-        return <Package className={cn(iconClass, "text-pink-600")} />;
-      case "cajoncito":
-        return <Wrench className={cn(iconClass, "text-indigo-600")} />;
-      default:
-        return <MapPin className={iconClass} />;
-    }
+    // Asignar colores según el tipo
+    const colorMap: Record<string, string> = {
+      'ubicacion': "text-purple-600",
+      'armario': "text-blue-600",
+      'estanteria': "text-green-600",
+      'cajon': "text-orange-600",
+      'division': "text-yellow-600",
+      'organizador': "text-pink-600",
+      'cajoncito': "text-indigo-600",
+    };
+    
+    return <EntityIcon entityType={node.type} className={cn("h-4 w-4", colorMap[node.type] || "")} />;
   };
 
   const getTypeColor = () => {
@@ -241,7 +229,7 @@ export function StorageTree({
     return (
       <Card className={className}>
         <CardContent className="p-6 text-center text-muted-foreground">
-          <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <EntityIcon entityType="ubicacion" className="h-8 w-8 mx-auto mb-2 opacity-50" />
           <p>No hay ubicaciones disponibles</p>
         </CardContent>
       </Card>
@@ -249,10 +237,16 @@ export function StorageTree({
   }
 
   return (
-    <Card className={className}>
+    <Card 
+      className={className}
+      {...createDebugAttributes({
+        componentName: 'StorageTree',
+        filePath: 'src/components/ubicaciones/storage-tree.tsx'
+      })}
+    >
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <MapPin className="h-5 w-5" />
+          <EntityIcon entityType="ubicacion" className="h-5 w-5" />
           Navegación Jerárquica
         </CardTitle>
       </CardHeader>

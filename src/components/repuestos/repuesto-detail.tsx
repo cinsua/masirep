@@ -3,8 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, Package, MapPin, Settings, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Edit, Wrench, MapPin, Settings, AlertTriangle } from "lucide-react";
 import { RepuestoWithRelations } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface RepuestoDetailProps {
   repuesto: RepuestoWithRelations;
@@ -16,7 +17,7 @@ export function RepuestoDetail({ repuesto, onEdit, onBack }: RepuestoDetailProps
   const getStockStatus = () => {
     if (repuesto.stockActual === 0) return { label: "Sin stock", variant: "destructive" as const, icon: AlertTriangle };
     if (repuesto.stockActual <= repuesto.stockMinimo) return { label: "Stock bajo", variant: "secondary" as const, icon: AlertTriangle };
-    return { label: "En stock", variant: "default" as const, icon: Package };
+    return { label: "En stock", variant: "default" as const, icon: Wrench };
   };
 
   const stockStatus = getStockStatus();
@@ -30,8 +31,8 @@ export function RepuestoDetail({ repuesto, onEdit, onBack }: RepuestoDetailProps
     return "Ubicación desconocida";
   };
 
-  return (
-    <div className="space-y-6">
+return (
+    <div className="space-y-6" {...createDebugAttributes({componentName: 'RepuestoDetail', filePath: 'src/components/repuestos/repuesto-detail.tsx'})}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -40,7 +41,7 @@ export function RepuestoDetail({ repuesto, onEdit, onBack }: RepuestoDetailProps
             Volver
           </Button>
           <div className="flex items-center space-x-2">
-            <Package className="h-6 w-6 text-primary" />
+            <Wrench className="h-6 w-6 text-primary" />
             <h1 className="text-3xl font-bold text-foreground">Detalles del Repuesto</h1>
           </div>
         </div>

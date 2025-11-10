@@ -23,6 +23,8 @@ import {
   Loader2,
   MapPin
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface Location {
   id: string;
@@ -134,13 +136,13 @@ export function LocationPicker({ itemType, onLocationSelect, selectedLocation }:
 
   const getLocationIcon = (type: string) => {
     switch (type) {
-      case 'ubicacion': return <Building className="h-4 w-4" />;
-      case 'armario': return <Archive className="h-4 w-4" />;
-      case 'estanteria': return <Layers className="h-4 w-4" />;
-      case 'estante': return <Package className="h-4 w-4" />;
-      case 'cajon': return <Archive className="h-4 w-4" />;
-      case 'division': return <Grid3x3 className="h-4 w-4" />;
-      case 'cajoncito': return <Cpu className="h-4 w-4" />;
+      case 'ubicacion': return <EntityIcon entityType="ubicacion" className="h-4 w-4" />;
+      case 'armario': return <EntityIcon entityType="armario" className="h-4 w-4" />;
+      case 'estanteria': return <EntityIcon entityType="estanteria" className="h-4 w-4" />;
+      case 'estante': return <EntityIcon entityType="estante" className="h-4 w-4" />;
+      case 'cajon': return <EntityIcon entityType="cajon" className="h-4 w-4" />;
+      case 'division': return <EntityIcon entityType="division" className="h-4 w-4" />;
+      case 'cajoncito': return <EntityIcon entityType="cajoncito" className="h-4 w-4" />;
       default: return <MapPin className="h-4 w-4" />;
     }
   };
@@ -238,7 +240,13 @@ export function LocationPicker({ itemType, onLocationSelect, selectedLocation }:
   };
 
   return (
-    <div className="space-y-3">
+    <div 
+      className="space-y-3"
+      {...createDebugAttributes({
+        componentName: 'LocationPicker',
+        filePath: 'src/components/ubicaciones/location-picker.tsx'
+      })}
+    >
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />

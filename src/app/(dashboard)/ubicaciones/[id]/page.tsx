@@ -3,19 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LocationCard, StorageTree, ArmarioForm, EstanteriaForm } from "@/components/ubicaciones";
 import {
   Plus,
   ArrowLeft,
-  MapPin,
   Archive,
-  Grid3x3,
-  Home,
   Layers,
   Package,
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 
 interface Ubicacion {
   id: string;
@@ -285,7 +283,7 @@ export default function UbicacionDetailPage() {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center py-8">
-          <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+          <EntityIcon entityType="ubicacion" className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
           <h3 className="text-lg font-medium mb-2">Ubicación no encontrada</h3>
           <p className="text-muted-foreground mb-4">
             No se encontró la ubicación solicitada
@@ -311,7 +309,7 @@ export default function UbicacionDetailPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <MapPin className="h-8 w-8" />
+              <EntityIcon entityType="ubicacion" className="h-8 w-8" />
               {ubicacion.nombre}
             </h1>
             <div className="flex items-center gap-2 mt-2">
@@ -341,7 +339,7 @@ export default function UbicacionDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Armarios</CardTitle>
-            <Archive className="h-4 w-4 text-muted-foreground" />
+            <EntityIcon entityType="armario" className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{ubicacion._count.armarios}</div>
@@ -350,7 +348,7 @@ export default function UbicacionDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Estanterías</CardTitle>
-            <Grid3x3 className="h-4 w-4 text-muted-foreground" />
+            <EntityIcon entityType="estanteria" className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{ubicacion._count.estanterias}</div>
@@ -359,7 +357,7 @@ export default function UbicacionDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Items Totales</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <EntityIcon entityType="repuesto" className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{getTotalItems()}</div>
@@ -368,7 +366,7 @@ export default function UbicacionDetailPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Unidades</CardTitle>
-            <Layers className="h-4 w-4 text-muted-foreground" />
+            <EntityIcon entityType="estanteria" className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -425,7 +423,7 @@ export default function UbicacionDetailPage() {
               {armarios.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Archive className="h-5 w-5 text-blue-600" />
+                    <EntityIcon entityType="armario" className="h-5 w-5 text-blue-600" />
                     Armarios ({armarios.length})
                   </h3>
                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -454,7 +452,7 @@ export default function UbicacionDetailPage() {
               {estanterias.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Grid3x3 className="h-5 w-5 text-green-600" />
+                    <EntityIcon entityType="estanteria" className="h-5 w-5 text-green-600" />
                     Estanterías ({estanterias.length})
                   </h3>
                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -482,7 +480,7 @@ export default function UbicacionDetailPage() {
 
               {armarios.length === 0 && estanterias.length === 0 && (
                 <div className="text-center py-8">
-                  <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                  <EntityIcon entityType="ubicacion" className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
                   <h3 className="text-lg font-medium mb-2">No hay unidades de almacenamiento</h3>
                   <p className="text-muted-foreground mb-4">
                     Esta ubicación aún no tiene armarios ni estanterías
@@ -511,7 +509,7 @@ export default function UbicacionDetailPage() {
           setIsArmarioFormOpen(false);
           setEditingArmario(null);
         }}
-        onSubmit={async (formData: any) => {
+        onSubmit={async (formData) => {
           const url = editingArmario
             ? `/api/ubicaciones/${ubicacionId}/armarios/${editingArmario.id}`
             : `/api/ubicaciones/${ubicacionId}/armarios`;
@@ -537,10 +535,8 @@ export default function UbicacionDetailPage() {
           setEditingArmario(null);
         }}
         initialData={editingArmario ? {
-          codigo: editingArmario.codigo,
           nombre: editingArmario.nombre,
           descripcion: editingArmario.descripcion,
-          isActive: editingArmario.isActive,
         } : undefined}
         ubicacionCodigo={ubicacion?.codigo}
         ubicacionId={ubicacionId}
@@ -558,7 +554,7 @@ export default function UbicacionDetailPage() {
           setIsEstanteriaFormOpen(false);
           setEditingEstanteria(null);
         }}
-        onSubmit={async (formData: any) => {
+        onSubmit={async (formData) => {
           const url = editingEstanteria
             ? `/api/ubicaciones/${ubicacionId}/estanterias/${editingEstanteria.id}`
             : `/api/ubicaciones/${ubicacionId}/estanterias`;
@@ -584,10 +580,8 @@ export default function UbicacionDetailPage() {
           setEditingEstanteria(null);
         }}
         initialData={editingEstanteria ? {
-          codigo: editingEstanteria.codigo,
           nombre: editingEstanteria.nombre,
           descripcion: editingEstanteria.descripcion,
-          isActive: editingEstanteria.isActive,
         } : undefined}
         ubicacionCodigo={ubicacion?.codigo}
         ubicacionId={ubicacionId}

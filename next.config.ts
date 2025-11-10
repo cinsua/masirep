@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     // Remove deprecated option in Next.js 16
     // serverExternalPackages is no longer needed
   },
+  distDir: process.env.NEXT_BUILD_DIR || '.next',
   turbopack: {
     rules: {
       '*.svg': {

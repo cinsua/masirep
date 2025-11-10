@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Search, X, Plus, Trash2 } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface Ubicacion {
   id: string;
@@ -118,7 +119,13 @@ export function LocationSelector({ selected, onChange }: LocationSelectorProps) 
   };
 
   return (
-    <div className="space-y-2">
+    <div 
+      className="space-y-2"
+      {...createDebugAttributes({
+        componentName: 'LocationSelector',
+        filePath: 'src/components/forms/location-selector.tsx'
+      })}
+    >
       <Label>Ubicaciones de Almacenamiento</Label>
       
       {/* Selected Items */}

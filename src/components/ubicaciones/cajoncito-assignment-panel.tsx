@@ -37,18 +37,12 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/components/notifications/notification-provider";
+import { createDebugAttributes } from "@/lib/debug-attributes";
+import { useComponentes } from "@/hooks/use-componentes";
+import { ComponenteWithRelations } from "@/types/api";
 
-export interface ComponenteData {
-  id: string;
-  categoria: 'RESISTENCIA' | 'CAPACITOR' | 'INTEGRADO' | 'VENTILADOR' | 'OTROS';
-  descripcion: string;
-  valorUnidad: string;
-  stockMinimo: number;
-  stockActual: number;
-  _count?: {
-    ubicaciones: number;
-  };
-}
+// Use ComponenteWithRelations type instead of custom ComponenteData
+type ComponenteData = ComponenteWithRelations;
 
 export interface Cajoncito {
   id: string;
@@ -103,11 +97,10 @@ export function CajoncitoAssignmentPanel({
   className,
 }: CajoncitoAssignmentPanelProps) {
   const { showSuccess, showError } = useNotifications();
+  const { data: componentes, loading, fetch: fetchComponentes } = useComponentes();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCajoncito, setSelectedCajoncito] = useState<Cajoncito | null>(null);
-  const [componentes, setComponentes] = useState<ComponenteData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(false);
   const [assigning, setAssigning] = useState<string | null>(null);
   const [assignmentDialog, setAssignmentDialog] = useState<{
     open: boolean;
@@ -132,40 +125,18 @@ export function CajoncitoAssignmentPanel({
   const [recentAssignments, setRecentAssignments] = useState<RecentAssignment[]>([]);
   const [undoLoading, setUndoLoading] = useState<string | null>(null);
 
-  // Fetch componentes based on search
-  const fetchComponentes = async () => {
-    if (!searchTerm.trim()) {
-      setComponentes([]);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/componentes?search=${encodeURIComponent(searchTerm)}&limit=20`);
-      const data = await response.json();
-
-      if (data.success) {
-        setComponentes(data.data || []);
-      } else {
-        showError(data.error || "Error al buscar componentes", "Error de búsqueda");
-      }
-    } catch (error) {
-      console.error("Error fetching componentes:", error);
-      showError("Error de conexión al buscar componentes", "Error de conexión");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+// Fetch componentes based on search using hook
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      fetchComponentes();
+      if (searchTerm.trim()) {
+        fetchComponentes({ search: searchTerm, limit: 20 });
+      }
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [searchTerm, fetchComponentes]);
 
-  const handleAssignComponente = async (componente: ComponenteData, cajoncito: Cajoncito, cantidad: number) => {
+const handleAssignComponente = async (componente: ComponenteData, cajoncito: Cajoncito, cantidad: number) => {
     try {
       setAssigning(componente.id);
 
@@ -201,7 +172,8 @@ export function CajoncitoAssignmentPanel({
         setConfirmDialog({ open: false, componente: null, cajoncito: null, cantidad: 1 });
         setAssignmentDialog({ open: false, componente: null, cantidad: 1 });
         setSearchTerm("");
-        setComponentes([]);
+        // Refetch to clear the componentes list
+        fetchComponentes({ search: "", limit: 20 });
       } else {
         showError(data.error || "Error al asignar componente", "Error de asignación");
       }
@@ -267,7 +239,13 @@ export function CajoncitoAssignmentPanel({
 
   return (
     <>
-      <Card className={cn("w-full", className)}>
+      <Card 
+        className={cn("w-full", className)}
+        {...createDebugAttributes({
+          componentName: 'CajoncitoAssignmentPanel',
+          filePath: 'src/components/ubicaciones/cajoncito-assignment-panel.tsx'
+        })}
+      >
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -419,8 +397,8 @@ export function CajoncitoAssignmentPanel({
                           </Badge>
                           <span className="font-medium text-sm">{componente.descripcion}</span>
                         </div>
-                        <div className="text-xs text-gray-600">
-                          Valor: {componente.valorUnidad} | Stock: {componente.stockActual}/{componente.stockMinimo}
+<div className="text-xs text-gray-600">
+                          Valor: {componente.valorUnidad.map(v => `${v.valor} ${v.unidad}`).join(', ')} | Stock: {componente.stockActual || 0}/{componente.stockMinimo}
                         </div>
                       </div>
                       <Button
@@ -567,8 +545,8 @@ export function CajoncitoAssignmentPanel({
                   </Badge>
                   <span>{assignmentDialog.componente.descripcion}</span>
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
-                  Valor: {assignmentDialog.componente.valorUnidad}
+<div className="text-sm text-gray-600 mt-1">
+                  Valor: {assignmentDialog.componente.valorUnidad.map(v => `${v.valor} ${v.unidad}`).join(', ')}
                 </div>
               </div>
 
@@ -586,7 +564,7 @@ export function CajoncitoAssignmentPanel({
                   id="cantidad"
                   type="number"
                   min="1"
-                  max={assignmentDialog.componente.stockActual}
+                  max={assignmentDialog.componente.stockActual || 0}
                   value={assignmentDialog.cantidad}
                   onChange={(e) => {
                     const value = parseInt(e.target.value) || 1;
@@ -594,7 +572,7 @@ export function CajoncitoAssignmentPanel({
                   }}
                 />
                 <p className="text-xs text-gray-600">
-                  Stock disponible: {assignmentDialog.componente.stockActual} unidades
+                  Stock disponible: {assignmentDialog.componente.stockActual || 0} unidades
                 </p>
               </div>
             </div>

@@ -13,7 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Grid3x3 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface EstanteriaFormData {
   nombre: string;
@@ -99,10 +100,16 @@ export function EstanteriaForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        {...createDebugAttributes({
+          componentName: 'EstanteriaForm',
+          filePath: 'src/components/ubicaciones/estanteria-form.tsx'
+        })}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Grid3x3 className="h-5 w-5" />
+            <EntityIcon entityType="estanteria" className="h-5 w-5 text-green-600" />
             {title}
           </DialogTitle>
           <DialogDescription>{description}</DialogDescription>

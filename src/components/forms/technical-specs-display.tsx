@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Zap, Info } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ValorUnidadPair {
   valor: string;
@@ -53,7 +54,13 @@ export function TechnicalSpecsDisplay({
 }: TechnicalSpecsDisplayProps) {
   if (!valorUnidad || valorUnidad.length === 0) {
     return (
-      <div className={`text-gray-500 text-sm ${className}`}>
+      <div 
+        className={`text-gray-500 text-sm ${className}`}
+        {...createDebugAttributes({
+          componentName: 'TechnicalSpecsDisplay',
+          filePath: 'src/components/forms/technical-specs-display.tsx'
+        })}
+      >
         No hay especificaciones técnicas disponibles
       </div>
     );
@@ -106,7 +113,13 @@ export function TechnicalSpecsDisplay({
 
   if (compact) {
     return (
-      <div className={`flex flex-wrap gap-1 ${className}`}>
+      <div 
+        className={`flex flex-wrap gap-1 ${className}`}
+        {...createDebugAttributes({
+          componentName: 'TechnicalSpecsDisplay',
+          filePath: 'src/components/forms/technical-specs-display.tsx'
+        })}
+      >
         {valorUnidad.map((pair, index) => {
           const specType = getSpecType(pair.unidad);
           return (
@@ -124,7 +137,13 @@ export function TechnicalSpecsDisplay({
   }
 
   return (
-    <Card className={className}>
+    <Card 
+      className={className}
+      {...createDebugAttributes({
+        componentName: 'TechnicalSpecsDisplay',
+        filePath: 'src/components/forms/technical-specs-display.tsx'
+      })}
+    >
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Zap className="h-5 w-5 text-orange-600" />

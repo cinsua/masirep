@@ -18,19 +18,13 @@ import {
   Check,
   X
 } from "lucide-react";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 import { EquipoWithRelations } from "@/types/api";
+import { useRepuestos } from "@/hooks/use-repuestos";
 
-interface RepuestoItem {
-  id: string;
-  codigo: string;
-  nombre: string;
-  marca?: string | null;
-  modelo?: string | null;
-  categoria?: string | null;
-  stockActual: number;
-  stockMinimo: number;
-  isActive: boolean;
-}
+// Use RepuestoWithRelations type instead of custom RepuestoItem
+import { RepuestoWithRelations } from "@/types/api";
+type RepuestoItem = RepuestoWithRelations;
 
 interface AssociationItem {
   repuestoId: string;
@@ -50,54 +44,28 @@ export function EquipoRepuestoManager({
   onCancel,
   isLoading = false
 }: EquipoRepuestoManagerProps) {
+  const { data: allRepuestos, loading } = useRepuestos();
   const [availableRepuestos, setAvailableRepuestos] = useState<RepuestoItem[]>([]);
   const [associations, setAssociations] = useState<AssociationItem[]>(
     equipo.repuestos.map(r => ({
       repuestoId: r.repuestoId,
-      repuesto: {
-        id: r.repuesto.id,
-        codigo: r.repuesto.codigo,
-        nombre: r.repuesto.nombre,
-        marca: r.repuesto.marca,
-        modelo: r.repuesto.modelo,
-        categoria: r.repuesto.categoria,
-        stockActual: r.repuesto.stockActual,
-        stockMinimo: r.repuesto.stockMinimo,
-        isActive: r.repuesto.isActive,
-      }
+      repuesto: r.repuesto as RepuestoItem
     }))
   );
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchAvailableRepuestos();
-  }, []);
+useEffect(() => {
+    if (allRepuestos.length > 0) {
+      const associatedRepuestoIds = new Set(associations.map(a => a.repuestoId));
 
-  const fetchAvailableRepuestos = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/repuestos?limit=1000");
-      const data = await response.json();
+      const filtered = allRepuestos.filter((repuesto: RepuestoItem) =>
+        repuesto.isActive && !associatedRepuestoIds.has(repuesto.id)
+      );
 
-      if (data.success) {
-        const allRepuestos = data.data || [];
-        const associatedRepuestoIds = new Set(associations.map(a => a.repuestoId));
-
-        const filtered = allRepuestos.filter((repuesto: RepuestoItem) =>
-          repuesto.isActive && !associatedRepuestoIds.has(repuesto.id)
-        );
-
-        setAvailableRepuestos(filtered);
-      }
-    } catch (error) {
-      console.error("Error fetching repuestos:", error);
-      setError("Error al cargar repuestos disponibles");
-    } finally {
-      setLoading(false);
+      setAvailableRepuestos(filtered);
     }
-  };
+  }, [allRepuestos, associations]);
 
   const addRepuesto = (repuesto: RepuestoItem) => {
     const newAssociation: AssociationItem = {
@@ -158,8 +126,8 @@ export function EquipoRepuestoManager({
     return "Stock suficiente";
   };
 
-  return (
-    <div className="space-y-6">
+return (
+    <div className="space-y-6" {...createDebugAttributes({componentName: 'EquipoRepuestoManager', filePath: 'src/components/equipos/equipo-repuesto-manager.tsx'})}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

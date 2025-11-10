@@ -17,6 +17,7 @@ interface EquipoListProps {
     total: number;
     totalPages: number;
   };
+  onCreateNew?: () => void;
   onEdit: (equipo: EquipoWithRelations) => void;
   onDelete: (equipo: EquipoWithRelations) => void;
 }
@@ -25,6 +26,7 @@ export function EquipoList({
   equipos, 
   loading = false, 
   pagination = { page: 1, limit: 10, total: 0, totalPages: 1 },
+  onCreateNew,
   onEdit, 
   onDelete 
 }: EquipoListProps) {

@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Plus,
 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +33,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { DivisionPanel } from "./division-panel";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface Cajon {
   id: string;
@@ -136,12 +138,16 @@ export function DrawerCard({
           className
         )}
         onClick={onClick}
+        {...createDebugAttributes({
+          componentName: 'DrawerCard',
+          filePath: 'src/components/ubicaciones/drawer-card.tsx'
+        })}
       >
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <Archive className="h-4 w-4 text-gray-600" />
+                <EntityIcon entityType="cajon" className="h-4 w-4 text-gray-600" />
                 {cajon.codigo}
               </CardTitle>
               <CardDescription className="text-sm text-gray-600 mt-1">
@@ -250,7 +256,7 @@ export function DrawerCard({
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Package className="h-4 w-4 text-green-600" />
+                  <EntityIcon entityType="repuesto" className="h-4 w-4 text-green-600" />
                   <span className="text-sm font-medium text-green-800">
                     Repuestos Directos
                   </span>

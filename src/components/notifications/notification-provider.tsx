@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { X, CheckCircle, AlertTriangle, XCircle, Info } from "lucide-react";
 import { RepuestoValidationError } from "@/lib/validations/repuesto";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 type NotificationType = "success" | "error" | "warning" | "info";
 
@@ -131,7 +132,13 @@ function NotificationContainer() {
   }
 
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-md">
+    <div 
+      className="fixed top-4 right-4 z-50 space-y-2 max-w-md"
+      {...createDebugAttributes({
+        componentName: 'NotificationContainer',
+        filePath: 'src/components/notifications/notification-provider.tsx'
+      })}
+    >
       {notifications.map((notification) => (
         <NotificationItem
           key={notification.id}
@@ -177,7 +184,14 @@ function NotificationItem({
   };
 
   return (
-    <Alert variant={getAlertVariant() as any} className="relative pr-12">
+    <Alert 
+      variant={getAlertVariant() as any} 
+      className="relative pr-12"
+      {...createDebugAttributes({
+        componentName: 'NotificationItem',
+        filePath: 'src/components/notifications/notification-provider.tsx'
+      })}
+    >
       <div className="flex items-start space-x-3">
         {getIcon()}
         <div className="flex-1">

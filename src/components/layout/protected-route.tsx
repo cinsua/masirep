@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -29,7 +30,13 @@ export function ProtectedRoute({
   // Show loading state with better UX
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div 
+        className="min-h-screen bg-background flex items-center justify-center"
+        {...createDebugAttributes({
+          componentName: 'ProtectedRoute',
+          filePath: 'src/components/layout/protected-route.tsx'
+        })}
+      >
         <Card className="w-full max-w-sm shadow-lg">
           <CardContent className="flex flex-col items-center space-y-4 p-6">
             <div className="relative">
@@ -53,7 +60,13 @@ export function ProtectedRoute({
   // Show unauthorized state briefly before redirect
   if (!session) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div 
+        className="min-h-screen bg-background flex items-center justify-center"
+        {...createDebugAttributes({
+          componentName: 'ProtectedRoute',
+          filePath: 'src/components/layout/protected-route.tsx'
+        })}
+      >
         <Card className="w-full max-w-sm shadow-lg">
           <CardContent className="flex flex-col items-center space-y-4 p-6">
             <div className="p-3 bg-destructive/10 rounded-full">

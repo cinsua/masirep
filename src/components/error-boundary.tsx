@@ -3,6 +3,7 @@
 import React from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -40,7 +41,13 @@ export class ErrorBoundary extends React.Component<
       }
 
       return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div 
+          className="min-h-screen bg-background flex items-center justify-center p-4"
+          {...createDebugAttributes({
+            componentName: 'ErrorBoundary',
+            filePath: 'src/components/error-boundary.tsx'
+          })}
+        >
           <div className="max-w-md w-full text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <AlertTriangle className="h-8 w-8 text-destructive" />
@@ -84,7 +91,13 @@ export class ErrorBoundary extends React.Component<
 
 export function AuthErrorFallback({ reset }: { error?: Error; reset: () => void }) {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div 
+      className="min-h-screen bg-background flex items-center justify-center p-4"
+      {...createDebugAttributes({
+        componentName: 'AuthErrorFallback',
+        filePath: 'src/components/error-boundary.tsx'
+      })}
+    >
       <div className="max-w-md w-full text-center">
         <div className="flex items-center justify-center space-x-2 mb-4">
           <AlertTriangle className="h-8 w-8 text-destructive" />

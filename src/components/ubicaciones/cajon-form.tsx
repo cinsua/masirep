@@ -14,8 +14,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Archive } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 import { CajonSchema, CajonFormData } from "@/lib/validations/cajon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 export interface CajonFormProps {
   isOpen: boolean;
@@ -126,10 +128,16 @@ export function CajonForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCancel}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        {...createDebugAttributes({
+          componentName: 'CajonForm',
+          filePath: 'src/components/ubicaciones/cajon-form.tsx'
+        })}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Archive className="h-5 w-5" />
+            <EntityIcon entityType="cajon" className="h-5 w-5" />
             {title}
           </DialogTitle>
           {description && (
@@ -184,7 +192,7 @@ export function CajonForm({
 
           {/* Auto-numbering Information */}
           <Alert>
-            <Archive className="h-4 w-4" />
+            <EntityIcon entityType="cajon" className="h-4 w-4" />
             <AlertDescription>
               El código del cajón se generará automáticamente (ej: CAJ-001, CAJ-002, etc.)
             </AlertDescription>

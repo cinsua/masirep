@@ -13,7 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Archive } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ArmarioFormData {
   nombre: string;
@@ -99,10 +100,16 @@ export function ArmarioForm({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        {...createDebugAttributes({
+          componentName: 'ArmarioForm',
+          filePath: 'src/components/ubicaciones/armario-form.tsx'
+        })}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Archive className="h-5 w-5" />
+            <EntityIcon entityType="armario" className="h-5 w-5 text-blue-600" />
             {title}
           </DialogTitle>
           <DialogDescription>{description}</DialogDescription>

@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { LocationCard, UbicacionForm, StorageTree } from "@/components/ubicaciones";
-import { Plus, Grid, MapPin, TreePine, Grid3x3 } from "lucide-react";
+import { UbicacionFormData } from "@/lib/validations/ubicacion";
+import { Plus, Grid, TreePine } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
 
 interface Ubicacion {
   id: string;
@@ -122,7 +123,7 @@ export default function UbicacionesPage() {
     }
   };
 
-  const handleSubmitUbicacion = async (formData: any) => {
+  const handleSubmitUbicacion = async (formData: UbicacionFormData) => {
     const url = editingUbicacion
       ? `/api/ubicaciones/${editingUbicacion.id}`
       : "/api/ubicaciones";
@@ -172,7 +173,7 @@ export default function UbicacionesPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <MapPin className="h-8 w-8" />
+              <EntityIcon entityType="ubicacion" className="h-8 w-8" />
               Ubicaciones
             </h1>
             <p className="text-muted-foreground">
@@ -212,7 +213,7 @@ export default function UbicacionesPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Ubicaciones</CardTitle>
-              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <EntityIcon entityType="ubicacion" className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{pagination.total}</div>
@@ -221,7 +222,7 @@ export default function UbicacionesPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Armarios</CardTitle>
-              <Grid className="h-4 w-4 text-muted-foreground" />
+              <EntityIcon entityType="armario" className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -232,7 +233,7 @@ export default function UbicacionesPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Estanterías</CardTitle>
-               <Grid3x3 className="h-4 w-4 text-muted-foreground" />
+                <EntityIcon entityType="estanteria" className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
@@ -274,7 +275,7 @@ export default function UbicacionesPage() {
               </div>
             ) : ubicaciones.length === 0 ? (
               <div className="text-center py-8">
-                <MapPin className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <EntityIcon entityType="ubicacion" className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
                 <h3 className="text-lg font-medium mb-2">No se encontraron ubicaciones</h3>
                 <p className="text-muted-foreground mb-4">
                   Comienza agregando tu primera ubicación

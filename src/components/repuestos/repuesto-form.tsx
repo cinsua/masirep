@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 
 import { X, Plus, Save, XCircle } from "lucide-react";
 import { RepuestoWithRelations, RepuestoCreateInput, RepuestoUpdateInput } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 const repuestoSchema = z.object({
   codigo: z.string().min(1, "Código requerido"),
@@ -146,8 +147,8 @@ export function RepuestoForm({ repuesto, onSubmit, onCancel, isLoading = false }
     setSelectedUbicaciones(updated);
   };
 
-  return (
-    <div className="space-y-6">
+return (
+    <div className="space-y-6" {...createDebugAttributes({componentName: 'RepuestoForm', filePath: 'src/components/repuestos/repuesto-form.tsx'})}>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">
           {repuesto ? "Editar Repuesto" : "Nuevo Repuesto"}

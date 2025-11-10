@@ -5,86 +5,50 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, MapPin, Archive, Grid3x3, Layers, FolderOpen, Package, Wrench, Home } from "lucide-react";
+import { ChevronRight, ChevronLeft, Home } from "lucide-react";
+import { EntityIcon } from "@/components/ui/icon";
+import { createDebugAttributes } from "@/lib/debug-attributes";
+import { useEquipos } from "@/hooks/use-equipos";
 
 interface BreadcrumbItem {
   label: string;
   href: string;
   isCurrent?: boolean;
   isDynamic?: boolean; // For IDs that need to be resolved to names
-  type?: "ubicacion" | "armario" | "estanteria" | "cajon" | "division" | "organizador" | "cajoncito" | "default";
+  type?: "ubicacion" | "armario" | "estanteria" | "cajon" | "division" | "organizador" | "cajoncito" | "equipo" | "default";
   showIcon?: boolean;
   showType?: boolean;
   isActive?: boolean;
 }
 
-const getIcon = (type?: BreadcrumbItem["type"]) => {
-  const iconClass = "h-4 w-4";
+// Función auxiliar para obtener el color del icono según el tipo
+const getIconColor = (type?: BreadcrumbItem["type"]) => {
   switch (type) {
     case "ubicacion":
-      return <MapPin className={cn(iconClass, "text-purple-600")} />;
+      return "text-purple-600";
     case "armario":
-      return <Archive className={cn(iconClass, "text-blue-600")} />;
+      return "text-blue-600";
     case "estanteria":
-      return <Grid3x3 className={cn(iconClass, "text-green-600")} />;
+      return "text-green-600";
     case "cajon":
-      return <Layers className={cn(iconClass, "text-orange-600")} />;
+      return "text-orange-600";
     case "division":
-      return <FolderOpen className={cn(iconClass, "text-yellow-600")} />;
+      return "text-yellow-600";
     case "organizador":
-      return <Package className={cn(iconClass, "text-pink-600")} />;
+      return "text-pink-600";
     case "cajoncito":
-      return <Wrench className={cn(iconClass, "text-indigo-600")} />;
+      return "text-indigo-600";
+    case "equipo":
+      return "text-red-600";
     default:
-      return <MapPin className={iconClass} />;
-  }
-};
-
-const getTypeLabel = (type?: BreadcrumbItem["type"]) => {
-  switch (type) {
-    case "ubicacion":
-      return "Ubicación";
-    case "armario":
-      return "Armario";
-    case "estanteria":
-      return "Estantería";
-    case "cajon":
-      return "Cajón";
-    case "division":
-      return "División";
-    case "organizador":
-      return "Organizador";
-    case "cajoncito":
-      return "Cajoncito";
-    default:
-      return type || "";
-  }
-};
-
-const getTypeColor = (type?: BreadcrumbItem["type"]) => {
-  switch (type) {
-    case "ubicacion":
-      return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300";
-    case "armario":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
-    case "estanteria":
-      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-    case "cajon":
-      return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300";
-    case "division":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
-    case "organizador":
-      return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300";
-    case "cajoncito":
-      return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300";
-    default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+      return "text-gray-600";
   }
 };
 
 export function Breadcrumb() {
   const pathname = usePathname();
   const [resolvedNames, setResolvedNames] = useState<Record<string, string>>({});
+  const { fetchById } = useEquipos();
 
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
     if (!pathname) return [];
@@ -127,6 +91,8 @@ export function Breadcrumb() {
           type = "estanteria";
         } else if (previousType === "cajon") {
           type = "cajon";
+        } else if (previousType === "equipo") {
+          type = "equipo";
         }
       } else {
         // This is a static path segment
@@ -138,6 +104,8 @@ export function Breadcrumb() {
           type = "estanteria";
         } else if (segment === "cajones") {
           type = "cajon";
+        } else if (segment === "equipos") {
+          type = "equipo";
         }
         previousType = type;
       }
@@ -193,6 +161,19 @@ export function Breadcrumb() {
 
   const breadcrumbs = generateBreadcrumbs();
 
+  // Calculate parent URL for back navigation
+  const getParentUrl = (): string | null => {
+    if (breadcrumbs.length <= 1) return null;
+
+    // If we have more than 2 breadcrumbs, go to the previous level
+    if (breadcrumbs.length > 2) {
+      return breadcrumbs[breadcrumbs.length - 2].href;
+    }
+
+    // If we only have 2 breadcrumbs (Dashboard + current), go to dashboard
+    return "/dashboard";
+  };
+
   // Resolve dynamic names (IDs to names)
   useEffect(() => {
     const resolveNames = async () => {
@@ -218,6 +199,8 @@ export function Breadcrumb() {
             resourceType = 'armario';
           } else if (prevSegment === 'estanterias') {
             resourceType = 'estanteria';
+          } else if (prevSegment === 'equipos') {
+            resourceType = 'equipo';
           }
         }
 
@@ -256,6 +239,9 @@ export function Breadcrumb() {
               const data = await response.json();
               name = data.success ? data.data.estanteria.nombre : id;
             }
+          } else if (type === 'equipo') {
+            const equipo = await fetchById(id);
+            name = equipo ? equipo.nombre : id;
           }
 
           newResolvedNames[id] = name;
@@ -269,16 +255,32 @@ export function Breadcrumb() {
     };
 
     resolveNames();
-  }, [pathname]); // Only depend on pathname, not resolvedNames
+  }, [pathname, fetchById, resolvedNames]); // Include all dependencies
 
   if (breadcrumbs.length <= 1) return null; // Hide if only Dashboard
+
+  const parentUrl = getParentUrl();
 
   return (
     <nav
       className="flex items-center gap-2 text-sm flex-wrap mb-4"
-      data-ai-tag="breadcrumb-navigation"
-      data-ai-component="layout-breadcrumb"
+      {...createDebugAttributes({
+        componentName: 'Breadcrumb',
+        filePath: 'src/components/layout/breadcrumb.tsx'
+      })}
     >
+      {/* Back/Up navigation button */}
+      {parentUrl && (
+        <Link
+          href={parentUrl}
+          className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent rounded-md h-6 px-2 text-muted-foreground hover:text-foreground"
+          title="Volver al nivel anterior"
+          data-ai-tag="breadcrumb-back"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Link>
+      )}
+
       {breadcrumbs.map((item, index) => {
         return (
           <React.Fragment key={item.href}>
@@ -302,7 +304,12 @@ export function Breadcrumb() {
               </Link>
             ) : (
               <div className="flex items-center gap-2 min-w-0" data-ai-tag={`breadcrumb-element-${item.type}`}>
-              {item.showIcon && getIcon(item.type)}
+              {item.showIcon && (
+                <EntityIcon
+                  entityType={item.type || 'ubicacion'}
+                  className={cn("h-4 w-4", getIconColor(item.type))}
+                />
+              )}
 
               {item.isCurrent ? (
                 <span className="text-foreground font-medium truncate max-w-[150px]" data-ai-tag="breadcrumb-current">

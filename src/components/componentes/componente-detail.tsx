@@ -3,8 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Edit, MapPin, Package, Zap } from "lucide-react";
+import { ArrowLeft, Edit, MapPin, Archive, Cog } from "lucide-react";
 import { ComponenteWithRelations } from "@/types/api";
+import { createDebugAttributes } from "@/lib/debug-attributes";
 
 interface ComponenteDetailProps {
   componente: ComponenteWithRelations;
@@ -29,6 +30,20 @@ const CATEGORIA_COLORS = {
 };
 
 export function ComponenteDetail({ componente, onEdit, onBack }: ComponenteDetailProps) {
+  if (!componente) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="text-center py-8">
+          <p className="text-gray-500">Componente no encontrado</p>
+          <Button onClick={onBack} className="mt-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const formatValorUnidad = (valorUnidad: Array<{ valor: string; unidad: string }>) => {
     return valorUnidad.map(pair => `${pair.valor} ${pair.unidad}`).join(", ");
   };
@@ -47,10 +62,10 @@ export function ComponenteDetail({ componente, onEdit, onBack }: ComponenteDetai
   };
 
   const stockStatus = getStockStatus(componente);
-  const totalStock = componente.ubicaciones.reduce((sum, ub) => sum + ub.cantidad, 0);
+  const totalStock = componente.ubicaciones?.reduce((sum, ub) => sum + ub.cantidad, 0) || 0;
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-6">
+return (
+    <div className="max-w-4xl mx-auto space-y-6" {...createDebugAttributes({componentName: 'ComponenteDetail', filePath: 'src/components/componentes/componente-detail.tsx'})}>
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -59,7 +74,7 @@ export function ComponenteDetail({ componente, onEdit, onBack }: ComponenteDetai
             Volver
           </Button>
           <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-orange-600" />
+            <Cog className="h-6 w-6 text-orange-600" />
             <h1 className="text-2xl font-bold">Detalles del Componente</h1>
           </div>
         </div>
@@ -73,7 +88,7 @@ export function ComponenteDetail({ componente, onEdit, onBack }: ComponenteDetai
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" />
+            <Archive className="h-5 w-5" />
             Información General
           </CardTitle>
         </CardHeader>
@@ -132,13 +147,13 @@ export function ComponenteDetail({ componente, onEdit, onBack }: ComponenteDetai
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {componente.ubicaciones.length === 0 ? (
+          {(componente.ubicaciones?.length || 0) === 0 ? (
             <p className="text-gray-500 text-center py-4">
               Este componente no tiene ubicaciones asignadas
             </p>
           ) : (
             <div className="space-y-3">
-              {componente.ubicaciones.map((ubicacion) => {
+              {componente.ubicaciones?.map((ubicacion) => {
                 // Simplified location path (only cajoncito info available)
                 const locationPath = [
                   `Cajoncito: ${ubicacion.cajoncito.codigo} (${ubicacion.cajoncito.nombre})`
