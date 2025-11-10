@@ -32,6 +32,13 @@
 - feat: Asignación de repuestos a ubicaciones
 - feat: Cálculo de stock en tiempo real
 
+#### v1.2.0 (2024-11-09)
+- feat: Implementar sistema OpenCode completo
+- feat: Sistema de depuración con debug attributes
+- feat: Nuevo componente EntityIcon centralizado
+- feat: Mejoras en componentes de ubicaciones
+- BREAKING CHANGE: Migración de BMAD a OpenCode
+
 #### [Agregar nuevas versiones aquí]
 
 ## CONVENCIONES DE COMMIT ESPECÍFICAS DEL PROYECTO
